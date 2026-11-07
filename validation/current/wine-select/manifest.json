@@ -1,0 +1,82 @@
+{
+  "schema_version": 3,
+  "status": "completed",
+  "implementation": "reimplemented; historical source unavailable",
+  "version": "0.4.0a1.post1",
+  "python": "3.12.14",
+  "settings": {
+    "csv": "/workspace/DIY_AutoML/data/reference/wine.csv",
+    "target": "target",
+    "seed": 42,
+    "metric": "F1",
+    "bootstrap_repeats": 1000,
+    "bootstrap_seed": 43,
+    "confidence": 0.95
+  },
+  "source_hashes": {
+    "__init__.py": "3581c00cde3bd7f2168586a25dbd74fd8201846107252a15e37c3e1174948d50",
+    "__main__.py": "cf7390a2508a0fcad4777a4a629fc5212ab655cb45845975995f835676a834e3",
+    "cli.py": "5371e4c45211f26712ad1af91be87d346d4e9dbb708da704168ccd1930629fec",
+    "clustering.py": "d9370b2847aed19fcc58f75ae5e25486aee1e3f24c9dfd053055cb55b89b1be8",
+    "clustering_repeat_workflow.py": "88080961d870f312372ff0909ab40d916bade16183cb9559d2c22c6c66953778",
+    "clustering_repeated.py": "305a831892d2e7265e05bfae96957e811433ef2cfaa873a61fbc0bd63ade6f0d",
+    "data.py": "39a4cb6431ec1bbe0df13c5a66340f4fab65a8563e493ea1729524a3fe6505f1",
+    "deep_learning.py": "88521b2f0dabccf2e92510aa77002c3b1fdf2d49b7fec040d4e1d36a6032310a",
+    "plotting.py": "1b911f4fb2dfc9c33f7828be7521a1a05dc7d493d1fcad56191bd6062eead970",
+    "reporting.py": "f30d81f62cbaaea4a3728b24d709d55ded98eee6edbd6fa7b3fd7b7b833dfd3b",
+    "selection.py": "3daddea0b9b264393e175884843ba925e0b65a0d2eaa78f393fdcda4f35a2c08",
+    "selection_workflow.py": "8235f72483dd7aadf488be5d825a7b4b4410b10333d4c6c85c4971782cb541ae",
+    "supervised.py": "f3925c28f25f7c30885bb37c95675016826a7f2b41b99afb30c2c7b16efe00a5",
+    "validation.py": "5f5106e36fb27f118700f42ee70fda79f80e8b7704e46bba3f933cdc8716dbca",
+    "workflow.py": "a632d891a41827f9942b3f1470f9cb1926040ec7ba526457f03e2ef6df1203dc"
+  },
+  "dependencies": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "scikit-learn": "1.8.0",
+    "openpyxl": "3.1.5"
+  },
+  "created_utc": "2026-11-07T23:15:01.931251+00:00",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "input_sha256": "a297f8c376cd0107b1fe9d66d992e025e1a128d78fbf1801b706d4c8dc43c918",
+  "selected_parameters": "{'memory': None, 'steps': [('standardscaler', StandardScaler()), ('svc', SVC())], 'transform_input': None, 'verbose': False, 'standardscaler': StandardScaler(), 'svc': SVC(), 'standardscaler__copy': True, 'standardscaler__with_mean': True, 'standardscaler__with_std': True, 'svc__C': 1.0, 'svc__break_ties': False, 'svc__cache_size': 200, 'svc__class_weight': None, 'svc__coef0': 0.0, 'svc__decision_function_shape': 'ovr', 'svc__degree': 3, 'svc__gamma': 'scale', 'svc__kernel': 'rbf', 'svc__max_iter': -1, 'svc__probability': False, 'svc__random_state': None, 'svc__shrinking': True, 'svc__tol': 0.001, 'svc__verbose': False}",
+  "classes": [
+    0,
+    1,
+    2
+  ],
+  "features": [
+    "alcohol",
+    "malic_acid",
+    "ash",
+    "alcalinity_of_ash",
+    "magnesium",
+    "total_phenols",
+    "flavanoids",
+    "nonflavanoid_phenols",
+    "proanthocyanins",
+    "color_intensity",
+    "hue",
+    "od280/od315_of_diluted_wines",
+    "proline"
+  ],
+  "selected_model": "SVM",
+  "tied_candidates": [
+    "SVM"
+  ],
+  "interval_scope": "Conditional on fixed fitted model and observed class counts; excludes training and selection variability",
+  "sheets": {
+    "SL_CV_Folds": 25,
+    "SL_CV_Mean": 5,
+    "SL_CV_SD": 5,
+    "SL_Test": 1,
+    "SL_Bootstrap": 1000,
+    "SL_Test_Intervals": 4,
+    "Summary": 4
+  },
+  "artifacts": {
+    "report.xlsx": "8116cda2ee228000354c41c709515ef1ee731f969acf41be4eccee7eda585962",
+    "arrays.npz": "bad06ce6f0dc048d56a085e5b534b076a8fcc8af85e26acb63c932ffb19b5bdb"
+  }
+}

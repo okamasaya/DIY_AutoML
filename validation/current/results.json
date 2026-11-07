@@ -1,0 +1,128 @@
+[
+  {
+    "dataset": "iris",
+    "command": "run",
+    "status": "passed",
+    "seconds": 7.861424432999911,
+    "sheets": {
+      "SL_Result": 5,
+      "UL_Result": 54,
+      "DL_Result": 1,
+      "DL_History": 100,
+      "Summary": 3
+    }
+  },
+  {
+    "dataset": "iris",
+    "command": "select",
+    "status": "passed",
+    "seconds": 2.5404279039998983,
+    "sheets": {
+      "SL_CV_Folds": 25,
+      "SL_CV_Mean": 5,
+      "SL_CV_SD": 5,
+      "SL_Test": 1,
+      "SL_Bootstrap": 1000,
+      "SL_Test_Intervals": 4,
+      "Summary": 4
+    }
+  },
+  {
+    "dataset": "iris",
+    "command": "repeat-ul",
+    "status": "passed",
+    "seconds": 3.529840196000123,
+    "sheets": {
+      "UL_By_Seed": 180,
+      "UL_Seed_Summary": 18,
+      "UL_Seed_Pairs": 810,
+      "UL_Pair_Summary": 18,
+      "UL_Reference": 36,
+      "Summary": 9
+    }
+  },
+  {
+    "dataset": "wine",
+    "command": "run",
+    "status": "passed",
+    "seconds": 7.4373649540000315,
+    "sheets": {
+      "SL_Result": 5,
+      "UL_Result": 54,
+      "DL_Result": 1,
+      "DL_History": 100,
+      "Summary": 3
+    }
+  },
+  {
+    "dataset": "wine",
+    "command": "select",
+    "status": "passed",
+    "seconds": 2.6058281910000005,
+    "sheets": {
+      "SL_CV_Folds": 25,
+      "SL_CV_Mean": 5,
+      "SL_CV_SD": 5,
+      "SL_Test": 1,
+      "SL_Bootstrap": 1000,
+      "SL_Test_Intervals": 4,
+      "Summary": 4
+    }
+  },
+  {
+    "dataset": "wine",
+    "command": "repeat-ul",
+    "status": "passed",
+    "seconds": 3.1395600300002116,
+    "sheets": {
+      "UL_By_Seed": 180,
+      "UL_Seed_Summary": 18,
+      "UL_Seed_Pairs": 810,
+      "UL_Pair_Summary": 18,
+      "UL_Reference": 36,
+      "Summary": 9
+    }
+  },
+  {
+    "dataset": "breast_cancer",
+    "command": "run",
+    "status": "passed",
+    "seconds": 10.575864202000048,
+    "sheets": {
+      "SL_Result": 5,
+      "UL_Result": 54,
+      "DL_Result": 1,
+      "DL_History": 100,
+      "Summary": 3
+    }
+  },
+  {
+    "dataset": "breast_cancer",
+    "command": "select",
+    "status": "passed",
+    "seconds": 2.840016526999989,
+    "sheets": {
+      "SL_CV_Folds": 25,
+      "SL_CV_Mean": 5,
+      "SL_CV_SD": 5,
+      "SL_Test": 1,
+      "SL_Bootstrap": 1000,
+      "SL_Test_Intervals": 4,
+      "Summary": 4
+    }
+  },
+  {
+    "dataset": "breast_cancer",
+    "command": "repeat-ul",
+    "status": "passed",
+    "seconds": 5.291156034000096,
+    "sheets": {
+      "UL_By_Seed": 180,
+      "UL_Seed_Summary": 18,
+      "UL_Seed_Pairs": 810,
+      "UL_Pair_Summary": 18,
+      "UL_Reference": 36,
+      "Summary": 9
+    }
+  }
+]

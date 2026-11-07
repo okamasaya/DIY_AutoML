@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "diy-automl"
+version = "0.4.0a1.post1"
+description = "Reimplementation of an exploratory ML evaluation framework"
+requires-python = ">=3.12"
+dependencies = ["numpy>=2", "pandas>=2.2", "scipy>=1.14", "scikit-learn>=1.6", "openpyxl>=3.1", "matplotlib>=3.9"]
+
+[project.optional-dependencies]
+dl = ["tensorflow-cpu==2.20.0", "keras==3.15.1"]
+dev = ["pytest", "build"]
+
+[project.scripts]
+diy-automl = "diy_automl.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
