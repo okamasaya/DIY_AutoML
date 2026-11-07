@@ -1,0 +1,98 @@
+[
+  {
+    "dataset": "iris",
+    "status": "passed",
+    "seconds": 29.054663832000188,
+    "sheets": {
+      "DL_By_Seed": 10,
+      "DL_Seed_Summary": 8,
+      "DL_History": 1000,
+      "DL_Settings": 10,
+      "DL_Splits": 150,
+      "Summary": 10
+    },
+    "source_hashes": {
+      "__init__.py": "8861829109a5dc46d3a1cae9891ade8290abdb63f88cc29e75efeb08b392a28d",
+      "__main__.py": "cf7390a2508a0fcad4777a4a629fc5212ab655cb45845975995f835676a834e3",
+      "cli.py": "be1f07eea82a43584c0750206ef555f74de74469ffbdd230a3d2e034bbc0f1ba",
+      "clustering.py": "d9370b2847aed19fcc58f75ae5e25486aee1e3f24c9dfd053055cb55b89b1be8",
+      "clustering_repeat_workflow.py": "88080961d870f312372ff0909ab40d916bade16183cb9559d2c22c6c66953778",
+      "clustering_repeated.py": "305a831892d2e7265e05bfae96957e811433ef2cfaa873a61fbc0bd63ade6f0d",
+      "data.py": "39a4cb6431ec1bbe0df13c5a66340f4fab65a8563e493ea1729524a3fe6505f1",
+      "deep_learning.py": "042c3ea327240f75fa5623b400b20190df837cf34d637552ffbc884cb405b297",
+      "deep_learning_repeat_workflow.py": "27bddc8b5ea350887824deeec395a865859cf6ec8077a7463105d647b1ff2783",
+      "dl_repeat_validation.py": "d15f8f4bedcde593a99004343d0ab50e9a10ba41399951b3bff43ef8a16392df",
+      "plotting.py": "1b911f4fb2dfc9c33f7828be7521a1a05dc7d493d1fcad56191bd6062eead970",
+      "reporting.py": "44c5ff976f95bb7dbf38b63a86d9b05d46777dedf98e67f428d1ae75c897a68d",
+      "selection.py": "3daddea0b9b264393e175884843ba925e0b65a0d2eaa78f393fdcda4f35a2c08",
+      "selection_workflow.py": "8235f72483dd7aadf488be5d825a7b4b4410b10333d4c6c85c4971782cb541ae",
+      "supervised.py": "f3925c28f25f7c30885bb37c95675016826a7f2b41b99afb30c2c7b16efe00a5",
+      "validation.py": "7a57a30685b3210b688a1a5eb4d79e4dc6e0ad2de65a1ec884012863a822e988",
+      "workflow.py": "a632d891a41827f9942b3f1470f9cb1926040ec7ba526457f03e2ef6df1203dc"
+    }
+  },
+  {
+    "dataset": "wine",
+    "status": "passed",
+    "seconds": 28.763892049999868,
+    "sheets": {
+      "DL_By_Seed": 10,
+      "DL_Seed_Summary": 8,
+      "DL_History": 1000,
+      "DL_Settings": 10,
+      "DL_Splits": 178,
+      "Summary": 10
+    },
+    "source_hashes": {
+      "__init__.py": "8861829109a5dc46d3a1cae9891ade8290abdb63f88cc29e75efeb08b392a28d",
+      "__main__.py": "cf7390a2508a0fcad4777a4a629fc5212ab655cb45845975995f835676a834e3",
+      "cli.py": "be1f07eea82a43584c0750206ef555f74de74469ffbdd230a3d2e034bbc0f1ba",
+      "clustering.py": "d9370b2847aed19fcc58f75ae5e25486aee1e3f24c9dfd053055cb55b89b1be8",
+      "clustering_repeat_workflow.py": "88080961d870f312372ff0909ab40d916bade16183cb9559d2c22c6c66953778",
+      "clustering_repeated.py": "305a831892d2e7265e05bfae96957e811433ef2cfaa873a61fbc0bd63ade6f0d",
+      "data.py": "39a4cb6431ec1bbe0df13c5a66340f4fab65a8563e493ea1729524a3fe6505f1",
+      "deep_learning.py": "042c3ea327240f75fa5623b400b20190df837cf34d637552ffbc884cb405b297",
+      "deep_learning_repeat_workflow.py": "27bddc8b5ea350887824deeec395a865859cf6ec8077a7463105d647b1ff2783",
+      "dl_repeat_validation.py": "d15f8f4bedcde593a99004343d0ab50e9a10ba41399951b3bff43ef8a16392df",
+      "plotting.py": "1b911f4fb2dfc9c33f7828be7521a1a05dc7d493d1fcad56191bd6062eead970",
+      "reporting.py": "44c5ff976f95bb7dbf38b63a86d9b05d46777dedf98e67f428d1ae75c897a68d",
+      "selection.py": "3daddea0b9b264393e175884843ba925e0b65a0d2eaa78f393fdcda4f35a2c08",
+      "selection_workflow.py": "8235f72483dd7aadf488be5d825a7b4b4410b10333d4c6c85c4971782cb541ae",
+      "supervised.py": "f3925c28f25f7c30885bb37c95675016826a7f2b41b99afb30c2c7b16efe00a5",
+      "validation.py": "7a57a30685b3210b688a1a5eb4d79e4dc6e0ad2de65a1ec884012863a822e988",
+      "workflow.py": "a632d891a41827f9942b3f1470f9cb1926040ec7ba526457f03e2ef6df1203dc"
+    }
+  },
+  {
+    "dataset": "breast_cancer",
+    "status": "passed",
+    "seconds": 47.00650754099979,
+    "sheets": {
+      "DL_By_Seed": 10,
+      "DL_Seed_Summary": 8,
+      "DL_History": 1000,
+      "DL_Settings": 10,
+      "DL_Splits": 569,
+      "Summary": 10
+    },
+    "source_hashes": {
+      "__init__.py": "8861829109a5dc46d3a1cae9891ade8290abdb63f88cc29e75efeb08b392a28d",
+      "__main__.py": "cf7390a2508a0fcad4777a4a629fc5212ab655cb45845975995f835676a834e3",
+      "cli.py": "be1f07eea82a43584c0750206ef555f74de74469ffbdd230a3d2e034bbc0f1ba",
+      "clustering.py": "d9370b2847aed19fcc58f75ae5e25486aee1e3f24c9dfd053055cb55b89b1be8",
+      "clustering_repeat_workflow.py": "88080961d870f312372ff0909ab40d916bade16183cb9559d2c22c6c66953778",
+      "clustering_repeated.py": "305a831892d2e7265e05bfae96957e811433ef2cfaa873a61fbc0bd63ade6f0d",
+      "data.py": "39a4cb6431ec1bbe0df13c5a66340f4fab65a8563e493ea1729524a3fe6505f1",
+      "deep_learning.py": "042c3ea327240f75fa5623b400b20190df837cf34d637552ffbc884cb405b297",
+      "deep_learning_repeat_workflow.py": "27bddc8b5ea350887824deeec395a865859cf6ec8077a7463105d647b1ff2783",
+      "dl_repeat_validation.py": "d15f8f4bedcde593a99004343d0ab50e9a10ba41399951b3bff43ef8a16392df",
+      "plotting.py": "1b911f4fb2dfc9c33f7828be7521a1a05dc7d493d1fcad56191bd6062eead970",
+      "reporting.py": "44c5ff976f95bb7dbf38b63a86d9b05d46777dedf98e67f428d1ae75c897a68d",
+      "selection.py": "3daddea0b9b264393e175884843ba925e0b65a0d2eaa78f393fdcda4f35a2c08",
+      "selection_workflow.py": "8235f72483dd7aadf488be5d825a7b4b4410b10333d4c6c85c4971782cb541ae",
+      "supervised.py": "f3925c28f25f7c30885bb37c95675016826a7f2b41b99afb30c2c7b16efe00a5",
+      "validation.py": "7a57a30685b3210b688a1a5eb4d79e4dc6e0ad2de65a1ec884012863a822e988",
+      "workflow.py": "a632d891a41827f9942b3f1470f9cb1926040ec7ba526457f03e2ef6df1203dc"
+    }
+  }
+]

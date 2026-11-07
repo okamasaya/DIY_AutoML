@@ -1,6 +1,6 @@
 # DIY AutoML 再実装版
 
-旧クラウド環境の0.4.0a1ソースは未取得です。このリポジトリは元資料ZIPと引継ぎ仕様から新たに実装した **0.4.0a1.post1** です。旧実装とのAPI・数値・manifest互換性は保証していません。schema番号2/3/4は引継ぎの用途区分を採用したもので、旧validatorとの互換を意味しません。過去の96 passedは今回の検証結果ではありません。
+旧クラウド環境の0.4.0a1ソースは未取得です。このリポジトリは元資料ZIPと引継ぎ仕様から新たに実装しました。初回再実装は **0.4.0a1.post1**、DL反復を追加した現在版は **0.4.0a2** です。旧実装とのAPI・数値・manifest互換性は保証していません。schema番号2/3/4は引継ぎの用途区分を採用したもので、旧validatorとの互換を意味しません。過去の96 passedは今回の検証結果ではありません。
 
 Python 3.12、数値特徴量・欠損なし・分類ラベル付きCSVが対象です。ULも外部診断のためtarget列が必要です。元資料は `originals/` に変更せず保存しています。ライセンスは未選定です。
 
@@ -42,3 +42,14 @@ ULは固定データ最大5,000行、KMeans n_init=auto、GMM n_init=1/full、�
 Notebookを使う場合は、必要に応じて `.venv/bin/python -m pip install ipykernel` を追加し、エディタでこの.venvをカーネルに指定してください。Notebookカーネルを通した実行は今回未確認ですが、共通関数での学習・出力と描画関数での図5枚生成は確認しています。
 
 Gitからの再開手順と、ローカルコミット・pushの確認方法は `docs/COMMIT_GUIDE.md` に記載しています。
+
+## DLの学習seed反復（0.4.0a2）
+
+固定した分割とtrain-only scalerを共有し、全学習seedの指標・履歴・予測・重みを保存する `repeat-dl`（schema 5）を追加しました。初期化とshuffleの感度を記述し、test最高のseedは選びません。
+
+```sh
+.venv/bin/python -m diy_automl repeat-dl --csv data/reference/wine.csv --target target --training-seeds 42 43 44 --output runs/wine-repeat-dl
+.venv/bin/python scripts/validate_dl_repeat.py runs/wine-repeat-dl
+```
+
+詳細は `docs/DL_REPEAT_GUIDE.md`、今回の検証は `docs/VALIDATION_DL_REPEAT.md` を参照してください。初回再実装の検証記録は上書きせず保持しています。

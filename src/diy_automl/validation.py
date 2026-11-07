@@ -7,11 +7,14 @@ import pandas as pd
 SHEETS={3:{"SL_CV_Folds","SL_CV_Mean","SL_CV_SD","SL_Test","SL_Bootstrap","SL_Test_Intervals","Summary"},
         4:{"UL_By_Seed","UL_Seed_Summary","UL_Seed_Pairs","UL_Pair_Summary","UL_Reference","Summary"}}
 
-def validate(directory,schema=None):
+def validate(directory,schema=None,allow_failed=False):
     root=Path(directory)
     m=json.loads((root/"manifest.json").read_text())
     version=m["schema_version"]
     if schema is not None and schema!=version: raise ValueError("Unexpected schema")
+    if version==5:
+        from .dl_repeat_validation import validate_dl_repeat
+        return validate_dl_repeat(root,allow_failed=allow_failed)
     if m["status"]!="completed": raise ValueError("Run did not complete")
     for name,digest in m["artifacts"].items():
         if hashlib.sha256((root/name).read_bytes()).hexdigest()!=digest:

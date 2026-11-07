@@ -1,0 +1,23 @@
+[
+  {
+    "dataset": "iris",
+    "baseline": "0.4.0a1.post1 stored single run",
+    "training_seed": 42,
+    "split_seed": 42,
+    "all_DL_arrays_and_history_exactly_equal": true
+  },
+  {
+    "dataset": "wine",
+    "baseline": "0.4.0a1.post1 stored single run",
+    "training_seed": 42,
+    "split_seed": 42,
+    "all_DL_arrays_and_history_exactly_equal": true
+  },
+  {
+    "dataset": "breast_cancer",
+    "baseline": "0.4.0a1.post1 stored single run",
+    "training_seed": 42,
+    "split_seed": 42,
+    "all_DL_arrays_and_history_exactly_equal": true
+  }
+]

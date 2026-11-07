@@ -1,0 +1,167 @@
+{
+  "schema_version": 5,
+  "status": "completed",
+  "implementation": "reimplemented; historical source unavailable",
+  "version": "0.4.0a2",
+  "python": "3.12.14",
+  "settings": {
+    "csv": "/workspace/DIY_AutoML/data/reference/breast_cancer.csv",
+    "target": "target",
+    "training_seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51
+    ],
+    "split_seed": 42,
+    "epochs": 100,
+    "batch_size": 16,
+    "methods": [
+      "dl"
+    ],
+    "model": {
+      "layers": [
+        32,
+        16,
+        8
+      ],
+      "activation": "relu",
+      "output_activation": "softmax",
+      "optimizer": "Adam",
+      "learning_rate": 0.001,
+      "loss": "sparse_categorical_crossentropy",
+      "deterministic_ops": true,
+      "shuffle": "tf.data full training buffer; reshuffle each epoch"
+    }
+  },
+  "source_hashes": {
+    "__init__.py": "8861829109a5dc46d3a1cae9891ade8290abdb63f88cc29e75efeb08b392a28d",
+    "__main__.py": "cf7390a2508a0fcad4777a4a629fc5212ab655cb45845975995f835676a834e3",
+    "cli.py": "be1f07eea82a43584c0750206ef555f74de74469ffbdd230a3d2e034bbc0f1ba",
+    "clustering.py": "d9370b2847aed19fcc58f75ae5e25486aee1e3f24c9dfd053055cb55b89b1be8",
+    "clustering_repeat_workflow.py": "88080961d870f312372ff0909ab40d916bade16183cb9559d2c22c6c66953778",
+    "clustering_repeated.py": "305a831892d2e7265e05bfae96957e811433ef2cfaa873a61fbc0bd63ade6f0d",
+    "data.py": "39a4cb6431ec1bbe0df13c5a66340f4fab65a8563e493ea1729524a3fe6505f1",
+    "deep_learning.py": "042c3ea327240f75fa5623b400b20190df837cf34d637552ffbc884cb405b297",
+    "deep_learning_repeat_workflow.py": "27bddc8b5ea350887824deeec395a865859cf6ec8077a7463105d647b1ff2783",
+    "dl_repeat_validation.py": "d15f8f4bedcde593a99004343d0ab50e9a10ba41399951b3bff43ef8a16392df",
+    "plotting.py": "1b911f4fb2dfc9c33f7828be7521a1a05dc7d493d1fcad56191bd6062eead970",
+    "reporting.py": "44c5ff976f95bb7dbf38b63a86d9b05d46777dedf98e67f428d1ae75c897a68d",
+    "selection.py": "3daddea0b9b264393e175884843ba925e0b65a0d2eaa78f393fdcda4f35a2c08",
+    "selection_workflow.py": "8235f72483dd7aadf488be5d825a7b4b4410b10333d4c6c85c4971782cb541ae",
+    "supervised.py": "f3925c28f25f7c30885bb37c95675016826a7f2b41b99afb30c2c7b16efe00a5",
+    "validation.py": "7a57a30685b3210b688a1a5eb4d79e4dc6e0ad2de65a1ec884012863a822e988",
+    "workflow.py": "a632d891a41827f9942b3f1470f9cb1926040ec7ba526457f03e2ef6df1203dc"
+  },
+  "dependencies": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "scikit-learn": "1.8.0",
+    "openpyxl": "3.1.5",
+    "tensorflow-cpu": "2.20.0",
+    "keras": "3.15.1"
+  },
+  "created_utc": "2026-11-07T23:51:53.683162+00:00",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "input_sha256": "32cb9f217d4e04fe3ffc521a396a13336cd0f1e094445d2a0a8d54335458e8e7",
+  "classes": [
+    0,
+    1
+  ],
+  "features": [
+    "mean radius",
+    "mean texture",
+    "mean perimeter",
+    "mean area",
+    "mean smoothness",
+    "mean compactness",
+    "mean concavity",
+    "mean concave points",
+    "mean symmetry",
+    "mean fractal dimension",
+    "radius error",
+    "texture error",
+    "perimeter error",
+    "area error",
+    "smoothness error",
+    "compactness error",
+    "concavity error",
+    "concave points error",
+    "symmetry error",
+    "fractal dimension error",
+    "worst radius",
+    "worst texture",
+    "worst perimeter",
+    "worst area",
+    "worst smoothness",
+    "worst compactness",
+    "worst concavity",
+    "worst concave points",
+    "worst symmetry",
+    "worst fractal dimension"
+  ],
+  "rows": 569,
+  "protocol": "Fixed split and train-only scaler shared by all training seeds; no selection",
+  "uncertainty_scope": "Conditional training-seed sensitivity; no data resampling, SEM or CI",
+  "seed_states": [
+    {
+      "training_seed": 42,
+      "status": "completed"
+    },
+    {
+      "training_seed": 43,
+      "status": "completed"
+    },
+    {
+      "training_seed": 44,
+      "status": "completed"
+    },
+    {
+      "training_seed": 45,
+      "status": "completed"
+    },
+    {
+      "training_seed": 46,
+      "status": "completed"
+    },
+    {
+      "training_seed": 47,
+      "status": "completed"
+    },
+    {
+      "training_seed": 48,
+      "status": "completed"
+    },
+    {
+      "training_seed": 49,
+      "status": "completed"
+    },
+    {
+      "training_seed": 50,
+      "status": "completed"
+    },
+    {
+      "training_seed": 51,
+      "status": "completed"
+    }
+  ],
+  "sheets": {
+    "DL_By_Seed": 10,
+    "DL_Seed_Summary": 8,
+    "DL_History": 1000,
+    "DL_Settings": 10,
+    "DL_Splits": 569,
+    "Summary": 10
+  },
+  "artifacts": {
+    "report.xlsx": "9849c0bcd3bcdee97112da9df8a12df884407f5c66a2d62d68be351961097b47",
+    "arrays.npz": "25844c6333f4aae41458907aba92220950c9eae95332b43caa0c90ec34b08410"
+  }
+}
