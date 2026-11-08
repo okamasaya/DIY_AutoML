@@ -41,3 +41,5 @@ DS向けは既存から新しいモデルまで任意の比較範囲、ビジネ
 利用者別の誤差評価説明を反映した3原稿と関連文書の今回の変換・整合性確認は `tests/results/editorial-uncertainty-audiences-20261108.json` に記録します。新しいモデル学習や、追加診断機能の検証を行った記録ではありません。
 
 0.4.0a6では`uncertainty`を実装し、親・DS記事の対象版を更新しました。bootstrap SE・クラス別区間・通常/層化の2方式・保存結果入口を追記し、ビジネス記事には3テーマで実際に計算したSEと出力先を追加しました。今回の原稿の変換・数値照合は `tests/results/0.4.0a6/editorial.json`、実装の検証は `tests/results/0.4.0a6/verification.json` です。3本ともpublished=falseを維持します。
+
+利用者の追加依頼により、親記事とDS記事に「ビジネス向けは使い勝手を重視した廉価版アプリ、DS向けはPythonで駆動しPyPIへ公開するパッケージ」という完成目標を追記しました。共通の評価コア、DS版の導入から結果検証までの完成条件、TestPyPI→PyPIのα版→正式版という配布方針を記載しています。公開名・ライセンスは未確定で、PyPI/TestPyPIへの公開やアプリ提供を完了した記述にはしません。今回の文書確認は `tests/results/editorial-distribution-goals-20261108.json` です。Zennの3下書きも未公開のままです。

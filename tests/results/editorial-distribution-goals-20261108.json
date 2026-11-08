@@ -1,0 +1,50 @@
+{
+  "status": "passed",
+  "kind": "documentation-only-audience-and-pypi-distribution-goals",
+  "base_commit": "a4cdbb445264cb3eb7f48d3450c55ae9a7335943",
+  "renderer": "zenn-markdown-html 0.5.14",
+  "no_code_changes": true,
+  "no_new_model_runs": true,
+  "pytest_rerun": false,
+  "pypi_publication_performed": false,
+  "testpypi_publication_performed": false,
+  "package_name_availability_checked": false,
+  "zenn_publication_performed": false,
+  "checks": {
+    "markdown_files": 5,
+    "articles_remain_unpublished": true,
+    "repository_and_relative_links": 35,
+    "local_images": 1,
+    "shell_syntax_blocks": 8,
+    "python_syntax_blocks": 1,
+    "source_hashes_match_a6_validation": true,
+    "future_distribution_distinguished_from_current_git_installation": true
+  },
+  "files": [
+    {
+      "file": "articles/diy-automl-evaluation-framework.md",
+      "sha256": "97dc0b23d3bb43b60b112285deda91b7522682c7c070c833f7588b051b651c24",
+      "rendered": true
+    },
+    {
+      "file": "articles/diy-automl-ds-uncertainty.md",
+      "sha256": "3457fa56d528203e859aecbfbba2e05b17a1f7134f227eb491c6797a3c7f2f4b",
+      "rendered": true
+    },
+    {
+      "file": "docs/AUDIENCE_PLAN.md",
+      "sha256": "2f41a25405fb8be8db62ac7e0393eb0e6efb830fa95426b8fb85a73f67f8abec",
+      "rendered": true
+    },
+    {
+      "file": "docs/ROADMAP.md",
+      "sha256": "d30cddd666de8933606e4dcf584d1f2cdfbe5b66b05cd26c9a5f99d5fb9a26f1",
+      "rendered": true
+    },
+    {
+      "file": "docs/ZENN_GUIDE.md",
+      "sha256": "84eea78def0c577a0afd132cb77d9e167c9e4d38fae7297daf5939c276f64d54",
+      "rendered": true
+    }
+  ]
+}
