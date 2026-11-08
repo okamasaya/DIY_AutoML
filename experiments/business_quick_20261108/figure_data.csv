@@ -1,0 +1,9 @@
+dataset,Feature,Group,N,Positive,Rate,Scope,label
+hotel,lead_time,0-7d,331,36,0.1087613293051359,training sample only,0–7日
+hotel,lead_time,8-30d,292,79,0.2705479452054795,training sample only,8–30日
+hotel,lead_time,31-90d,441,138,0.3129251700680272,training sample only,31–90日
+hotel,lead_time,91+d,536,192,0.3582089552238806,training sample only,91日以上
+coupon,coffee_monthly,0,820,284,0.3463414634146341,training sample only,月1回未満
+coupon,coffee_monthly,1,780,498,0.6384615384615384,training sample only,月1回以上
+retail,monetary_gbp,below top25% threshold,1045,513,0.4909090909090909,training sample only,上位25%以外
+retail,monetary_gbp,top25% training threshold,349,268,0.7679083094555874,training sample only,上位25%

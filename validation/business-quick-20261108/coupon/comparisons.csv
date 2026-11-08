@@ -1,0 +1,4 @@
+Method,Role,Accuracy,Precision,Recall,F1,positive_precision,positive_recall,positive_f1,tn,fp,fn,tp
+Logistic Regression,selected by training CV,0.6925,0.6928705440900563,0.6928271308523409,0.6924980781129881,0.6780487804878049,0.7091836734693877,0.6932668329177057,138,66,57,139
+Training majority,"prespecified reference, not model selection",0.51,0.255,0.5,0.33774834437086093,0.0,0.0,0.0,204,0,196,0
+Published coffee context rule,"prespecified reference, not model selection",0.6625,0.6780573025856045,0.6593137254901961,0.6521492666147037,0.725925925925926,0.5,0.5921450151057401,167,37,98,98

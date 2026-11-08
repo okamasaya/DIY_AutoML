@@ -1,0 +1,7 @@
+Feature,Group,N,Positive,Rate,Scope
+lead_time,0-7d,331,36,0.10876132930513595,training sample only
+lead_time,8-30d,292,79,0.2705479452054795,training sample only
+lead_time,31-90d,441,138,0.3129251700680272,training sample only
+lead_time,91+d,536,192,0.3582089552238806,training sample only
+is_repeated_guest,0,1542,440,0.2853437094682231,training sample only
+is_repeated_guest,1,58,5,0.08620689655172414,training sample only

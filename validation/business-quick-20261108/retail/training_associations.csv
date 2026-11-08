@@ -1,0 +1,7 @@
+Feature,Group,N,Positive,Rate,Scope
+monetary_gbp,below top25% threshold,1045,513,0.4909090909090909,training sample only
+monetary_gbp,top25% training threshold,349,268,0.7679083094555874,training sample only
+frequency_invoices,1 invoice,795,344,0.4327044025157233,training sample only
+frequency_invoices,2+ invoices,599,437,0.7295492487479132,training sample only
+recency_days,<=30 days,651,426,0.6543778801843319,training sample only
+recency_days,>30 days,743,355,0.477792732166891,training sample only

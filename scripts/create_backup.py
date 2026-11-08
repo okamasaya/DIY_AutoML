@@ -10,7 +10,7 @@ root=Path(__file__).resolve().parents[1]
 if a.output.exists(): raise FileExistsError(a.output)
 a.output.parent.mkdir(parents=True,exist_ok=True)
 files=[]
-for name in ['.gitattributes','README.md','pyproject.toml','requirements-local.lock.txt','requirements-core.lock.txt','requirements-notebook.lock.txt','articles','images','.gitignore','src','scripts','tests','docs','data','notebooks','originals','validation']:
+for name in ['.gitattributes','README.md','pyproject.toml','requirements-local.lock.txt','requirements-core.lock.txt','requirements-notebook.lock.txt','articles','images','.gitignore','src','scripts','tests','docs','data','notebooks','originals','validation','experiments']:
     path=root/name
     files.extend([path] if path.is_file() else [p for p in path.rglob('*') if p.is_file()])
 files=[p for p in files if '__pycache__' not in p.parts and not any(part.endswith('.egg-info') for part in p.parts)]

@@ -2,6 +2,8 @@
 
 新規下書きは `articles/diy-automl-evaluation-framework.md` です。過去に作成したとされる5本の原稿は未取得であり、それらを復元したものではありません。今回のコードと実測記録を基に、リポジトリ紹介を1本新しく作成しています。
 
+利用者の追加依頼により、3業務テーマのQuick & dirty実験を親記事へ追記し、`articles/diy-automl-business-three-experiments.md` をビジネス向けの実験解説下書きとして追加しました。両方published=falseです。図はimages/business-quick-20261108/associations.png、加工・評価条件はdocs/BUSINESS_QUICK_RESULTS.md、再実行はexperiments/business_quick_20261108/README.mdにあります。アプリ画面の利用手順とは区別します。
+
 Front MatterはZenn公式の形式に合わせ、`published: false` としています。記事の投稿、ZennとのGitHub連携、公開予約、公開操作は行いません。この設定はZenn上の公開設定です。ファイル自体は公開GitHubリポジトリの作業ブランチで閲覧できます。
 
 公式ガイド: https://zenn.dev/zenn/articles/zenn-cli-guide
@@ -22,7 +24,7 @@ mainは初期状態のため、記事のリンクとcloneコマンドは `recove
 
 温度感を確認した0.4.0a4原稿はGit履歴に残し、今回の親記事は実装済みの図付きExcelに合わせ0.4.0a5へ更新しました。利用者の追加方針に従い、新しいモデルでの改善幅について2022年の木系モデル比較、2025年のTabArena、2025年のTabPFN論文を引用しています。従来手法が有力な条件と新手法が改善した条件の両方を扱い、本リポジトリで最新モデルを比較済みとは説明しません。
 
-DS向けは既存から新しいモデルまで任意の比較範囲、ビジネス向けは扱いやすい業務データと主要モデルを中心にします。子記事と画面アプリの作成は本体整備後です。方針はdocs/AUDIENCE_PLAN.md、追加モデル・特に重い実験のTo Doはdocs/MODEL_VALIDATION_TODO.mdに記録しています。
+DS向けは既存から新しいモデルまで任意の比較範囲、ビジネス向けは扱いやすい業務データと主要モデルを中心にします。ビジネス向け実験解説の下書きは追加しましたが、DS向け詳細と画面アプリ・その手順は今後です。方針はdocs/AUDIENCE_PLAN.md、追加モデル・特に重い実験のTo Doはdocs/MODEL_VALIDATION_TODO.mdに記録しています。
 
 データセットは繰り返し参照した開発用、モデル/設定の選定は学習側CVだけ、test区間は固定モデルに条件付き、と区別しています。未見データでの一般的な性能保証や、旧0.4ソースの復元を主張していません。
 

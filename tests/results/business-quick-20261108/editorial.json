@@ -1,0 +1,69 @@
+{
+  "status": "passed",
+  "renderer": "zenn-markdown-html 0.5.14",
+  "files": [
+    {
+      "file": "README.md",
+      "sha256": "a147401c9b0abf02034749c5b2770a205e43fae243bd5b872b8b6b38d415a7d7",
+      "rendered": true
+    },
+    {
+      "file": "articles/diy-automl-evaluation-framework.md",
+      "sha256": "7cd1068fddbf2a94e59554ac5c8482545d0afbfe36574ff7783e0192e4b635aa",
+      "rendered": true,
+      "published": false
+    },
+    {
+      "file": "articles/diy-automl-business-three-experiments.md",
+      "sha256": "91c0a3415a949da442a1b38144dd1430ffd67e04b740a9c2a146f54194bbcd8d",
+      "rendered": true,
+      "published": false
+    },
+    {
+      "file": "docs/BUSINESS_QUICK_RESULTS.md",
+      "sha256": "5d642ef9f101fbae91abc941c73a794e0119a6ac21a0e68c4ceed6df1f51e475",
+      "rendered": true
+    },
+    {
+      "file": "docs/BUSINESS_DATASETS.md",
+      "sha256": "6d158f79e83781146f20ce86b0a8c1041cb67c0b79a06e11a11fff467e080811",
+      "rendered": true
+    },
+    {
+      "file": "docs/BUSINESS_SAMPLE_CANDIDATES.md",
+      "sha256": "f7b0cf969b8978a03be3607edfb0b12462831723ba7ec1ecf886ac68d7b60e44",
+      "rendered": true
+    },
+    {
+      "file": "docs/MODEL_VALIDATION_TODO.md",
+      "sha256": "19abd76be1a0f9998e9db758a069c6a9681a2b15c782baa8a190cc752e824231",
+      "rendered": true
+    },
+    {
+      "file": "docs/AUDIENCE_PLAN.md",
+      "sha256": "a3b302fcf2bff506f4bd96f23e4c67923818b09f22d216fcfce3f5b42a1e9702",
+      "rendered": true
+    },
+    {
+      "file": "docs/RESET_HANDOFF.md",
+      "sha256": "9a48446328ddf72fc8cc4a5da41e45ed0466ca6d429239c6eaf1e8b768eb32bc",
+      "rendered": true
+    },
+    {
+      "file": "docs/ROADMAP.md",
+      "sha256": "5c6cdbb5a406dbc78594906a907c6661fb1044776a06578c8dd801bce29875ba",
+      "rendered": true
+    },
+    {
+      "file": "docs/ZENN_GUIDE.md",
+      "sha256": "ecb84b7c058991ef6ff3e24e4f222cade0f339a2fbe78baf46c3d7eb0991b996",
+      "rendered": true
+    },
+    {
+      "file": "experiments/business_quick_20261108/README.md",
+      "sha256": "d115da280c67990f8bdf4cef6c4cbbb1a18724dee6323d9fb5c931669a62c488",
+      "rendered": true
+    }
+  ],
+  "published_to_zenn": false
+}

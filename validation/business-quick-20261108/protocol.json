@@ -1,0 +1,48 @@
+{
+  "kind": "quick_exploratory_business_comparison",
+  "fixed_before_model_results": true,
+  "purpose": "Compare three relatable business themes using existing SL candidates, not new model benchmarking",
+  "sample_rows_max": 2000,
+  "sample_seed": 20261108,
+  "split_seed": 42,
+  "selection": "Existing select_csv: stratified 80/20 holdout; common stratified 5-fold training-only CV, mean macro F1, candidate-order ties",
+  "models": ["Decision Tree", "Random Forest (100 trees)", "Logistic Regression (max_iter=1000)", "SVM", "k-NN (5)"],
+  "bootstrap": {"repeats": 1000, "seed": 43, "confidence": 0.95, "scope": "fixed fitted model, observed class counts, row-level conditional percentile"},
+  "hotel": {
+    "raw_rows_expected": 119390,
+    "target": "is_canceled",
+    "features": ["lead_time", "stays_in_weekend_nights", "stays_in_week_nights", "adults", "children", "babies", "is_repeated_guest", "previous_cancellations", "previous_bookings_not_canceled"],
+    "processing": "Drop exact full-record duplicates; keep complete cases on selected numeric features; no reservation status/date, ADR, deposit, room assignment, changes, personal IDs or category columns as predictors",
+    "evaluation_scope": "Pooled retrospective random-row holdout. Not booking-time deployment, future-period or new-hotel evaluation; unknown customer/group dependence remains",
+    "hypothesis": "Longer advance bookings tend to cancel more often; repeated guests may cancel less",
+    "association_bins_lead_time": [-1, 7, 30, 90, 1000000],
+    "heuristic": "predict cancellation when lead_time >= training median"
+  },
+  "coupon": {
+    "raw_rows_expected": 12684,
+    "subset": "coupon == Coffee House",
+    "target": "Y",
+    "features": ["coffee_monthly", "expires_1day", "no_urgent_destination", "with_friends", "with_kids", "temperature_F", "has_children", "detour_ge15min", "detour_ge25min", "same_direction"],
+    "processing": "Drop exact raw duplicates; retain known CoffeeHouse visit-frequency responses and needed complete source columns. Use fixed codebook binary indicators; no fitted encoders or imputation",
+    "evaluation_scope": "Survey response rows, not observed purchases/redemptions. No respondent ID: respondent-independent generalization unverified",
+    "hypothesis": "Frequent coffee visitors and longer coupon validity tend to accept more; longer detours tend to accept less",
+    "heuristic": "coffee_monthly AND ((no_urgent_destination AND NOT with_kids) OR expires_1day)"
+  },
+  "retail": {
+    "raw_rows_expected": 541909,
+    "country": "United Kingdom",
+    "observation_start_inclusive": "2011-06-01",
+    "observation_end_exclusive": "2011-09-01",
+    "outcome_start_inclusive": "2011-09-01",
+    "outcome_end_exclusive": "2011-11-01",
+    "cohort": "Customers with at least one positive-price, positive-quantity, non-cancellation UK purchase in observation window",
+    "target": "repurchased_sep_oct",
+    "features": ["recency_days", "frequency_invoices", "monetary_gbp", "units", "distinct_products", "active_purchase_days", "observed_tenure_days"],
+    "processing": "Drop exact rows, missing customer ID, invoice starting C, nonpositive price/quantity, non-UK. Gross positive sales, not net of refunds. Do not require future purchase or future presence to enter cohort. Exclude IDs and future transactions from predictors",
+    "evaluation_scope": "One fixed observation/outcome window and customer-disjoint random holdout. No rolling future-period validation or lifetime-value/profit claim",
+    "hypothesis": "More frequent and more recent buyers tend to repurchase; high past spend does not imply all will repurchase",
+    "heuristic": "predict repurchase when frequency_invoices >= 2",
+    "extra_heuristic": "predict repurchase when monetary_gbp >= training 75th percentile"
+  },
+  "interpretation": "Associations are calculated on the training sample only and do not identify causal effects. General expectations are hypotheses supported where possible by primary references; no literature score comparison across differing datasets/splits. Do not retune features, thresholds, seed or model using test results. No GPU, DL or new models. This is not an independent external validation claim."
+}

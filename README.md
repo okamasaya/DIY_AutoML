@@ -91,4 +91,6 @@ Zenn用の新規紹介記事は `articles/diy-automl-evaluation-framework.md`、
 
 海外の企業・大学・ビジネススクールが公開する業務データの候補は `docs/BUSINESS_DATASETS.md` に整理しました。実データ・架空教材・利用条件と、現行AutoMLで必要な準備を区別した調査で、これらのデータで学習を実行した記録ではありません。
 
-初見で親しみやすい2テーマと、分析を深掘りする1テーマのサンプル案は `docs/BUSINESS_SAMPLE_CANDIDATES.md` にあります。ホテル予約・飲食クーポン・再購入を扱う提案で、採用と実行は未確定です。
+初見で親しみやすい2テーマと、分析を深掘りする1テーマの検討内容は `docs/BUSINESS_SAMPLE_CANDIDATES.md` にあります。ホテル予約・飲食クーポン・再購入を扱います。
+
+その後、利用者の承認を受け、ホテル2,000行・カフェ券2,000行・再購入1,743顧客を既存SLでQuick & dirtyに実行しました。実測と一般的な見方の比較は `docs/BUSINESS_QUICK_RESULTS.md`、保存結果は `validation/business-quick-20261108/`、再実行は `experiments/business_quick_20261108/README.md` です。親記事に要約を追記し、ビジネス向けの実験解説下書きも追加しました。追加モデルや一般的なカテゴリ/欠損処理、画面アプリは追加していません。

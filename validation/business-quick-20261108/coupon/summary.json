@@ -1,0 +1,123 @@
+{
+  "status": "completed",
+  "raw_rows": 12684,
+  "exact_duplicate_rows": 74,
+  "rows_after_exact_deduplication": 12610,
+  "coffee_house_rows_after_deduplication": 3989,
+  "selected_field_missing_exclusions": 72,
+  "eligible_rows": 3917,
+  "eligible_positive_rows": 1956,
+  "sample_rows": 2000,
+  "sample_positive_rows": 978,
+  "sample_positive_rate": 0.489,
+  "train_rows": 1600,
+  "test_rows": 400,
+  "test_positive_rows": 196,
+  "features": [
+    "coffee_monthly",
+    "expires_1day",
+    "no_urgent_destination",
+    "with_friends",
+    "with_kids",
+    "temperature_F",
+    "has_children",
+    "detour_ge15min",
+    "detour_ge25min",
+    "same_direction"
+  ],
+  "selected_model": "Logistic Regression",
+  "selected_cv_macro_f1": 0.6621551515472663,
+  "selected_test": {
+    "Method": "Logistic Regression",
+    "Role": "selected by training CV",
+    "Accuracy": 0.6925,
+    "Precision": 0.6928705440900563,
+    "Recall": 0.6928271308523409,
+    "F1": 0.6924980781129881,
+    "positive_precision": 0.6780487804878049,
+    "positive_recall": 0.7091836734693877,
+    "positive_f1": 0.6932668329177057,
+    "tn": 138,
+    "fp": 66,
+    "fn": 57,
+    "tp": 139
+  },
+  "comparisons": [
+    {
+      "Method": "Logistic Regression",
+      "Role": "selected by training CV",
+      "Accuracy": 0.6925,
+      "Precision": 0.6928705440900563,
+      "Recall": 0.6928271308523409,
+      "F1": 0.6924980781129881,
+      "positive_precision": 0.6780487804878049,
+      "positive_recall": 0.7091836734693877,
+      "positive_f1": 0.6932668329177057,
+      "tn": 138,
+      "fp": 66,
+      "fn": 57,
+      "tp": 139
+    },
+    {
+      "Method": "Training majority",
+      "Role": "prespecified reference, not model selection",
+      "Accuracy": 0.51,
+      "Precision": 0.255,
+      "Recall": 0.5,
+      "F1": 0.33774834437086093,
+      "positive_precision": 0.0,
+      "positive_recall": 0.0,
+      "positive_f1": 0.0,
+      "tn": 204,
+      "fp": 0,
+      "fn": 196,
+      "tp": 0
+    },
+    {
+      "Method": "Published coffee context rule",
+      "Role": "prespecified reference, not model selection",
+      "Accuracy": 0.6625,
+      "Precision": 0.6780573025856045,
+      "Recall": 0.6593137254901961,
+      "F1": 0.6521492666147037,
+      "positive_precision": 0.725925925925926,
+      "positive_recall": 0.5,
+      "positive_f1": 0.5921450151057401,
+      "tn": 167,
+      "fp": 37,
+      "fn": 98,
+      "tp": 98
+    }
+  ],
+  "thresholds": {
+    "majority_label": 0
+  },
+  "intervals": [
+    {
+      "Metric": "Accuracy",
+      "Estimate": 0.6925,
+      "Lower": 0.6475,
+      "Upper": 0.74
+    },
+    {
+      "Metric": "Precision",
+      "Estimate": 0.6928705440900563,
+      "Lower": 0.6478384221815762,
+      "Upper": 0.7403006740833203
+    },
+    {
+      "Metric": "Recall",
+      "Estimate": 0.6928271308523409,
+      "Lower": 0.6478066226490596,
+      "Upper": 0.7392982192877151
+    },
+    {
+      "Metric": "F1",
+      "Estimate": 0.6924980781129881,
+      "Lower": 0.6474977968612303,
+      "Upper": 0.7393514724459889
+    }
+  ],
+  "figure_count": 2,
+  "seconds": 2.2994225910006207
+}

@@ -1,0 +1,122 @@
+{
+  "status": "completed",
+  "raw_rows": 119390,
+  "exact_duplicate_rows": 31994,
+  "rows_after_exact_deduplication": 87396,
+  "selected_field_missing_exclusions": 4,
+  "eligible_rows": 87392,
+  "eligible_positive_rows": 24021,
+  "sample_rows": 2000,
+  "sample_positive_rows": 556,
+  "sample_positive_rate": 0.278,
+  "train_rows": 1600,
+  "test_rows": 400,
+  "test_positive_rows": 111,
+  "features": [
+    "lead_time",
+    "stays_in_weekend_nights",
+    "stays_in_week_nights",
+    "adults",
+    "children",
+    "babies",
+    "is_repeated_guest",
+    "previous_cancellations",
+    "previous_bookings_not_canceled"
+  ],
+  "selected_model": "Decision Tree",
+  "selected_cv_macro_f1": 0.5466825805752761,
+  "selected_test": {
+    "Method": "Decision Tree",
+    "Role": "selected by training CV",
+    "Accuracy": 0.625,
+    "Precision": 0.5274791872667538,
+    "Recall": 0.5268555752984818,
+    "F1": 0.5270973233708502,
+    "positive_precision": 0.3177570093457944,
+    "positive_recall": 0.3063063063063063,
+    "positive_f1": 0.3119266055045872,
+    "tn": 216,
+    "fp": 73,
+    "fn": 77,
+    "tp": 34
+  },
+  "comparisons": [
+    {
+      "Method": "Decision Tree",
+      "Role": "selected by training CV",
+      "Accuracy": 0.625,
+      "Precision": 0.5274791872667538,
+      "Recall": 0.5268555752984818,
+      "F1": 0.5270973233708502,
+      "positive_precision": 0.3177570093457944,
+      "positive_recall": 0.3063063063063063,
+      "positive_f1": 0.3119266055045872,
+      "tn": 216,
+      "fp": 73,
+      "fn": 77,
+      "tp": 34
+    },
+    {
+      "Method": "Training majority",
+      "Role": "prespecified reference, not model selection",
+      "Accuracy": 0.7225,
+      "Precision": 0.36125,
+      "Recall": 0.5,
+      "F1": 0.41944847605224966,
+      "positive_precision": 0.0,
+      "positive_recall": 0.0,
+      "positive_f1": 0.0,
+      "tn": 289,
+      "fp": 0,
+      "fn": 111,
+      "tp": 0
+    },
+    {
+      "Method": "Lead time >= training median",
+      "Role": "prespecified reference, not model selection",
+      "Accuracy": 0.595,
+      "Precision": 0.5894934333958725,
+      "Recall": 0.6115215561582343,
+      "F1": 0.5713265063110264,
+      "positive_precision": 0.36923076923076925,
+      "positive_recall": 0.6486486486486487,
+      "positive_f1": 0.47058823529411764,
+      "tn": 166,
+      "fp": 123,
+      "fn": 39,
+      "tp": 72
+    }
+  ],
+  "thresholds": {
+    "majority_label": 0,
+    "lead_time_median": 49.0
+  },
+  "intervals": [
+    {
+      "Metric": "Accuracy",
+      "Estimate": 0.625,
+      "Lower": 0.5824375,
+      "Upper": 0.67
+    },
+    {
+      "Metric": "Precision",
+      "Estimate": 0.5274791872667538,
+      "Lower": 0.4765709491042914,
+      "Upper": 0.577779454942823
+    },
+    {
+      "Metric": "Recall",
+      "Estimate": 0.5268555752984818,
+      "Lower": 0.4766424296268587,
+      "Upper": 0.5764133077714393
+    },
+    {
+      "Metric": "F1",
+      "Estimate": 0.5270973233708502,
+      "Lower": 0.4767910935332552,
+      "Upper": 0.5764475509485892
+    }
+  ],
+  "figure_count": 2,
+  "seconds": 3.2344385029973637
+}
