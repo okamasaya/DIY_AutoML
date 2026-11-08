@@ -90,3 +90,5 @@ Zenn用の新規紹介記事は `articles/diy-automl-evaluation-framework.md`、
 利用者が開くファイルは `report_with_figures.xlsx` です。操作と表示方針は `docs/EXCEL_REPORT_GUIDE.md`、検証は `docs/VALIDATION_EXCEL_REPORT.md` にあります。DS向けNotebook/CLIと、将来のビジネス向けアプリ・子記事をどう分けるかは `docs/AUDIENCE_PLAN.md` に記録しています。親記事は0.4.0a5へ更新し、モデルの新しさと改善幅の関係を参考文献付きで追記しました。追加モデル・データの検証、特に計算負荷の高い実験は `docs/MODEL_VALIDATION_TODO.md` の後続作業です。
 
 海外の企業・大学・ビジネススクールが公開する業務データの候補は `docs/BUSINESS_DATASETS.md` に整理しました。実データ・架空教材・利用条件と、現行AutoMLで必要な準備を区別した調査で、これらのデータで学習を実行した記録ではありません。
+
+初見で親しみやすい2テーマと、分析を深掘りする1テーマのサンプル案は `docs/BUSINESS_SAMPLE_CANDIDATES.md` にあります。ホテル予約・飲食クーポン・再購入を扱う提案で、採用と実行は未確定です。
