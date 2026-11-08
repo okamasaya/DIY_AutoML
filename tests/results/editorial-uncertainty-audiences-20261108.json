@@ -1,0 +1,135 @@
+{
+  "status": "passed",
+  "kind": "documentation-only-uncertainty-by-audience",
+  "base_commit": "713078e3c4530637a89ff12639611cb9ceae3bab",
+  "renderer": "zenn-markdown-html 0.5.14",
+  "no_code_changes": true,
+  "no_new_model_runs": true,
+  "checks": {
+    "markdown_files": 9,
+    "article_front_matters": 3,
+    "published": false,
+    "local_images": 2,
+    "internal_links": 26,
+    "shell_syntax_blocks": 5,
+    "python_syntax_blocks": 1,
+    "math_check": "Zenn math markup conversion only; browser math rendering not checked",
+    "browser_preview_performed": false,
+    "zenn_publication_performed": false,
+    "coupon_confusion_counts_match_saved_results": true
+  },
+  "numerical_checks": [
+    {
+      "case": "hotel",
+      "metric": "F1",
+      "estimate": 0.5270973233708502,
+      "lower": 0.4767910935332552,
+      "upper": 0.5764475509485892,
+      "article_rounded_row": "| ホテル | 0.527 | 0.477〜0.576 |"
+    },
+    {
+      "case": "coupon",
+      "metric": "F1",
+      "estimate": 0.6924980781129881,
+      "lower": 0.6474977968612303,
+      "upper": 0.7393514724459889,
+      "article_rounded_row": "| カフェ券 | 0.692 | 0.647〜0.739 |"
+    },
+    {
+      "case": "retail",
+      "metric": "F1",
+      "estimate": 0.6237227972399151,
+      "lower": 0.5732209793916231,
+      "upper": 0.672386276054129,
+      "article_rounded_row": "| 再購入 | 0.624 | 0.573〜0.672 |"
+    }
+  ],
+  "files": [
+    {
+      "file": "articles/diy-automl-evaluation-framework.md",
+      "sha256": "856eed8fd163e59e93a3f88f038c019b16adba47008712ec314ba0b1f8e505fb",
+      "rendered": true,
+      "front_matter": {
+        "title": "PythonでSL・UL・DLの比較と検証を追える自作評価ツールを作る",
+        "emoji": "🧪",
+        "type": "tech",
+        "topics": [
+          "python",
+          "scikitlearn",
+          "machinelearning",
+          "automl",
+          "codex"
+        ],
+        "published": false
+      },
+      "math_elements": 0
+    },
+    {
+      "file": "articles/diy-automl-business-three-experiments.md",
+      "sha256": "bd4acc6d631778137b822544d09746e4c8c520c7f50c67775ee7380df7ac64ef",
+      "rendered": true,
+      "front_matter": {
+        "title": "旅行・カフェ・買い物のデータを機械学習にかけたら、何が分かった？",
+        "emoji": "☕",
+        "type": "idea",
+        "topics": [
+          "machinelearning",
+          "python",
+          "dataanalysis",
+          "automl"
+        ],
+        "published": false
+      },
+      "math_elements": 0
+    },
+    {
+      "file": "articles/diy-automl-ds-uncertainty.md",
+      "sha256": "b93f37b313bbca16efac41ac906299079d7597c71a5d33e39051061d2f0ef9ab",
+      "rendered": true,
+      "front_matter": {
+        "title": "DIY AutoMLの誤差評価を検査する：選定・条件付き区間・反復の設計",
+        "emoji": "📐",
+        "type": "tech",
+        "topics": [
+          "python",
+          "statistics",
+          "machinelearning",
+          "scikitlearn",
+          "automl"
+        ],
+        "published": false
+      },
+      "math_elements": 16
+    },
+    {
+      "file": "README.md",
+      "sha256": "2e90383d6d241012dd671fd7e856196588b82c99a256e9a839b2270b5582dc50",
+      "rendered": true
+    },
+    {
+      "file": "docs/AUDIENCE_PLAN.md",
+      "sha256": "acd0e8b8ff95f5b001936ce521cf3358c91022baabceed2a0170b9f215ea2101",
+      "rendered": true
+    },
+    {
+      "file": "docs/ZENN_GUIDE.md",
+      "sha256": "be605d3dd373191d071167067fe63d48edfa4387ee254e23f5514ab2725fc845",
+      "rendered": true
+    },
+    {
+      "file": "docs/UNCERTAINTY_DESIGN.md",
+      "sha256": "c650f937a0b1dbbce2ed63b5b662cc5f7f7114f26fb1e9bf3dd6244b9d2fb73c",
+      "rendered": true
+    },
+    {
+      "file": "docs/ROADMAP.md",
+      "sha256": "24a28585dc80aa4417455506647158530ca9387d4eb0a4338f54340e562f1136",
+      "rendered": true
+    },
+    {
+      "file": "docs/RESET_HANDOFF.md",
+      "sha256": "1a6b720c457e386668a84bb21c6b881b8cd22ce1baeea332511d84df8fb2a81b",
+      "rendered": true
+    }
+  ]
+}

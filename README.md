@@ -82,6 +82,8 @@ TensorFlowを導入せずSL/ULを試す場合は、`requirements-core.lock.txt` 
 
 Zenn用の新規紹介記事は `articles/diy-automl-evaluation-framework.md`、図は `images/diy-automl/selection-flow.png` に保存しています。`published: false` の下書きで、Zennへの投稿・公開は行っていません。操作と確認範囲は `docs/ZENN_GUIDE.md` を参照してください。
 
+誤差評価を共通の軸に、[親記事](articles/diy-automl-evaluation-framework.md)、[ビジネス向けの平易な説明と3テーマの実験](articles/diy-automl-business-three-experiments.md)、[DS向けの推定条件・数式・保存結果](articles/diy-automl-ds-uncertainty.md)の3下書きに分けています。統計的な不確かさ、学習の変動、数値計算誤差、系統的な偏りを区別し、現在の実装範囲と今後の設計を明示しています。
+
 ## 図付きExcel（0.4.0a5）
 
 保存済みのrun/select/tune/反復結果から、モデルを再学習せずに図付きExcelを作れます。元の数値Excelと学習manifestはそのまま残し、画像・描画入力・配置・版を別に記録します。
