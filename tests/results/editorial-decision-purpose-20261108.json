@@ -1,0 +1,35 @@
+{
+  "status": "passed",
+  "kind": "documentation-only-decision-and-audience-purpose",
+  "base_commit": "430a985848512288edd1cf78d3f57fd32faac108",
+  "renderer": "zenn-markdown-html 0.5.14",
+  "no_code_changes": true,
+  "no_new_model_runs": true,
+  "files": [
+    {
+      "file": "README.md",
+      "sha256": "035785690d5224a2619005832eeff46db5ea3aa2795330bb633eb97299ac6818",
+      "rendered": true
+    },
+    {
+      "file": "articles/diy-automl-evaluation-framework.md",
+      "sha256": "6f9071a9f7c6aa727d2994de5d733275789f99d84e26de6be7607abf5fc6af9f",
+      "rendered": true
+    },
+    {
+      "file": "docs/UNCERTAINTY_DESIGN.md",
+      "sha256": "72fb7fdb977698dcccc696baf3bb844e5031399508e71c821dd74c714d669f52",
+      "rendered": true
+    },
+    {
+      "file": "docs/AUDIENCE_PLAN.md",
+      "sha256": "d6beeb4c1bf2a6e97648a89dde4c4d0a8b3524bb73fb2b76ddd756372375bae6",
+      "rendered": true
+    },
+    {
+      "file": "docs/ROADMAP.md",
+      "sha256": "1fcabab6df1bf744e82fc9dd497212c97c224c4f98f46c15b8814444c9116626",
+      "rendered": true
+    }
+  ]
+}
