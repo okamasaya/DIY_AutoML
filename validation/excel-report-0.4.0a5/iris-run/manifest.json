@@ -1,0 +1,94 @@
+{
+  "schema_version": 2,
+  "status": "completed",
+  "implementation": "reimplemented; historical source unavailable",
+  "version": "0.4.0a5",
+  "python": "3.12.14",
+  "settings": {
+    "csv": "/workspace/DIY_AutoML/data/reference/iris.csv",
+    "target": "target",
+    "methods": [
+      "sl",
+      "ul",
+      "dl"
+    ],
+    "seed": 42,
+    "epochs": 100,
+    "split_seed": null,
+    "training_seed": null
+  },
+  "source_hashes": {
+    "__init__.py": "359feeb2b0beba1b283f5124741e25c34141f78535d31caa8c927a3cf2e81a0c",
+    "__main__.py": "cf7390a2508a0fcad4777a4a629fc5212ab655cb45845975995f835676a834e3",
+    "cli.py": "d2dd3e74772f28a65dd81f65c7aa60d20dcd3e366a72d953258857957a046dc6",
+    "clustering.py": "d9370b2847aed19fcc58f75ae5e25486aee1e3f24c9dfd053055cb55b89b1be8",
+    "clustering_repeat_workflow.py": "88080961d870f312372ff0909ab40d916bade16183cb9559d2c22c6c66953778",
+    "clustering_repeated.py": "305a831892d2e7265e05bfae96957e811433ef2cfaa873a61fbc0bd63ade6f0d",
+    "clustering_subsample.py": "992f25218d2f43291ecd9cb5715604206dcf545d80c91d8fcbd1cc3f64a665c4",
+    "clustering_subsample_workflow.py": "918dff90270a2d6f18e33fdc3bcaaa11ee702c36369af1176f6fbec89f46d233",
+    "data.py": "39a4cb6431ec1bbe0df13c5a66340f4fab65a8563e493ea1729524a3fe6505f1",
+    "deep_learning.py": "042c3ea327240f75fa5623b400b20190df837cf34d637552ffbc884cb405b297",
+    "deep_learning_repeat_workflow.py": "27bddc8b5ea350887824deeec395a865859cf6ec8077a7463105d647b1ff2783",
+    "dl_repeat_validation.py": "d15f8f4bedcde593a99004343d0ab50e9a10ba41399951b3bff43ef8a16392df",
+    "excel_report.py": "b5a65c03e55cbc80939b898f26827ac49b8e4df0308be95056eacdf46a0e1cf4",
+    "excel_report_validation.py": "33a1994fd93155bcf0812ce8886ae45fc39dfa16c83c920dc7f42f7259d33967",
+    "plotting.py": "1b911f4fb2dfc9c33f7828be7521a1a05dc7d493d1fcad56191bd6062eead970",
+    "report_figures.py": "1ea4ce53e0181747f4b35210c1a545a6882dae031df74225a61d47a444158456",
+    "reporting.py": "44c5ff976f95bb7dbf38b63a86d9b05d46777dedf98e67f428d1ae75c897a68d",
+    "selection.py": "89968d77968cb99348ac8d2838efad762ce7acebc791db5c6d32d9a9ba96a897",
+    "selection_workflow.py": "a586cf11e012d0b2b40c286d2163e220d555a80d53d4a7434953746641bedb40",
+    "supervised.py": "f3925c28f25f7c30885bb37c95675016826a7f2b41b99afb30c2c7b16efe00a5",
+    "tuning.py": "f483f6dc7505a81dfbbb7a7ed06aafa2788669d37573e6791be6c73e9cb63992",
+    "tuning_validation.py": "29e12b39ab8da3b840269f2d9a2a6356c2253260c79d5e3e4c305d45814029ac",
+    "tuning_workflow.py": "50fff96e69d7942b9ac731cdab4357a19dcb9ea2a1b24435c15eeac32bd9d460",
+    "ul_subsample_validation.py": "6e6c3845ab0eee6feaec090d9e67ea407a6fcddc726cf907cc1887a4f08dd581",
+    "validation.py": "251da4ef42f0089d89852576170e6b14616dfddf74581530f2e59d780b80593f",
+    "workflow.py": "d358f95633b64ce07cd0676a009b586cf41690f72dad7cfab4941a374e771bac"
+  },
+  "dependencies": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "scikit-learn": "1.8.0",
+    "openpyxl": "3.1.5",
+    "tensorflow-cpu": "2.20.0",
+    "keras": "3.15.1"
+  },
+  "created_utc": "2026-11-08T01:54:38.376447+00:00",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "input_sha256": "c993429e0f6e8c45b422cb9f1346ffc08852c71c92bdc53c38a231c256e111a1",
+  "classes": [
+    0,
+    1,
+    2
+  ],
+  "features": [
+    "sepal length (cm)",
+    "sepal width (cm)",
+    "petal length (cm)",
+    "petal width (cm)"
+  ],
+  "protocol": {
+    "sl": "Exploratory fixed holdout; scaler fitted only on training samples",
+    "ul": "Full-data structural analysis; 54 candidates, no automatic selection",
+    "dl": "MLP32-16-8 relu/softmax; Adam .001; sparse categorical crossentropy; batch16; deterministic CPU; training-seeded dataset shuffle"
+  },
+  "sl_models": {
+    "Decision Tree": "{'ccp_alpha': 0.0, 'class_weight': None, 'criterion': 'gini', 'max_depth': None, 'max_features': None, 'max_leaf_nodes': None, 'min_impurity_decrease': 0.0, 'min_samples_leaf': 1, 'min_samples_split': 2, 'min_weight_fraction_leaf': 0.0, 'monotonic_cst': None, 'random_state': 42, 'splitter': 'best'}",
+    "Random Forest": "{'bootstrap': True, 'ccp_alpha': 0.0, 'class_weight': None, 'criterion': 'gini', 'max_depth': None, 'max_features': 'sqrt', 'max_leaf_nodes': None, 'max_samples': None, 'min_impurity_decrease': 0.0, 'min_samples_leaf': 1, 'min_samples_split': 2, 'min_weight_fraction_leaf': 0.0, 'monotonic_cst': None, 'n_estimators': 100, 'n_jobs': 1, 'oob_score': False, 'random_state': 42, 'verbose': 0, 'warm_start': False}",
+    "Logistic Regression": "{'C': 1.0, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'l1_ratio': 0.0, 'max_iter': 1000, 'n_jobs': None, 'penalty': 'deprecated', 'random_state': 42, 'solver': 'lbfgs', 'tol': 0.0001, 'verbose': 0, 'warm_start': False}",
+    "SVM": "{'C': 1.0, 'break_ties': False, 'cache_size': 200, 'class_weight': None, 'coef0': 0.0, 'decision_function_shape': 'ovr', 'degree': 3, 'gamma': 'scale', 'kernel': 'rbf', 'max_iter': -1, 'probability': False, 'random_state': None, 'shrinking': True, 'tol': 0.001, 'verbose': False}",
+    "k-NN": "{'algorithm': 'auto', 'leaf_size': 30, 'metric': 'minkowski', 'metric_params': None, 'n_jobs': None, 'n_neighbors': 5, 'p': 2, 'weights': 'uniform'}"
+  },
+  "sheets": {
+    "SL_Result": 5,
+    "UL_Result": 54,
+    "DL_Result": 1,
+    "DL_History": 100,
+    "Summary": 3
+  },
+  "artifacts": {
+    "report.xlsx": "17a4e2d3553da4791fa0986ca371d1536bbec05be1ad53916ffdc85910907a05",
+    "arrays.npz": "6e51d90c161ac6a623a8fff19f70aa2b483b84fb48e6a750c294c1b57980abde"
+  }
+}

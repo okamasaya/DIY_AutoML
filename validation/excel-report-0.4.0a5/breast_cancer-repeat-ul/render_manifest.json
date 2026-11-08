@@ -1,0 +1,128 @@
+{
+  "schema_version": 8,
+  "status": "completed",
+  "version": "0.4.0a5",
+  "source_schema": 4,
+  "source_version": "0.4.0a1.post1",
+  "source_directory": "/workspace/DIY_AutoML/validation/current/breast_cancer-repeat-ul",
+  "max_models": 3,
+  "skipped": [],
+  "source_hashes": {
+    "__init__.py": "359feeb2b0beba1b283f5124741e25c34141f78535d31caa8c927a3cf2e81a0c",
+    "__main__.py": "cf7390a2508a0fcad4777a4a629fc5212ab655cb45845975995f835676a834e3",
+    "cli.py": "d2dd3e74772f28a65dd81f65c7aa60d20dcd3e366a72d953258857957a046dc6",
+    "clustering.py": "d9370b2847aed19fcc58f75ae5e25486aee1e3f24c9dfd053055cb55b89b1be8",
+    "clustering_repeat_workflow.py": "88080961d870f312372ff0909ab40d916bade16183cb9559d2c22c6c66953778",
+    "clustering_repeated.py": "305a831892d2e7265e05bfae96957e811433ef2cfaa873a61fbc0bd63ade6f0d",
+    "clustering_subsample.py": "992f25218d2f43291ecd9cb5715604206dcf545d80c91d8fcbd1cc3f64a665c4",
+    "clustering_subsample_workflow.py": "918dff90270a2d6f18e33fdc3bcaaa11ee702c36369af1176f6fbec89f46d233",
+    "data.py": "39a4cb6431ec1bbe0df13c5a66340f4fab65a8563e493ea1729524a3fe6505f1",
+    "deep_learning.py": "042c3ea327240f75fa5623b400b20190df837cf34d637552ffbc884cb405b297",
+    "deep_learning_repeat_workflow.py": "27bddc8b5ea350887824deeec395a865859cf6ec8077a7463105d647b1ff2783",
+    "dl_repeat_validation.py": "d15f8f4bedcde593a99004343d0ab50e9a10ba41399951b3bff43ef8a16392df",
+    "excel_report.py": "b5a65c03e55cbc80939b898f26827ac49b8e4df0308be95056eacdf46a0e1cf4",
+    "excel_report_validation.py": "33a1994fd93155bcf0812ce8886ae45fc39dfa16c83c920dc7f42f7259d33967",
+    "plotting.py": "1b911f4fb2dfc9c33f7828be7521a1a05dc7d493d1fcad56191bd6062eead970",
+    "report_figures.py": "1ea4ce53e0181747f4b35210c1a545a6882dae031df74225a61d47a444158456",
+    "reporting.py": "44c5ff976f95bb7dbf38b63a86d9b05d46777dedf98e67f428d1ae75c897a68d",
+    "selection.py": "89968d77968cb99348ac8d2838efad762ce7acebc791db5c6d32d9a9ba96a897",
+    "selection_workflow.py": "a586cf11e012d0b2b40c286d2163e220d555a80d53d4a7434953746641bedb40",
+    "supervised.py": "f3925c28f25f7c30885bb37c95675016826a7f2b41b99afb30c2c7b16efe00a5",
+    "tuning.py": "f483f6dc7505a81dfbbb7a7ed06aafa2788669d37573e6791be6c73e9cb63992",
+    "tuning_validation.py": "29e12b39ab8da3b840269f2d9a2a6356c2253260c79d5e3e4c305d45814029ac",
+    "tuning_workflow.py": "50fff96e69d7942b9ac731cdab4357a19dcb9ea2a1b24435c15eeac32bd9d460",
+    "ul_subsample_validation.py": "6e6c3845ab0eee6feaec090d9e67ea407a6fcddc726cf907cc1887a4f08dd581",
+    "validation.py": "251da4ef42f0089d89852576170e6b14616dfddf74581530f2e59d780b80593f",
+    "workflow.py": "d358f95633b64ce07cd0676a009b586cf41690f72dad7cfab4941a374e771bac"
+  },
+  "source_artifacts": {
+    "manifest.json": "36c4412f50002e42cbd63c6939f3d69d25efe4175d5b0a5aa04503bb9222734a",
+    "report.xlsx": "327ae6c62b7bc24055197caaac539938f59dd3bc06680cac1e2233198363c208",
+    "arrays.npz": "2c2362fc7167cb9447b85b185b88cb82a97b3af0a047c4763589d4cf9593999b"
+  },
+  "figures": [
+    {
+      "id": "ul_seed_summary",
+      "kind": "grouped",
+      "sheet": "UL_Seed_Summary",
+      "title": "breast_cancer | Fixed-data initialization sensitivity",
+      "scope": "Error bars: initialization-seed SD; no confidence intervals or automatic choice",
+      "labels": [
+        "GMM",
+        "KMeans"
+      ],
+      "ylabels": [
+        "Target ARI",
+        "Silhouette"
+      ],
+      "xlabel": "k",
+      "with_sd": true,
+      "file": "figures/ul_seed_summary.png",
+      "sha256": "11d2874e1681c300722072e3165077b06f3a46de8efd3e4bc6af1290a826c11c",
+      "anchor": "A22",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "x_0": "ul_seed_summary__x_0",
+        "y_0_0": "ul_seed_summary__y_0_0",
+        "sd_0_0": "ul_seed_summary__sd_0_0",
+        "y_0_1": "ul_seed_summary__y_0_1",
+        "sd_0_1": "ul_seed_summary__sd_0_1",
+        "x_1": "ul_seed_summary__x_1",
+        "y_1_0": "ul_seed_summary__y_1_0",
+        "sd_1_0": "ul_seed_summary__sd_1_0",
+        "y_1_1": "ul_seed_summary__y_1_1",
+        "sd_1_1": "ul_seed_summary__sd_1_1"
+      }
+    },
+    {
+      "id": "ul_seed_pairs",
+      "kind": "grouped",
+      "sheet": "UL_Pair_Summary",
+      "title": "breast_cancer | Between-seed assignment agreement",
+      "scope": "Dependent pairs: descriptive mean and SD only, no SEM/CI",
+      "labels": [
+        "GMM",
+        "KMeans"
+      ],
+      "ylabels": [
+        "Assignment ARI"
+      ],
+      "xlabel": "k",
+      "with_sd": true,
+      "file": "figures/ul_seed_pairs.png",
+      "sha256": "66271db09d000183957443ff6bf3b376a35fcc327a1759fb818fa8ef9e0718b7",
+      "anchor": "A22",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "x_0": "ul_seed_pairs__x_0",
+        "y_0_0": "ul_seed_pairs__y_0_0",
+        "sd_0_0": "ul_seed_pairs__sd_0_0",
+        "x_1": "ul_seed_pairs__x_1",
+        "y_1_0": "ul_seed_pairs__y_1_0",
+        "sd_1_0": "ul_seed_pairs__sd_1_0"
+      }
+    }
+  ],
+  "python": "3.12.14",
+  "created_utc": "2026-11-08T01:55:53.977437+00:00",
+  "dependencies": {
+    "matplotlib": "3.10.8",
+    "pillow": "13.0.0",
+    "openpyxl": "3.1.5",
+    "numpy": "2.3.5",
+    "scikit-learn": "1.8.0"
+  },
+  "seconds": 0.6244425120003143,
+  "figure_count": 2,
+  "artifacts": {
+    "report_with_figures.xlsx": "5b12a25f63b8fce2717da9d9c375973f09602a0cee526a0d38a8117721407483",
+    "figure_data.npz": "bbbfbd88735d7a78d8583aaa05af93ae65588286376e70743ca6cf7e21006c7c"
+  },
+  "workbook_bytes": 218725
+}

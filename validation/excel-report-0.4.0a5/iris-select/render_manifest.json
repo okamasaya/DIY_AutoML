@@ -1,0 +1,109 @@
+{
+  "schema_version": 8,
+  "status": "completed",
+  "version": "0.4.0a5",
+  "source_schema": 3,
+  "source_version": "0.4.0a1.post1",
+  "source_directory": "/workspace/DIY_AutoML/validation/current/iris-select",
+  "max_models": 3,
+  "skipped": [],
+  "source_hashes": {
+    "__init__.py": "359feeb2b0beba1b283f5124741e25c34141f78535d31caa8c927a3cf2e81a0c",
+    "__main__.py": "cf7390a2508a0fcad4777a4a629fc5212ab655cb45845975995f835676a834e3",
+    "cli.py": "d2dd3e74772f28a65dd81f65c7aa60d20dcd3e366a72d953258857957a046dc6",
+    "clustering.py": "d9370b2847aed19fcc58f75ae5e25486aee1e3f24c9dfd053055cb55b89b1be8",
+    "clustering_repeat_workflow.py": "88080961d870f312372ff0909ab40d916bade16183cb9559d2c22c6c66953778",
+    "clustering_repeated.py": "305a831892d2e7265e05bfae96957e811433ef2cfaa873a61fbc0bd63ade6f0d",
+    "clustering_subsample.py": "992f25218d2f43291ecd9cb5715604206dcf545d80c91d8fcbd1cc3f64a665c4",
+    "clustering_subsample_workflow.py": "918dff90270a2d6f18e33fdc3bcaaa11ee702c36369af1176f6fbec89f46d233",
+    "data.py": "39a4cb6431ec1bbe0df13c5a66340f4fab65a8563e493ea1729524a3fe6505f1",
+    "deep_learning.py": "042c3ea327240f75fa5623b400b20190df837cf34d637552ffbc884cb405b297",
+    "deep_learning_repeat_workflow.py": "27bddc8b5ea350887824deeec395a865859cf6ec8077a7463105d647b1ff2783",
+    "dl_repeat_validation.py": "d15f8f4bedcde593a99004343d0ab50e9a10ba41399951b3bff43ef8a16392df",
+    "excel_report.py": "b5a65c03e55cbc80939b898f26827ac49b8e4df0308be95056eacdf46a0e1cf4",
+    "excel_report_validation.py": "33a1994fd93155bcf0812ce8886ae45fc39dfa16c83c920dc7f42f7259d33967",
+    "plotting.py": "1b911f4fb2dfc9c33f7828be7521a1a05dc7d493d1fcad56191bd6062eead970",
+    "report_figures.py": "1ea4ce53e0181747f4b35210c1a545a6882dae031df74225a61d47a444158456",
+    "reporting.py": "44c5ff976f95bb7dbf38b63a86d9b05d46777dedf98e67f428d1ae75c897a68d",
+    "selection.py": "89968d77968cb99348ac8d2838efad762ce7acebc791db5c6d32d9a9ba96a897",
+    "selection_workflow.py": "a586cf11e012d0b2b40c286d2163e220d555a80d53d4a7434953746641bedb40",
+    "supervised.py": "f3925c28f25f7c30885bb37c95675016826a7f2b41b99afb30c2c7b16efe00a5",
+    "tuning.py": "f483f6dc7505a81dfbbb7a7ed06aafa2788669d37573e6791be6c73e9cb63992",
+    "tuning_validation.py": "29e12b39ab8da3b840269f2d9a2a6356c2253260c79d5e3e4c305d45814029ac",
+    "tuning_workflow.py": "50fff96e69d7942b9ac731cdab4357a19dcb9ea2a1b24435c15eeac32bd9d460",
+    "ul_subsample_validation.py": "6e6c3845ab0eee6feaec090d9e67ea407a6fcddc726cf907cc1887a4f08dd581",
+    "validation.py": "251da4ef42f0089d89852576170e6b14616dfddf74581530f2e59d780b80593f",
+    "workflow.py": "d358f95633b64ce07cd0676a009b586cf41690f72dad7cfab4941a374e771bac"
+  },
+  "source_artifacts": {
+    "manifest.json": "4989d00145767ce844fcc69be8a717f0db1a809cae2faab6fd60fbc3bcdc380d",
+    "report.xlsx": "98e153b620393c2bdada147aaf44dea900f39137a51523a733ef5d4fd84e842c",
+    "arrays.npz": "c39e94cddd0f35c2df845384112a82862c0ca36244d0e098c567ad569d3fe1dc"
+  },
+  "figures": [
+    {
+      "id": "sl_selected_cm",
+      "kind": "confusion",
+      "sheet": "SL_Test",
+      "title": "iris | SVM",
+      "scope": "Chosen using training CV only; this is the only tested configuration",
+      "labels": [
+        "0: 0",
+        "1: 1",
+        "2: 2"
+      ],
+      "file": "figures/sl_selected_cm.png",
+      "sha256": "dba9be4ff9b3d5eb704affe00d3a0428cebf7b84ba9b9e7a0d28af27d07d1480",
+      "anchor": "A5",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "counts": "sl_selected_cm__counts"
+      }
+    },
+    {
+      "id": "sl_training_cv",
+      "kind": "cv",
+      "sheet": "SL_CV_Mean",
+      "title": "iris | Training CV mean F1",
+      "scope": "Shared training folds; error bars are fold SD, not CI; display order is declared order",
+      "labels": [
+        "Decision Tree",
+        "Random Forest",
+        "Logistic Regression",
+        "SVM",
+        "k-NN"
+      ],
+      "selected": 3,
+      "file": "figures/sl_training_cv.png",
+      "sha256": "9163548b14fa8febcb261991a3f5d1a96db7db8fe0128c10b6edb48dd7d4c197",
+      "anchor": "A9",
+      "width": 800,
+      "height": 356,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "mean": "sl_training_cv__mean",
+        "sd": "sl_training_cv__sd"
+      }
+    }
+  ],
+  "python": "3.12.14",
+  "created_utc": "2026-11-08T01:54:49.053160+00:00",
+  "dependencies": {
+    "matplotlib": "3.10.8",
+    "pillow": "13.0.0",
+    "openpyxl": "3.1.5",
+    "numpy": "2.3.5",
+    "scikit-learn": "1.8.0"
+  },
+  "seconds": 0.5335615320000215,
+  "figure_count": 2,
+  "artifacts": {
+    "report_with_figures.xlsx": "c2449779fa1daa927029ae69eaabbcd95e09f13f6f5bd9a2ba5b9d48a79df033",
+    "figure_data.npz": "a5407b05166d365ee54fd640f16934c7cdd79b57e6ae3e5e0884ca6597fbbcd0"
+  },
+  "workbook_bytes": 87821
+}

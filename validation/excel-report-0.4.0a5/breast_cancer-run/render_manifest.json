@@ -1,0 +1,238 @@
+{
+  "schema_version": 8,
+  "status": "completed",
+  "version": "0.4.0a5",
+  "source_schema": 2,
+  "source_version": "0.4.0a5",
+  "source_directory": "/workspace/work/excel-a5-dev/breast_cancer-source-run",
+  "max_models": 3,
+  "skipped": [],
+  "source_hashes": {
+    "__init__.py": "359feeb2b0beba1b283f5124741e25c34141f78535d31caa8c927a3cf2e81a0c",
+    "__main__.py": "cf7390a2508a0fcad4777a4a629fc5212ab655cb45845975995f835676a834e3",
+    "cli.py": "d2dd3e74772f28a65dd81f65c7aa60d20dcd3e366a72d953258857957a046dc6",
+    "clustering.py": "d9370b2847aed19fcc58f75ae5e25486aee1e3f24c9dfd053055cb55b89b1be8",
+    "clustering_repeat_workflow.py": "88080961d870f312372ff0909ab40d916bade16183cb9559d2c22c6c66953778",
+    "clustering_repeated.py": "305a831892d2e7265e05bfae96957e811433ef2cfaa873a61fbc0bd63ade6f0d",
+    "clustering_subsample.py": "992f25218d2f43291ecd9cb5715604206dcf545d80c91d8fcbd1cc3f64a665c4",
+    "clustering_subsample_workflow.py": "918dff90270a2d6f18e33fdc3bcaaa11ee702c36369af1176f6fbec89f46d233",
+    "data.py": "39a4cb6431ec1bbe0df13c5a66340f4fab65a8563e493ea1729524a3fe6505f1",
+    "deep_learning.py": "042c3ea327240f75fa5623b400b20190df837cf34d637552ffbc884cb405b297",
+    "deep_learning_repeat_workflow.py": "27bddc8b5ea350887824deeec395a865859cf6ec8077a7463105d647b1ff2783",
+    "dl_repeat_validation.py": "d15f8f4bedcde593a99004343d0ab50e9a10ba41399951b3bff43ef8a16392df",
+    "excel_report.py": "b5a65c03e55cbc80939b898f26827ac49b8e4df0308be95056eacdf46a0e1cf4",
+    "excel_report_validation.py": "33a1994fd93155bcf0812ce8886ae45fc39dfa16c83c920dc7f42f7259d33967",
+    "plotting.py": "1b911f4fb2dfc9c33f7828be7521a1a05dc7d493d1fcad56191bd6062eead970",
+    "report_figures.py": "1ea4ce53e0181747f4b35210c1a545a6882dae031df74225a61d47a444158456",
+    "reporting.py": "44c5ff976f95bb7dbf38b63a86d9b05d46777dedf98e67f428d1ae75c897a68d",
+    "selection.py": "89968d77968cb99348ac8d2838efad762ce7acebc791db5c6d32d9a9ba96a897",
+    "selection_workflow.py": "a586cf11e012d0b2b40c286d2163e220d555a80d53d4a7434953746641bedb40",
+    "supervised.py": "f3925c28f25f7c30885bb37c95675016826a7f2b41b99afb30c2c7b16efe00a5",
+    "tuning.py": "f483f6dc7505a81dfbbb7a7ed06aafa2788669d37573e6791be6c73e9cb63992",
+    "tuning_validation.py": "29e12b39ab8da3b840269f2d9a2a6356c2253260c79d5e3e4c305d45814029ac",
+    "tuning_workflow.py": "50fff96e69d7942b9ac731cdab4357a19dcb9ea2a1b24435c15eeac32bd9d460",
+    "ul_subsample_validation.py": "6e6c3845ab0eee6feaec090d9e67ea407a6fcddc726cf907cc1887a4f08dd581",
+    "validation.py": "251da4ef42f0089d89852576170e6b14616dfddf74581530f2e59d780b80593f",
+    "workflow.py": "d358f95633b64ce07cd0676a009b586cf41690f72dad7cfab4941a374e771bac"
+  },
+  "source_artifacts": {
+    "manifest.json": "0fcb45afc9fd2b246463fd2e243adb90b320a4c3e9ac2781b5e637c71c91c82d",
+    "report.xlsx": "f9fa24636760379f07785efb5b6f939c93beb6b1e346fc49552b6b1213d332fe",
+    "arrays.npz": "5eb9088eb4850a87ec74e8327bd3ca1867216ab32c8fd2961c4c11c638aa1c6c"
+  },
+  "figures": [
+    {
+      "id": "sl_cm_0",
+      "kind": "confusion",
+      "sheet": "SL_Result",
+      "title": "breast_cancer | Decision Tree",
+      "scope": "Exploratory holdout: display in declared order, not test ranking",
+      "labels": [
+        "0: 0",
+        "1: 1"
+      ],
+      "source_row": 0,
+      "file": "figures/sl_cm_0.png",
+      "sha256": "581e1cfa73b8d3acab2599e0e2e2d62e3e952500767502d0994849eeac4fb553",
+      "anchor": "A9",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "counts": "sl_cm_0__counts"
+      }
+    },
+    {
+      "id": "sl_cm_1",
+      "kind": "confusion",
+      "sheet": "SL_Result",
+      "title": "breast_cancer | Random Forest",
+      "scope": "Exploratory holdout: display in declared order, not test ranking",
+      "labels": [
+        "0: 0",
+        "1: 1"
+      ],
+      "source_row": 1,
+      "file": "figures/sl_cm_1.png",
+      "sha256": "4a44cecf0cdd5c4f757b2951d79ef16b14313c9fb5b9f3993f224dc474ef4abf",
+      "anchor": "A35",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "counts": "sl_cm_1__counts"
+      }
+    },
+    {
+      "id": "sl_cm_2",
+      "kind": "confusion",
+      "sheet": "SL_Result",
+      "title": "breast_cancer | Logistic Regression",
+      "scope": "Exploratory holdout: display in declared order, not test ranking",
+      "labels": [
+        "0: 0",
+        "1: 1"
+      ],
+      "source_row": 2,
+      "file": "figures/sl_cm_2.png",
+      "sha256": "4810a28550e50c15161a4444e44c98f0a5de66e6535e4a1f401c2cc23fefa47d",
+      "anchor": "A61",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "counts": "sl_cm_2__counts"
+      }
+    },
+    {
+      "id": "ul_candidate_3",
+      "kind": "cluster",
+      "sheet": "UL_Result",
+      "title": "breast_cancer | Hierarchical(complete), k=2",
+      "scope": "Display only by internal Silhouette; target ARI is diagnostic, not selection",
+      "source_row": 3,
+      "projection": "pca",
+      "projection_note": "",
+      "file": "figures/ul_candidate_3.png",
+      "sha256": "e62758357e0e8c89c928420768945ff1abe75525ddcbb6104714e6979cbdcb24",
+      "anchor": "A58",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "metrics": "ul_candidate_3__metrics",
+        "coords": "ul_candidate_3__coords",
+        "labels": "ul_candidate_3__labels",
+        "explained": "ul_candidate_3__explained"
+      }
+    },
+    {
+      "id": "ul_candidate_5",
+      "kind": "cluster",
+      "sheet": "UL_Result",
+      "title": "breast_cancer | Hierarchical(single), k=2",
+      "scope": "Display only by internal Silhouette; target ARI is diagnostic, not selection",
+      "source_row": 5,
+      "projection": "pca",
+      "projection_note": "",
+      "file": "figures/ul_candidate_5.png",
+      "sha256": "581bff202a70672fb18488d0366049af7beacf5183773b95aa374b4c72ba9331",
+      "anchor": "A84",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "metrics": "ul_candidate_5__metrics",
+        "coords": "ul_candidate_5__coords",
+        "labels": "ul_candidate_5__labels",
+        "explained": "ul_candidate_5__explained"
+      }
+    },
+    {
+      "id": "ul_candidate_11",
+      "kind": "cluster",
+      "sheet": "UL_Result",
+      "title": "breast_cancer | Hierarchical(single), k=3",
+      "scope": "Display only by internal Silhouette; target ARI is diagnostic, not selection",
+      "source_row": 11,
+      "projection": "pca",
+      "projection_note": "",
+      "file": "figures/ul_candidate_11.png",
+      "sha256": "608d00a7cdf451652622c2227b0b942c6906a3eb3c6144e82e384ec7e1132017",
+      "anchor": "A110",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "metrics": "ul_candidate_11__metrics",
+        "coords": "ul_candidate_11__coords",
+        "labels": "ul_candidate_11__labels",
+        "explained": "ul_candidate_11__explained"
+      }
+    },
+    {
+      "id": "dl_cm",
+      "kind": "confusion",
+      "sheet": "DL_Result",
+      "title": "breast_cancer | MLP 32-16-8",
+      "scope": "Single fixed configuration; final test only, no best-epoch selection",
+      "labels": [
+        "0: 0",
+        "1: 1"
+      ],
+      "file": "figures/dl_cm.png",
+      "sha256": "28eb7e8e724c536a46ce30e7953852b264a77e3a821a3461fdc0ae73bdec2f8e",
+      "anchor": "A5",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "counts": "dl_cm__counts"
+      }
+    },
+    {
+      "id": "dl_history",
+      "kind": "history",
+      "sheet": "DL_History",
+      "title": "breast_cancer | MLP training / validation",
+      "scope": "Learning history only; test is not used for epoch selection",
+      "file": "figures/dl_history.png",
+      "sha256": "72772c58f5e7041f7502d8166bfd21e8c8d6d61c8dd00710971aa41d12211bd2",
+      "anchor": "H2",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "right",
+      "data_keys": {
+        "Epoch": "dl_history__Epoch",
+        "accuracy": "dl_history__accuracy",
+        "val_accuracy": "dl_history__val_accuracy",
+        "loss": "dl_history__loss",
+        "val_loss": "dl_history__val_loss"
+      }
+    }
+  ],
+  "python": "3.12.14",
+  "created_utc": "2026-11-08T01:55:49.260520+00:00",
+  "dependencies": {
+    "matplotlib": "3.10.8",
+    "pillow": "13.0.0",
+    "openpyxl": "3.1.5",
+    "numpy": "2.3.5",
+    "scikit-learn": "1.8.0"
+  },
+  "seconds": 1.3192946550007036,
+  "figure_count": 8,
+  "artifacts": {
+    "report_with_figures.xlsx": "285b191ec33a1c7724073974757e0308c07c125d788c0c4bb07d24141e3a696d",
+    "figure_data.npz": "9ea954af65c8dbce7fce3cad0a8349a2b8e8570f289288d0842cc01d4450aa5b"
+  },
+  "workbook_bytes": 644140
+}

@@ -1,0 +1,242 @@
+{
+  "schema_version": 8,
+  "status": "completed",
+  "version": "0.4.0a5",
+  "source_schema": 2,
+  "source_version": "0.4.0a5",
+  "source_directory": "/workspace/work/excel-a5-dev/iris-source-run",
+  "max_models": 3,
+  "skipped": [],
+  "source_hashes": {
+    "__init__.py": "359feeb2b0beba1b283f5124741e25c34141f78535d31caa8c927a3cf2e81a0c",
+    "__main__.py": "cf7390a2508a0fcad4777a4a629fc5212ab655cb45845975995f835676a834e3",
+    "cli.py": "d2dd3e74772f28a65dd81f65c7aa60d20dcd3e366a72d953258857957a046dc6",
+    "clustering.py": "d9370b2847aed19fcc58f75ae5e25486aee1e3f24c9dfd053055cb55b89b1be8",
+    "clustering_repeat_workflow.py": "88080961d870f312372ff0909ab40d916bade16183cb9559d2c22c6c66953778",
+    "clustering_repeated.py": "305a831892d2e7265e05bfae96957e811433ef2cfaa873a61fbc0bd63ade6f0d",
+    "clustering_subsample.py": "992f25218d2f43291ecd9cb5715604206dcf545d80c91d8fcbd1cc3f64a665c4",
+    "clustering_subsample_workflow.py": "918dff90270a2d6f18e33fdc3bcaaa11ee702c36369af1176f6fbec89f46d233",
+    "data.py": "39a4cb6431ec1bbe0df13c5a66340f4fab65a8563e493ea1729524a3fe6505f1",
+    "deep_learning.py": "042c3ea327240f75fa5623b400b20190df837cf34d637552ffbc884cb405b297",
+    "deep_learning_repeat_workflow.py": "27bddc8b5ea350887824deeec395a865859cf6ec8077a7463105d647b1ff2783",
+    "dl_repeat_validation.py": "d15f8f4bedcde593a99004343d0ab50e9a10ba41399951b3bff43ef8a16392df",
+    "excel_report.py": "b5a65c03e55cbc80939b898f26827ac49b8e4df0308be95056eacdf46a0e1cf4",
+    "excel_report_validation.py": "33a1994fd93155bcf0812ce8886ae45fc39dfa16c83c920dc7f42f7259d33967",
+    "plotting.py": "1b911f4fb2dfc9c33f7828be7521a1a05dc7d493d1fcad56191bd6062eead970",
+    "report_figures.py": "1ea4ce53e0181747f4b35210c1a545a6882dae031df74225a61d47a444158456",
+    "reporting.py": "44c5ff976f95bb7dbf38b63a86d9b05d46777dedf98e67f428d1ae75c897a68d",
+    "selection.py": "89968d77968cb99348ac8d2838efad762ce7acebc791db5c6d32d9a9ba96a897",
+    "selection_workflow.py": "a586cf11e012d0b2b40c286d2163e220d555a80d53d4a7434953746641bedb40",
+    "supervised.py": "f3925c28f25f7c30885bb37c95675016826a7f2b41b99afb30c2c7b16efe00a5",
+    "tuning.py": "f483f6dc7505a81dfbbb7a7ed06aafa2788669d37573e6791be6c73e9cb63992",
+    "tuning_validation.py": "29e12b39ab8da3b840269f2d9a2a6356c2253260c79d5e3e4c305d45814029ac",
+    "tuning_workflow.py": "50fff96e69d7942b9ac731cdab4357a19dcb9ea2a1b24435c15eeac32bd9d460",
+    "ul_subsample_validation.py": "6e6c3845ab0eee6feaec090d9e67ea407a6fcddc726cf907cc1887a4f08dd581",
+    "validation.py": "251da4ef42f0089d89852576170e6b14616dfddf74581530f2e59d780b80593f",
+    "workflow.py": "d358f95633b64ce07cd0676a009b586cf41690f72dad7cfab4941a374e771bac"
+  },
+  "source_artifacts": {
+    "manifest.json": "5eebcf6903e30f2d421a79b88af7d1089e08bfd4594c0a55282834405acb17e2",
+    "report.xlsx": "17a4e2d3553da4791fa0986ca371d1536bbec05be1ad53916ffdc85910907a05",
+    "arrays.npz": "6e51d90c161ac6a623a8fff19f70aa2b483b84fb48e6a750c294c1b57980abde"
+  },
+  "figures": [
+    {
+      "id": "sl_cm_0",
+      "kind": "confusion",
+      "sheet": "SL_Result",
+      "title": "iris | Decision Tree",
+      "scope": "Exploratory holdout: display in declared order, not test ranking",
+      "labels": [
+        "0: 0",
+        "1: 1",
+        "2: 2"
+      ],
+      "source_row": 0,
+      "file": "figures/sl_cm_0.png",
+      "sha256": "8b5411cd050a315aee979e9245f66ccc36a00f9b28d574cb281e1dd0cff2d79e",
+      "anchor": "A9",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "counts": "sl_cm_0__counts"
+      }
+    },
+    {
+      "id": "sl_cm_1",
+      "kind": "confusion",
+      "sheet": "SL_Result",
+      "title": "iris | Random Forest",
+      "scope": "Exploratory holdout: display in declared order, not test ranking",
+      "labels": [
+        "0: 0",
+        "1: 1",
+        "2: 2"
+      ],
+      "source_row": 1,
+      "file": "figures/sl_cm_1.png",
+      "sha256": "7d4d2b7cc4772a419dd31ec391fe33d8cbf55809e74826daa5ee7001701b9f56",
+      "anchor": "A35",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "counts": "sl_cm_1__counts"
+      }
+    },
+    {
+      "id": "sl_cm_2",
+      "kind": "confusion",
+      "sheet": "SL_Result",
+      "title": "iris | Logistic Regression",
+      "scope": "Exploratory holdout: display in declared order, not test ranking",
+      "labels": [
+        "0: 0",
+        "1: 1",
+        "2: 2"
+      ],
+      "source_row": 2,
+      "file": "figures/sl_cm_2.png",
+      "sha256": "2f18027e786d42160eb94b5b6ee4e06fcb1f14af21b35e4231810a904da54b6d",
+      "anchor": "A61",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "counts": "sl_cm_2__counts"
+      }
+    },
+    {
+      "id": "ul_candidate_0",
+      "kind": "cluster",
+      "sheet": "UL_Result",
+      "title": "iris | KMeans, k=2",
+      "scope": "Display only by internal Silhouette; target ARI is diagnostic, not selection",
+      "source_row": 0,
+      "projection": "pca",
+      "projection_note": "",
+      "file": "figures/ul_candidate_0.png",
+      "sha256": "6f60f553e386f981b856d13f693e5104e4748c866623a65a62cf58e7f02010af",
+      "anchor": "A58",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "metrics": "ul_candidate_0__metrics",
+        "coords": "ul_candidate_0__coords",
+        "labels": "ul_candidate_0__labels",
+        "explained": "ul_candidate_0__explained"
+      }
+    },
+    {
+      "id": "ul_candidate_1",
+      "kind": "cluster",
+      "sheet": "UL_Result",
+      "title": "iris | GMM, k=2",
+      "scope": "Display only by internal Silhouette; target ARI is diagnostic, not selection",
+      "source_row": 1,
+      "projection": "pca",
+      "projection_note": "",
+      "file": "figures/ul_candidate_1.png",
+      "sha256": "38fb50163f032908fde904ae67bd55b59efe0abdd8cc93d72988f7495c47bcd3",
+      "anchor": "A84",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "metrics": "ul_candidate_1__metrics",
+        "coords": "ul_candidate_1__coords",
+        "labels": "ul_candidate_1__labels",
+        "explained": "ul_candidate_1__explained"
+      }
+    },
+    {
+      "id": "ul_candidate_4",
+      "kind": "cluster",
+      "sheet": "UL_Result",
+      "title": "iris | Hierarchical(average), k=2",
+      "scope": "Display only by internal Silhouette; target ARI is diagnostic, not selection",
+      "source_row": 4,
+      "projection": "pca",
+      "projection_note": "",
+      "file": "figures/ul_candidate_4.png",
+      "sha256": "69c222003fa79c6190e1799cff78e51de22bd71f717bb14f2245974c12c79e3d",
+      "anchor": "A110",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "metrics": "ul_candidate_4__metrics",
+        "coords": "ul_candidate_4__coords",
+        "labels": "ul_candidate_4__labels",
+        "explained": "ul_candidate_4__explained"
+      }
+    },
+    {
+      "id": "dl_cm",
+      "kind": "confusion",
+      "sheet": "DL_Result",
+      "title": "iris | MLP 32-16-8",
+      "scope": "Single fixed configuration; final test only, no best-epoch selection",
+      "labels": [
+        "0: 0",
+        "1: 1",
+        "2: 2"
+      ],
+      "file": "figures/dl_cm.png",
+      "sha256": "7b42e460dbf5c8270c89b7457a2b677dd49eb2e7a096dfb262542311ed490539",
+      "anchor": "A5",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "below",
+      "data_keys": {
+        "counts": "dl_cm__counts"
+      }
+    },
+    {
+      "id": "dl_history",
+      "kind": "history",
+      "sheet": "DL_History",
+      "title": "iris | MLP training / validation",
+      "scope": "Learning history only; test is not used for epoch selection",
+      "file": "figures/dl_history.png",
+      "sha256": "a5e7523fb65fce591319c3cc907ac175196ee5e0f9d8712a3a69a4fcdcf2ee55",
+      "anchor": "H2",
+      "width": 800,
+      "height": 480,
+      "font": "Noto Sans CJK JP",
+      "layout": "right",
+      "data_keys": {
+        "Epoch": "dl_history__Epoch",
+        "accuracy": "dl_history__accuracy",
+        "val_accuracy": "dl_history__val_accuracy",
+        "loss": "dl_history__loss",
+        "val_loss": "dl_history__val_loss"
+      }
+    }
+  ],
+  "python": "3.12.14",
+  "created_utc": "2026-11-08T01:54:46.350032+00:00",
+  "dependencies": {
+    "matplotlib": "3.10.8",
+    "pillow": "13.0.0",
+    "openpyxl": "3.1.5",
+    "numpy": "2.3.5",
+    "scikit-learn": "1.8.0"
+  },
+  "seconds": 1.2336793770009535,
+  "figure_count": 8,
+  "artifacts": {
+    "report_with_figures.xlsx": "f22c8a1cc342004636368e2df050d66bfac896b6245d6be09a49dfe44e901777",
+    "figure_data.npz": "24b47a457ce0aff6034ea989fe4c70c79b0b8f8e7713a143a515a5deb94371a2"
+  },
+  "workbook_bytes": 480589
+}

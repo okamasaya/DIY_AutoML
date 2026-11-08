@@ -6,6 +6,7 @@ from .clustering_repeat_workflow import repeat_clustering_csv
 from .deep_learning_repeat_workflow import repeat_deep_learning_csv
 from .clustering_subsample_workflow import subsample_clustering_csv
 from .tuning_workflow import tune_csv
+from .excel_report import render_excel_report
 
 def main():
     parser=argparse.ArgumentParser(description="Reimplemented DIY AutoML evaluation")
@@ -37,6 +38,11 @@ def main():
             p.add_argument("--clusters",nargs="+",type=int,default=list(range(2,11)))
             p.add_argument("--min-overlap",type=int,default=10)
         else: p.add_argument("--seeds",nargs="+",type=int,default=list(range(42,52)))
+    p=sub.add_parser("report")
+    p.add_argument("--run",dest="source",required=True)
+    p.add_argument("--output",default=None)
+    p.add_argument("--csv",default=None)
+    p.add_argument("--max-models",type=int,default=3)
     args=vars(parser.parse_args()); command=args.pop("command")
     if args["output"] is None: args["output"]="runs/"+command+"-"+datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-    print({"run":run_csv,"select":select_csv,"repeat-ul":repeat_clustering_csv,"repeat-dl":repeat_deep_learning_csv,"subsample-ul":subsample_clustering_csv,"tune":tune_csv}[command](**args))
+    print({"run":run_csv,"select":select_csv,"repeat-ul":repeat_clustering_csv,"repeat-dl":repeat_deep_learning_csv,"subsample-ul":subsample_clustering_csv,"tune":tune_csv,"report":render_excel_report}[command](**args))

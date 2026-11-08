@@ -1,6 +1,6 @@
 # DIY AutoML 再実装版
 
-旧クラウド環境の0.4.0a1ソースは未取得です。このリポジトリは元資料ZIPと引継ぎ仕様から新たに実装しました。初回再実装は **0.4.0a1.post1**、DL反復を追加した版は **0.4.0a2**、UL部分抽出は **0.4.0a3**、SLの設定探索を追加した現在版は **0.4.0a4** です。旧実装とのAPI・数値・manifest互換性は保証していません。schema番号2/3/4は引継ぎの用途区分を採用したもので、旧validatorとの互換を意味しません。過去の96 passedは今回の検証結果ではありません。
+旧クラウド環境の0.4.0a1ソースは未取得です。このリポジトリは元資料ZIPと引継ぎ仕様から新たに実装しました。初回再実装は **0.4.0a1.post1**、DL反復を追加した版は **0.4.0a2**、UL部分抽出は **0.4.0a3**、SLの設定探索は **0.4.0a4**、図付きExcelを追加した現在版は **0.4.0a5** です。旧実装とのAPI・数値・manifest互換性は保証していません。schema番号2/3/4は引継ぎの用途区分を採用したもので、旧validatorとの互換を意味しません。過去の96 passedは今回の検証結果ではありません。
 
 Python 3.12、数値特徴量・欠損なし・分類ラベル付きCSVが対象です。ULも外部診断のためtarget列が必要です。元資料は `originals/` に変更せず保存しています。ライセンスは未選定です。
 
@@ -35,11 +35,11 @@ DLはtrainだけでscalerをfitします。`--split-seed` と `--training-seed` 
 
 ULは固定データ最大5,000行、KMeans n_init=auto、GMM n_init=1/full、階層4linkage、k=2..10です。UL反復のTarget ARIとAssignment ARIは別の量です。45 seed対を独立標本としたSEM/CIや自動選定は行いません。fold SD、点ごとのSilhouette SD/SE、seed SD、test区間も区別します。
 
-`notebooks/Local_Comparison.ipynb` は共通関数を呼ぶ5シートと図5枚のローカル入口です。Excel画像埋込は未実装です。組込み3データセットは開発用で、未見の外部検証データではありません。SL/DLとULを総合順位にしません。
+`notebooks/Local_Comparison.ipynb` は共通関数を呼ぶ5シートと図5枚のローカル入口です。図付きExcelは共通のreport関数で別ファイルへ出力します。組込み3データセットは開発用で、未見の外部検証データではありません。SL/DLとULを総合順位にしません。
 
 復旧範囲と今回の検証結果は `docs/RESET_HANDOFF.md` と `docs/VALIDATION_UL_REPEAT.md` を参照してください。利用者の承認により、今回の成果物を専用ブランチ `recovery/reimplemented-0.4.0a1-post1` にcommit・pushする方針へ変更しました。mainブランチには変更を加えません。
 
-Notebookを使う場合は、必要に応じて `.venv/bin/python -m pip install ipykernel` を追加し、エディタでこの.venvをカーネルに指定してください。Notebookカーネルを通した実行は今回未確認ですが、共通関数での学習・出力と描画関数での図5枚生成は確認しています。
+Notebookを使う場合は、必要に応じて `.venv/bin/python -m pip install ipykernel` を追加し、エディタでこの.venvをカーネルに指定してください。0.4.0a5では専用カーネルで全コードセルを実行し、100epochのDLを含む数値出力・外部PNG5枚・8枚を埋め込んだExcel生成まで確認しました。手順はdocs/NOTEBOOK_GUIDE.md、任意のNotebook実行ツールのロックはrequirements-notebook.lock.txtです。
 
 Gitからの再開手順と、ローカルコミット・pushの確認方法は `docs/COMMIT_GUIDE.md` に記載しています。
 
@@ -77,3 +77,14 @@ Gitからの再開手順と、ローカルコミット・pushの確認方法は 
 TensorFlowを導入せずSL/ULを試す場合は、`requirements-core.lock.txt` を導入してから `pip install --no-deps -e .` を実行できます。DLを含む全テストは従来の `requirements-local.lock.txt` を使用してください。
 
 Zenn用の新規紹介記事は `articles/diy-automl-evaluation-framework.md`、図は `images/diy-automl/selection-flow.png` に保存しています。`published: false` の下書きで、Zennへの投稿・公開は行っていません。操作と確認範囲は `docs/ZENN_GUIDE.md` を参照してください。
+
+## 図付きExcel（0.4.0a5）
+
+保存済みのrun/select/tune/反復結果から、モデルを再学習せずに図付きExcelを作れます。元の数値Excelと学習manifestはそのまま残し、画像・描画入力・配置・版を別に記録します。
+
+```sh
+.venv/bin/python -m diy_automl report --run runs/wine-tune --output runs/wine-tune-illustrated
+.venv/bin/python scripts/validate_excel_report.py runs/wine-tune-illustrated
+```
+
+利用者が開くファイルは `report_with_figures.xlsx` です。操作と表示方針は `docs/EXCEL_REPORT_GUIDE.md`、検証は `docs/VALIDATION_EXCEL_REPORT.md` にあります。DS向けNotebook/CLIと、将来のビジネス向けアプリ・子記事をどう分けるかは `docs/AUDIENCE_PLAN.md` に記録しています。親記事のレビュー済み本文は0.4.0a4時点のまま保全しています。

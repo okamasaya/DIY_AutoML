@@ -1,0 +1,233 @@
+{
+  "schema_version": 6,
+  "status": "completed",
+  "implementation": "reimplemented; historical source unavailable",
+  "version": "0.4.0a3",
+  "python": "3.12.14",
+  "settings": {
+    "csv": "/workspace/DIY_AutoML/data/reference/breast_cancer.csv",
+    "target": "target",
+    "sample_seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51
+    ],
+    "fraction": 0.8,
+    "model_seed": 42,
+    "clusters": [
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "min_overlap": 10,
+    "limits": {
+      "rows": 2000,
+      "features": 100,
+      "candidate_fits": 2000
+    },
+    "sampling": "uniform without replacement; sorted source indices",
+    "scaling": "StandardScaler independently fitted within each subset",
+    "methods": [
+      "ul"
+    ]
+  },
+  "source_hashes": {
+    "__init__.py": "9d4e210cb1d5bcf68907e0575d42b3617e74303185c91dc14cc01fa3251704a8",
+    "__main__.py": "cf7390a2508a0fcad4777a4a629fc5212ab655cb45845975995f835676a834e3",
+    "cli.py": "7a32f0293ec5f7edb6a50168ef4e79f5b230bfef473bd325a54c0f540d47fca0",
+    "clustering.py": "d9370b2847aed19fcc58f75ae5e25486aee1e3f24c9dfd053055cb55b89b1be8",
+    "clustering_repeat_workflow.py": "88080961d870f312372ff0909ab40d916bade16183cb9559d2c22c6c66953778",
+    "clustering_repeated.py": "305a831892d2e7265e05bfae96957e811433ef2cfaa873a61fbc0bd63ade6f0d",
+    "clustering_subsample.py": "992f25218d2f43291ecd9cb5715604206dcf545d80c91d8fcbd1cc3f64a665c4",
+    "clustering_subsample_workflow.py": "918dff90270a2d6f18e33fdc3bcaaa11ee702c36369af1176f6fbec89f46d233",
+    "data.py": "39a4cb6431ec1bbe0df13c5a66340f4fab65a8563e493ea1729524a3fe6505f1",
+    "deep_learning.py": "042c3ea327240f75fa5623b400b20190df837cf34d637552ffbc884cb405b297",
+    "deep_learning_repeat_workflow.py": "27bddc8b5ea350887824deeec395a865859cf6ec8077a7463105d647b1ff2783",
+    "dl_repeat_validation.py": "d15f8f4bedcde593a99004343d0ab50e9a10ba41399951b3bff43ef8a16392df",
+    "plotting.py": "1b911f4fb2dfc9c33f7828be7521a1a05dc7d493d1fcad56191bd6062eead970",
+    "reporting.py": "44c5ff976f95bb7dbf38b63a86d9b05d46777dedf98e67f428d1ae75c897a68d",
+    "selection.py": "3daddea0b9b264393e175884843ba925e0b65a0d2eaa78f393fdcda4f35a2c08",
+    "selection_workflow.py": "8235f72483dd7aadf488be5d825a7b4b4410b10333d4c6c85c4971782cb541ae",
+    "supervised.py": "f3925c28f25f7c30885bb37c95675016826a7f2b41b99afb30c2c7b16efe00a5",
+    "ul_subsample_validation.py": "6e6c3845ab0eee6feaec090d9e67ea407a6fcddc726cf907cc1887a4f08dd581",
+    "validation.py": "26586a2b13182dbc185a531662343b6c541aed5c205e81005fad418ac01e830c",
+    "workflow.py": "a632d891a41827f9942b3f1470f9cb1926040ec7ba526457f03e2ef6df1203dc"
+  },
+  "dependencies": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "scikit-learn": "1.8.0",
+    "openpyxl": "3.1.5"
+  },
+  "created_utc": "2026-11-08T00:12:05.617812+00:00",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "input_sha256": "32cb9f217d4e04fe3ffc521a396a13336cd0f1e094445d2a0a8d54335458e8e7",
+  "classes": [
+    0,
+    1
+  ],
+  "features": [
+    "mean radius",
+    "mean texture",
+    "mean perimeter",
+    "mean area",
+    "mean smoothness",
+    "mean compactness",
+    "mean concavity",
+    "mean concave points",
+    "mean symmetry",
+    "mean fractal dimension",
+    "radius error",
+    "texture error",
+    "perimeter error",
+    "area error",
+    "smoothness error",
+    "compactness error",
+    "concavity error",
+    "concave points error",
+    "symmetry error",
+    "fractal dimension error",
+    "worst radius",
+    "worst texture",
+    "worst perimeter",
+    "worst area",
+    "worst smoothness",
+    "worst compactness",
+    "worst concavity",
+    "worst concave points",
+    "worst symmetry",
+    "worst fractal dimension"
+  ],
+  "rows": 569,
+  "subset_rows": 455,
+  "candidate_count": 54,
+  "protocol": "Subset-specific preprocessing; no model/seed selection; descriptive stability only",
+  "reference_states": [
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed",
+    "completed"
+  ],
+  "sample_states": [
+    {
+      "sample_seed": 42,
+      "status": "completed"
+    },
+    {
+      "sample_seed": 43,
+      "status": "completed"
+    },
+    {
+      "sample_seed": 44,
+      "status": "completed"
+    },
+    {
+      "sample_seed": 45,
+      "status": "completed"
+    },
+    {
+      "sample_seed": 46,
+      "status": "completed"
+    },
+    {
+      "sample_seed": 47,
+      "status": "completed"
+    },
+    {
+      "sample_seed": 48,
+      "status": "completed"
+    },
+    {
+      "sample_seed": 49,
+      "status": "completed"
+    },
+    {
+      "sample_seed": 50,
+      "status": "completed"
+    },
+    {
+      "sample_seed": 51,
+      "status": "completed"
+    }
+  ],
+  "sheets": {
+    "UL_Reference": 54,
+    "UL_By_Subsample": 540,
+    "UL_Sample_Summary": 54,
+    "UL_Overlap_Pairs": 2430,
+    "UL_Overlap_Summary": 54,
+    "UL_Samples": 10,
+    "UL_Sample_Indices": 4550,
+    "UL_Settings": 54,
+    "Summary": 10
+  },
+  "artifacts": {
+    "report.xlsx": "100dec6cd3006d95874a640c053751d5c819f4534d095729e6aebdeace54f8b1",
+    "arrays.npz": "c5cec2d691790d5c94fda68ab8734df9a3cf291b6c3df7d66576cdd5ce7d77db"
+  },
+  "stage": "completed"
+}

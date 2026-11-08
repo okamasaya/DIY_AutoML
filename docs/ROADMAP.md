@@ -4,7 +4,8 @@
 2. DL反復入口は0.4.0a2で実装済み。固定index・train-only scalerを共有し、全seedの設定・状態・指標・履歴・重みを保存する。最高test seedは選ばない。
 3. ULの非復元部分抽出による安定性は0.4.0a3で実装済み。操作はdocs/UL_SUBSAMPLE_GUIDE.md、検証はdocs/VALIDATION_UL_SUBSAMPLE.mdを参照。bootstrapなど他方式は未実装。
 4. SLの宣言済み27設定の探索は0.4.0a4で実装済み。任意グリッド・DL探索は未実装。
-5. Zenn紹介記事を新規作成しpublished=falseで保存。利用者レビューとZennへの投稿は未実施。
-6. 次はExcel画像埋込を、選定済み結果と探索的比較の用途を混ぜずに追加する。Web画面、Windows実機検証は別機能として扱う。
+5. Zenn親記事の温度感は利用者確認済み。DS向け（Notebook/CLI）とビジネス向け（ファイル投入→Excel受取のアプリ）の子記事へ分ける方針をdocs/AUDIENCE_PLAN.mdに記録。本文の完成版更新・子記事・公開は本体整備後。
+6. Excel画像埋込は0.4.0a5のreport入口で追加。原本の数値Excelと学習manifestを残し、別ファイルへ図を埋め込む。
+7. 本体の利用入口と検証を整えたうえで共通関数に接続するアプリへ進む。Web画面、Windows実機・exe検証、任意グリッド/DL探索、欠損/カテゴリ/ラベルなしULは未完了。
 
 旧資料のSTEP7最優先や時間によるタイブレーク案は、その後の引継ぎ仕様より優先しません。

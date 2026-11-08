@@ -8,7 +8,7 @@ def run_csv(csv,target,output,methods=("sl","ul","dl"),seed=42,epochs=100,split_
     out,m=prepare(output,2,dict(csv=str(csv),target=target,methods=list(methods),seed=seed,epochs=epochs,
                                split_seed=split_seed,training_seed=training_seed))
     try:
-        d=load_csv(csv,target); sheets={}; arrays={}
+        d=load_csv(csv,target); sheets={}; arrays={"features":d.X,"target":d.y}
         m.update(classes=d.classes,features=d.feature_names,
             protocol={"sl":"Exploratory fixed holdout; scaler fitted only on training samples",
                       "ul":"Full-data structural analysis; 54 candidates, no automatic selection",
