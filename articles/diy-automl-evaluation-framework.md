@@ -18,7 +18,7 @@ AutoMLもいろいろ試しました。自分が試した範囲では、スコ�
 
 そこで、**モデルの比較と誤差評価を組み合わせた道具を、自前で作ってみることにしました。** 名前はDIY AutoMLです。Notebookで進めていた比較を、Codexと作業しながらPythonパッケージへまとめています。
 
-[コードとREADMEはGitHubで公開しています](https://github.com/okamasaya/DIY_AutoML)。この記事は開発中の **0.4.0a6** 時点の紹介です。
+[コードとREADMEはGitHubで公開しています](https://github.com/okamasaya/DIY_AutoML)。この記事は開発中の **0.4.0a7** 時点の紹介です。
 
 ## データを増やすべきか、何かを見直すべきか
 
@@ -103,7 +103,9 @@ DL/ULの初期化反復や、ULの非復元部分抽出も用意しました。�
 
 保存済みSL/DLの指標には、`uncertainty`で標準誤差・区間・クラス別結果を追加できます。クラス件数固定と通常の行bootstrapを選べますが、どちらも評価単位の確認は必要です。数値に加えて図付きExcelを出し、予測・分割・再標本化index・設定など、結果を検査するための記録も残します。
 
-開発環境と独立wheel環境では、それぞれ176件のテストが通っています。誤差評価では3データ・4種類の保存結果・2方式を両環境で照合し、48出力の配列・表・PNG一致を確認しました。同じLinux CPU環境での確認で、別OSやGPUでの一致の保証ではありません。[検証記録](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/VALIDATION_METRIC_UNCERTAINTY.md)も残しています。
+0.4.0a7では、PyTorchの追加に備えてDLの共通処理とTensorFlow固有の学習処理を分離しました。現在使える学習バックエンドはTensorFlowです。JAXや、将来のJulia/Rust版も視野に入れていますが、今は未実装・未検証の展望としてDS向けの記事に記載しています。
+
+誤差評価を追加した0.4.0a6時点では、開発環境と独立wheel環境でそれぞれ176件のテストが通っています。誤差評価では3データ・4種類の保存結果・2方式を両環境で照合し、48出力の配列・表・PNG一致を確認しました。同じLinux CPU環境での確認で、別OSやGPUでの一致の保証ではありません。[検証記録](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/VALIDATION_METRIC_UNCERTAINTY.md)も残しています。
 
 ## ビジネス向けとDS向け、2つの完成形を目指す
 

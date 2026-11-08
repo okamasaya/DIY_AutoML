@@ -32,6 +32,8 @@ Python入口は `diy_automl.repeat_deep_learning_csv(csv, target, output, traini
 
 manifestには全seed・モデル設定・状態、入力/ソース/出力ハッシュ、TensorFlow/Kerasを含む依存版、実行環境を記録します。
 
+0.4.0a7では、DLのmanifestにdl_backend=tensorflowとdl_result_contract=dense-32-16-8-v1を追加しました。共通のデータ/結果検査とTensorFlow学習処理を分離し、旧manifestも検証できます。現在の学習実装はTensorFlowのみです。PyTorch追加の準備と重みの保存形式は[DL_BACKENDS.md](DL_BACKENDS.md)を参照してください。
+
 ## 失敗と途中保存
 
 開始前と各seedの開始・終了時に結果を保存します。実行中はmanifestをrunning、開始したseedもrunningにします。最初の例外で全体をfailedにし、完了済みseedはcompleted、失敗seedはfailed、それ以降はnot_runです。完了seedの履歴・予測・重みと、失敗seedで取得できたepoch履歴・重みを残します。失敗・未実行seedのtest指標は空欄にし、集計へ混ぜません。

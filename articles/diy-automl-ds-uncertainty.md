@@ -14,7 +14,7 @@ DIY AutoMLでは、その問いに戻れるように、分割・予測・反復�
 
 [親記事](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-evaluation-framework.md)では作り始めた理由と全体像を、[ビジネス向け](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-business-three-experiments.md)では身近なデータと誤りの件数を扱います。ここでは同じ根拠を、推定対象・評価単位・再現条件まで詳しく追います。
 
-対象は開発中の **0.4.0a6** です。`select/tune`のtest区間は、学習済みモデルと観測クラス別件数に条件付けています。新しい`uncertainty`は保存済みSL/DLへSE・クラス別区間を広げ、クラス件数固定/通常の行bootstrapを選べます。選定を含む学習手続き全体の不確かさや、系統誤差を網羅した区間は未実装です。現在の仕様と拡張設計を分けて記載します。
+対象は開発中の **0.4.0a7** です。`select/tune`のtest区間は、学習済みモデルと観測クラス別件数に条件付けています。新しい`uncertainty`は保存済みSL/DLへSE・クラス別区間を広げ、クラス件数固定/通常の行bootstrapを選べます。選定を含む学習手続き全体の不確かさや、系統誤差を網羅した区間は未実装です。現在の仕様と拡張設計を分けて記載します。
 
 ## DS版の完成形は、PyPIで配布するPythonパッケージ
 
@@ -34,6 +34,22 @@ DS版は、Pythonから駆動するパッケージとして整え、**PyPIへ公
 4. PyPIへα版を公開し、宣言した機能・API・配布手順が安定した段階で正式版へ進む。
 
 最新モデルをすべてそろえることを公開条件にはしません。各版で対応する評価とその前提を明示し、追加の重いモデルは引き続き後続のTo Doとして扱います。
+
+## TensorFlowを基準に、PyTorchの追加へ備える
+
+現在のDLはTensorFlow/Kerasです。元のNotebookと引継ぎがこの構成で、そのMLPを再実装しながら、分割・初期化・shuffle・履歴と重みの保存を検証してきました。PyTorchと比較してTensorFlowの方が高精度だった、という採用理由ではありません。
+
+PyTorchも使えるようにしていくことを見据え、0.4.0a7では共通のデータ準備・結果検査と、TensorFlow固有の学習処理を分離しました。返す予測、分割、seed、履歴、重みの形状と指標の対応を共通側で検査します。既存のTensorFlowの学習条件は維持し、今は追加実装が接続する境界を整える段階です。
+
+PyTorchの学習実装・選択用CLI・追加依存はまだありません。次に同じ小規模MLPから接続し、初期化、Adamの設定、dtype、データ順などを記録して確認する方針です。同じseed番号だけで初期重みや学習順序が一致するとは扱いません。[PyTorchの再現性資料](https://docs.pytorch.org/docs/stable/notes/randomness.html)も参考にします。
+
+## JAX・Julia・Rustも、将来の視野に入れる
+
+JAXにも関心があります。自分自身はまだ未経験なので、[公式資料](https://docs.jax.dev/en/latest/)を手がかりに、自動微分やJITを使う別の実装として検討したいと思っています。本プロジェクトで実装・比較済みという意味ではありません。
+
+Julia版やRust版も、今後の情勢や必要性を見ながら考えたい候補です。Juliaでは[MLJ](https://juliaai.github.io/MLJ.jl/stable/)のようなモデル比較の仕組みを参考にできます。Rustでは独立した版を作る案に加え、[PyO3](https://pyo3.rs/)などでPythonのAPIを保ちながら一部処理を実装する案もあります。全体の移植と一部の実装変更は、別の範囲として考えます。
+
+これらは将来展望で、対応時期や実装方式は未定です。言語やframeworkが変わっても、評価単位・前処理・指標・不確かさの意味をどうそろえるかを確認していきたいです。[現在の準備と今後の条件](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/DL_BACKENDS.md)に整理しています。
 
 ## 評価したい量と、動かすものを分ける
 

@@ -1,0 +1,121 @@
+{
+  "schema_version": 9,
+  "status": "completed",
+  "implementation": "reimplemented; historical source unavailable",
+  "version": "0.4.0a7",
+  "python": "3.12.14",
+  "settings": {
+    "source": "/workspace/work/dl-backend-preparation-0.4.0a7/dev-final/wine",
+    "bootstrap_repeats": 1000,
+    "confidence": 0.95,
+    "bootstrap_seed": 43,
+    "resampling": "stratified",
+    "limits": {
+      "rows": 10000,
+      "classes": 50,
+      "evaluations": 20,
+      "draws": 10000000,
+      "score_values": 5000000
+    }
+  },
+  "source_hashes": {
+    "__init__.py": "53ac9dbc483d383f6480c5915ab869a9199fafc759c4a08959494e2e7043cf11",
+    "__main__.py": "cf7390a2508a0fcad4777a4a629fc5212ab655cb45845975995f835676a834e3",
+    "cli.py": "0d31c9992f2eab1a5b0120d783e1faef79ab1454cda8121309b1d97b4e02e450",
+    "clustering.py": "d9370b2847aed19fcc58f75ae5e25486aee1e3f24c9dfd053055cb55b89b1be8",
+    "clustering_repeat_workflow.py": "88080961d870f312372ff0909ab40d916bade16183cb9559d2c22c6c66953778",
+    "clustering_repeated.py": "305a831892d2e7265e05bfae96957e811433ef2cfaa873a61fbc0bd63ade6f0d",
+    "clustering_subsample.py": "992f25218d2f43291ecd9cb5715604206dcf545d80c91d8fcbd1cc3f64a665c4",
+    "clustering_subsample_workflow.py": "918dff90270a2d6f18e33fdc3bcaaa11ee702c36369af1176f6fbec89f46d233",
+    "data.py": "39a4cb6431ec1bbe0df13c5a66340f4fab65a8563e493ea1729524a3fe6505f1",
+    "deep_learning.py": "844db15ed81832bdc4c87a605dc8efc9428d21c3936db5ce090eaf4683249e99",
+    "deep_learning_repeat_workflow.py": "27bddc8b5ea350887824deeec395a865859cf6ec8077a7463105d647b1ff2783",
+    "dl_contract.py": "0bfb275714035de641f0e147454548e787fe1b2c9729559bf6ec5bbe26ec1088",
+    "dl_repeat_validation.py": "cf32318d77226d9f6795696d44c5782abbae16d4378888fb2379a44e266d6131",
+    "excel_report.py": "b5a65c03e55cbc80939b898f26827ac49b8e4df0308be95056eacdf46a0e1cf4",
+    "excel_report_validation.py": "33a1994fd93155bcf0812ce8886ae45fc39dfa16c83c920dc7f42f7259d33967",
+    "metric_uncertainty.py": "362ed5ccb16a7051f1f4c46dc4b73c3bfcca7a58e55bfb4af32f505a75cd095a",
+    "plotting.py": "1b911f4fb2dfc9c33f7828be7521a1a05dc7d493d1fcad56191bd6062eead970",
+    "report_figures.py": "1ea4ce53e0181747f4b35210c1a545a6882dae031df74225a61d47a444158456",
+    "reporting.py": "feb1af527ac918798245cc98325e6bce01388a8e6b9474b943839d5784932aca",
+    "selection.py": "89968d77968cb99348ac8d2838efad762ce7acebc791db5c6d32d9a9ba96a897",
+    "selection_workflow.py": "a586cf11e012d0b2b40c286d2163e220d555a80d53d4a7434953746641bedb40",
+    "supervised.py": "f3925c28f25f7c30885bb37c95675016826a7f2b41b99afb30c2c7b16efe00a5",
+    "tensorflow_backend.py": "e1cc0514f5bd8ae80a1ca36bc49d5172a7d5af90352e13c7d0c98c2d621c2ca9",
+    "tuning.py": "f483f6dc7505a81dfbbb7a7ed06aafa2788669d37573e6791be6c73e9cb63992",
+    "tuning_validation.py": "29e12b39ab8da3b840269f2d9a2a6356c2253260c79d5e3e4c305d45814029ac",
+    "tuning_workflow.py": "50fff96e69d7942b9ac731cdab4357a19dcb9ea2a1b24435c15eeac32bd9d460",
+    "ul_subsample_validation.py": "6e6c3845ab0eee6feaec090d9e67ea407a6fcddc726cf907cc1887a4f08dd581",
+    "uncertainty_validation.py": "1ba2a824f6b10d7d114cd82addb7f11483aefa9f208dcd15285e3bf2b62fdfff",
+    "uncertainty_workflow.py": "e90b9957cbb3eec4d9f08793cd86faff4dbbdc787d140bae699ac3c042e7f578",
+    "validation.py": "1a8a9dd9ecba7bd9e07370c2833ad8cd7ddad9b08f08740d1166d3426c1a13b6",
+    "workflow.py": "d358f95633b64ce07cd0676a009b586cf41690f72dad7cfab4941a374e771bac"
+  },
+  "dependencies": {
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "scipy": "1.17.0",
+    "scikit-learn": "1.8.0",
+    "openpyxl": "3.1.5"
+  },
+  "created_utc": "2026-11-08T23:48:40.033797+00:00",
+  "platform": "Linux-6.18.57-x86_64-with-glibc2.41",
+  "source_schema": 5,
+  "source_version": "0.4.0a7",
+  "source_artifacts": {
+    "manifest.json": "2cbc5d8a9fa39db4fded8fe1a85ce7ef3298d1bde3e2dc27a99c18179846a367",
+    "report.xlsx": "e1abeaddbda40d485d7f45b3b8d6fc037872d62c4edab7a4111bbed45c8193bc",
+    "arrays.npz": "2c96aa078e2cdf48ac801c5979fbb7b5f57506aaccf484ed16aabb444b9388e3"
+  },
+  "classes": [
+    0,
+    1,
+    2
+  ],
+  "evaluations": [
+    {
+      "id": "evaluation_0",
+      "model": "MLP seed 42",
+      "role": "fixed training seed; all seeds retained; not selection",
+      "source_sheet": "DL_By_Seed",
+      "source_row": 0
+    },
+    {
+      "id": "evaluation_1",
+      "model": "MLP seed 43",
+      "role": "fixed training seed; all seeds retained; not selection",
+      "source_sheet": "DL_By_Seed",
+      "source_row": 1
+    }
+  ],
+  "scope": {
+    "Target": "Sampling uncertainty of each fixed fitted model; no model or seed selection",
+    "Unit": "Rows assumed independent and representative; not verified by this report",
+    "SE": "Sample SD of bootstrap estimates (ddof=1); not SD/sqrt(replicates)",
+    "Interval": "Marginal paired percentile interval; linear quantiles; no simultaneous coverage claim",
+    "Macro": "Fixed full class list; zero_division=0; macro F1 is mean of class F1 values",
+    "Excluded": "Training/search/refit variability; group/time dependence; distribution shift; systematic and numerical error",
+    "Zero width": "Does not imply no unknown uncertainty; absent classes contain no recall information",
+    "Probability": "Metric confidence intervals are not probabilities of individual predictions",
+    "Comparison": "No significance test, automatic recommendation, or ranking by test scores",
+    "Data": "Previously examined datasets remain development examples, not new external validation"
+  },
+  "stage": "completed",
+  "sheets": {
+    "Metric_Uncertainty": 8,
+    "Class_Uncertainty": 18,
+    "Evaluation_Units": 2,
+    "Bootstrap": 2000,
+    "Scope": 11,
+    "Summary": 7,
+    "Intervals": 1
+  },
+  "artifacts": {
+    "report.xlsx": "c47cd6f6be4f13f593d13ea41e44e83d6598b98242a947327877e4a3c3cc42a5",
+    "arrays.npz": "cca52023e524769faaf7601e0a16936dbd128815a0dbec39816061e25a2a1e45",
+    "source_manifest.json": "2cbc5d8a9fa39db4fded8fe1a85ce7ef3298d1bde3e2dc27a99c18179846a367",
+    "source_report.xlsx": "e1abeaddbda40d485d7f45b3b8d6fc037872d62c4edab7a4111bbed45c8193bc",
+    "metric_intervals.png": "e381a0e9c81de0387d766f4bae66dd656859f3fec81c477fc52243243ceb5262"
+  },
+  "figure_count": 1
+}

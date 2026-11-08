@@ -31,7 +31,7 @@ mainがローカルにない場合、通常は`git switch main`がorigin/mainを
 
 最初にREADME.md、docs/RESET_HANDOFF.md、docs/ROADMAP.md、docs/UL_REPEAT_GUIDE.md、docs/VALIDATION_UL_REPEAT.md、tests/TEST_PLAN.mdを読みます。コードはsrc、原本はoriginals、検証結果はtests/results、実行済み出力はvalidation/currentにあります。旧0.4の復元ではなく、元資料からの再実装です。
 
-現在の版は0.4.0a6です。開発・独立wheel環境の各176 passedと48出力の照合記録はtests/results/0.4.0a6、誤差評価の手順はdocs/METRIC_UNCERTAINTY_GUIDE.mdにあります。mainへの移行は文書とGitの参照先の変更で、学習コードの変更や新しいテスト実行ではありません。以下の23 passed等は初回再実装時点の記録です。
+現在の版は0.4.0a7です。DLバックエンド追加の準備と検証はdocs/DL_BACKENDS.md、docs/VALIDATION_DL_BACKEND_PREPARATION.md、tests/results/0.4.0a7にあります。0.4.0a6当時の開発・独立wheel環境の各176 passedと48出力の照合記録はtests/results/0.4.0a6、誤差評価の手順はdocs/METRIC_UNCERTAINTY_GUIDE.mdです。mainへの移行自体は文書とGitの参照先の変更でした。以下の23 passed等は初回再実装時点の記録です。
 
 Python 3.12/Linux CPU環境を作る場合:
 

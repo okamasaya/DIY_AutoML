@@ -26,6 +26,9 @@ def prepare(output,schema,settings):
     manifest["created_utc"]=datetime.now(timezone.utc).isoformat()
     manifest["platform"]=platform.platform()
     if "dl" in settings.get("methods",[]):
+        from .dl_contract import RESULT_CONTRACT
+        manifest["dl_backend"]="tensorflow"
+        manifest["dl_result_contract"]=RESULT_CONTRACT
         for name in ("tensorflow-cpu","keras"):
             try: manifest["dependencies"][name]=importlib.metadata.version(name)
             except importlib.metadata.PackageNotFoundError: manifest["dependencies"][name]="not installed"

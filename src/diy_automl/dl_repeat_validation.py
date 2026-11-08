@@ -21,6 +21,9 @@ def validate_dl_repeat(directory, allow_failed=False):
     root = Path(directory)
     manifest = json.loads((root/'manifest.json').read_text())
     require(manifest['schema_version'] == 5, 'Unexpected schema')
+    from .dl_contract import RESULT_CONTRACT
+    require(manifest.get('dl_backend','tensorflow')=='tensorflow','Unsupported DL backend')
+    require(manifest.get('dl_result_contract',RESULT_CONTRACT)==RESULT_CONTRACT,'Unsupported DL result contract')
     status = manifest['status']
     require(status == 'completed' or (allow_failed and status == 'failed'), 'Run did not complete')
     for name in ['arrays.npz', 'report.xlsx']:

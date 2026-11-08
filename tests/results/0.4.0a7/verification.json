@@ -1,0 +1,88 @@
+{
+  "status": "passed",
+  "version": "0.4.0a7",
+  "python": "3.12.14",
+  "platform": "Linux CPU; separate virtual environments on the same machine",
+  "pytest": {
+    "dev": {
+      "tests": 200,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "wheel": {
+      "tests": 200,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "pip_check": {
+    "dev": "passed",
+    "wheel": "passed",
+    "core": "passed"
+  },
+  "wheel": {
+    "file": "diy_automl-0.4.0a7-py3-none-any.whl",
+    "sha256": "f9e80eb7755b9c3d1b43d296f770c537972310fa310fc301f01267860ed971fa",
+    "all_package_python_files_equal_source": true
+  },
+  "tensorflow_fit_function_text_unchanged": true,
+  "tensorflow_fit_function_sha256": "51ab14077020b720b060fc0e4a740ba009e78bc034d6b22f2cd889ad0951b912",
+  "experiments": {
+    "datasets": 3,
+    "training_seeds": [
+      42,
+      43
+    ],
+    "epochs": 100,
+    "environments": 2,
+    "new_training_fits": 12,
+    "numerical_runs": 6,
+    "illustrated_reports": 6,
+    "uncertainty_reports": 6,
+    "embedded_pngs": 18,
+    "legacy_arrays_predictions_weights_and_histories_equal": true,
+    "all_cross_environment_arrays_tables_png_equal": true,
+    "train_time_excluded": true
+  },
+  "tensorflow_free_core": "core-smoke.json",
+  "source_hashes": {
+    "__init__.py": "53ac9dbc483d383f6480c5915ab869a9199fafc759c4a08959494e2e7043cf11",
+    "__main__.py": "cf7390a2508a0fcad4777a4a629fc5212ab655cb45845975995f835676a834e3",
+    "cli.py": "0d31c9992f2eab1a5b0120d783e1faef79ab1454cda8121309b1d97b4e02e450",
+    "clustering.py": "d9370b2847aed19fcc58f75ae5e25486aee1e3f24c9dfd053055cb55b89b1be8",
+    "clustering_repeat_workflow.py": "88080961d870f312372ff0909ab40d916bade16183cb9559d2c22c6c66953778",
+    "clustering_repeated.py": "305a831892d2e7265e05bfae96957e811433ef2cfaa873a61fbc0bd63ade6f0d",
+    "clustering_subsample.py": "992f25218d2f43291ecd9cb5715604206dcf545d80c91d8fcbd1cc3f64a665c4",
+    "clustering_subsample_workflow.py": "918dff90270a2d6f18e33fdc3bcaaa11ee702c36369af1176f6fbec89f46d233",
+    "data.py": "39a4cb6431ec1bbe0df13c5a66340f4fab65a8563e493ea1729524a3fe6505f1",
+    "deep_learning.py": "844db15ed81832bdc4c87a605dc8efc9428d21c3936db5ce090eaf4683249e99",
+    "deep_learning_repeat_workflow.py": "27bddc8b5ea350887824deeec395a865859cf6ec8077a7463105d647b1ff2783",
+    "dl_contract.py": "0bfb275714035de641f0e147454548e787fe1b2c9729559bf6ec5bbe26ec1088",
+    "dl_repeat_validation.py": "cf32318d77226d9f6795696d44c5782abbae16d4378888fb2379a44e266d6131",
+    "excel_report.py": "b5a65c03e55cbc80939b898f26827ac49b8e4df0308be95056eacdf46a0e1cf4",
+    "excel_report_validation.py": "33a1994fd93155bcf0812ce8886ae45fc39dfa16c83c920dc7f42f7259d33967",
+    "metric_uncertainty.py": "362ed5ccb16a7051f1f4c46dc4b73c3bfcca7a58e55bfb4af32f505a75cd095a",
+    "plotting.py": "1b911f4fb2dfc9c33f7828be7521a1a05dc7d493d1fcad56191bd6062eead970",
+    "report_figures.py": "1ea4ce53e0181747f4b35210c1a545a6882dae031df74225a61d47a444158456",
+    "reporting.py": "feb1af527ac918798245cc98325e6bce01388a8e6b9474b943839d5784932aca",
+    "selection.py": "89968d77968cb99348ac8d2838efad762ce7acebc791db5c6d32d9a9ba96a897",
+    "selection_workflow.py": "a586cf11e012d0b2b40c286d2163e220d555a80d53d4a7434953746641bedb40",
+    "supervised.py": "f3925c28f25f7c30885bb37c95675016826a7f2b41b99afb30c2c7b16efe00a5",
+    "tensorflow_backend.py": "e1cc0514f5bd8ae80a1ca36bc49d5172a7d5af90352e13c7d0c98c2d621c2ca9",
+    "tuning.py": "f483f6dc7505a81dfbbb7a7ed06aafa2788669d37573e6791be6c73e9cb63992",
+    "tuning_validation.py": "29e12b39ab8da3b840269f2d9a2a6356c2253260c79d5e3e4c305d45814029ac",
+    "tuning_workflow.py": "50fff96e69d7942b9ac731cdab4357a19dcb9ea2a1b24435c15eeac32bd9d460",
+    "ul_subsample_validation.py": "6e6c3845ab0eee6feaec090d9e67ea407a6fcddc726cf907cc1887a4f08dd581",
+    "uncertainty_validation.py": "1ba2a824f6b10d7d114cd82addb7f11483aefa9f208dcd15285e3bf2b62fdfff",
+    "uncertainty_workflow.py": "e90b9957cbb3eec4d9f08793cd86faff4dbbdc787d140bae699ac3c042e7f578",
+    "validation.py": "1a8a9dd9ecba7bd9e07370c2833ad8cd7ddad9b08f08740d1166d3426c1a13b6",
+    "workflow.py": "d358f95633b64ce07cd0676a009b586cf41690f72dad7cfab4941a374e771bac"
+  },
+  "historical_a6_evidence_and_a2_results_unchanged": true,
+  "pytorch_implemented": false,
+  "jax_implemented": false,
+  "dependencies_added": false,
+  "limits": "TensorFlow reference MLP only; no backend selector or performance comparison, no GPU/other OS verification, no PyPI/Zenn publication"
+}

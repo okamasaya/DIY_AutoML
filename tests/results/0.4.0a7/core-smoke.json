@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "version": "0.4.0a7",
+  "installed_module": "/workspace/work/core-a4-venv/lib/python3.12/site-packages/diy_automl/__init__.py",
+  "frameworks_absent": [
+    "tensorflow",
+    "keras",
+    "torch",
+    "jax"
+  ],
+  "saved_dl_runs_validated": 3,
+  "wine_illustrated_report_validated": true,
+  "wine_uncertainty_validated": true,
+  "uncertainty_arrays_and_png_equal": true
+}

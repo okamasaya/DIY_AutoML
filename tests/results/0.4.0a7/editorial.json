@@ -1,0 +1,103 @@
+{
+  "status": "passed",
+  "version": "0.4.0a7",
+  "kind": "backend-preparation-and-future-language-editorial",
+  "pytorch_implemented": false,
+  "jax_implemented": false,
+  "julia_rust_implemented": false,
+  "renderer": "zenn-markdown-html 0.5.14",
+  "checks": {
+    "markdown_files": 16,
+    "articles_published": false,
+    "local_images": 2,
+    "internal_links": 60,
+    "shell_syntax_blocks": 18,
+    "python_syntax_blocks": 1,
+    "business_se_and_intervals_match_saved_results": true,
+    "display_equations_converted": 4,
+    "browser_math_rendering_checked": false,
+    "zenn_publication_performed": false
+  },
+  "files": [
+    {
+      "file": "articles/diy-automl-evaluation-framework.md",
+      "sha256": "a9842dc0c3ea912a88d33123da180b11ae4491495f475c441541acd6bb3ff0cf",
+      "rendered": true
+    },
+    {
+      "file": "articles/diy-automl-business-three-experiments.md",
+      "sha256": "24520137c09030c337ab1ef190a29553fa16fcdffe4f1406c02a75b5facbfb44",
+      "rendered": true
+    },
+    {
+      "file": "articles/diy-automl-ds-uncertainty.md",
+      "sha256": "e900fd6847aeb29a61ce82087b3e6a752d7c558403f98ede9ddd05935a2b44fe",
+      "rendered": true
+    },
+    {
+      "file": "README.md",
+      "sha256": "870dbc9079053e9913f6b89da60ca38e90cfed1782df15e27239485c9efcd23b",
+      "rendered": true
+    },
+    {
+      "file": "docs/RESET_HANDOFF.md",
+      "sha256": "7bfc785d475685cf764ab577f90ef4cfdd51681eeb80b7a3f926e116f238eb60",
+      "rendered": true
+    },
+    {
+      "file": "docs/ROADMAP.md",
+      "sha256": "596af94a038213595bfa5025a033cf21addcd934fe1f91da9b7c1950a157b8a9",
+      "rendered": true
+    },
+    {
+      "file": "docs/AUDIENCE_PLAN.md",
+      "sha256": "9604955817dd4280a346315bd592b00f07682a0b3601e4959fee2c7b7c9dc31a",
+      "rendered": true
+    },
+    {
+      "file": "docs/COMMIT_GUIDE.md",
+      "sha256": "3cb0c60d8b2d5dd585f35c954cce5d18a5a2a418c9b49f43a037d6f73591d067",
+      "rendered": true
+    },
+    {
+      "file": "docs/DL_REPEAT_GUIDE.md",
+      "sha256": "51e132e137f7b6ae4c9295a8833c24d448601dc4d7972252ba61d71ea555bfe4",
+      "rendered": true
+    },
+    {
+      "file": "docs/DL_BACKENDS.md",
+      "sha256": "cf40b364f2b4ff35b64c932cee68bf00ef0ba9897ee61c4418b253767c7ac3ec",
+      "rendered": true
+    },
+    {
+      "file": "docs/VALIDATION_DL_BACKEND_PREPARATION.md",
+      "sha256": "caff71dfd85d6cf636962a15fc31d2c578b1d156d93330f8a8ada6b16cf7d24c",
+      "rendered": true
+    },
+    {
+      "file": "docs/MODEL_VALIDATION_TODO.md",
+      "sha256": "14c9a89a0b9b565b22b8c1c4b11e74e402430fc428ca277ae573d7f2346a7644",
+      "rendered": true
+    },
+    {
+      "file": "docs/ZENN_GUIDE.md",
+      "sha256": "31e0492f7b5c3ba9a2b194313153d1191d1c9eca2554dd5314ba1f0f81c4b011",
+      "rendered": true
+    },
+    {
+      "file": "docs/ZENN_EDITORIAL_NOTES.md",
+      "sha256": "c8d77780f4c1a6b14aa66acdba3ac8020a214a5c08db8f78af52d28077276f0f",
+      "rendered": true
+    },
+    {
+      "file": "tests/TEST_PLAN.md",
+      "sha256": "2d2fd83a91aa2ecdca8ce757d3cb62d05abcdb589abbd9e811b22048bd4c8663",
+      "rendered": true
+    },
+    {
+      "file": "validation/dl-backend-preparation-0.4.0a7/README.md",
+      "sha256": "2bda495f093362d897c5a255262ab33ef1e8077c697c24c10ab562177a643316",
+      "rendered": true
+    }
+  ]
+}

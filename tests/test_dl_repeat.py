@@ -28,6 +28,8 @@ def test_complete_results_and_single_seed_equivalence(completed):
                                   'DL_Settings':2,'DL_Splits':150,'Summary':10}
     assert manifest['settings']['training_seeds'] == [43,42]
     assert 'tensorflow-cpu' in manifest['dependencies']
+    assert manifest['dl_backend']=='tensorflow'
+    assert manifest['dl_result_contract']=='dense-32-16-8-v1'
     frames = pd.read_excel(completed/'report.xlsx',sheet_name=None)
     assert frames['DL_By_Seed']['Training Seed'].tolist() == [43,42]
     d = load_csv(CSV,'target')
