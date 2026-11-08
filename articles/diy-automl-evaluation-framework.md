@@ -16,7 +16,7 @@ Notebookで進めていた教師あり学習（SL）・教師なし学習（UL�
 
 「一番よさそうなモデルを自動で出す」ことより、**比較の手順と判断材料を残すこと**に重点を置いています。Excelに加えて、分割index・予測・クラスタ割当などのNPZと、設定・版・ハッシュを記録するmanifestを保存します。
 
-この記事は開発中の **0.4.0a4** を対象としています。現在の実装は上記の専用ブランチにあります。mainは初期状態のため、下のcloneでもブランチを指定しています。元のクラウド環境のソース一式は取得できず、手元に残った元資料と引継ぎ仕様から再実装したものです。以前の制作物をそのまま復元したという扱いにはしていません。
+この記事は開発中の **0.4.0a5** を対象としています。現在の実装は上記の専用ブランチにあります。mainは初期状態のため、下のcloneでもブランチを指定しています。元のクラウド環境のソース一式は取得できず、手元に残った元資料と引継ぎ仕様から再実装したものです。以前の制作物をそのまま復元したという扱いにはしていません。
 
 ## 入口を目的ごとに分ける
 
@@ -28,10 +28,25 @@ Notebookで進めていた教師あり学習（SL）・教師なし学習（UL�
 | `repeat-ul` | 同じデータでKMeans/GMMの初期化seedを変えたときの違い |
 | `repeat-dl` | 分割を固定してMLPの学習seedを変えたときの違い |
 | `subsample-ul` | データの一部を取り除いたとき、クラスタ構造が保たれるか |
+| `report` | 保存済みの結果から、再学習せずに図付きExcelを作る |
 
 SLはDecision Tree、Random Forest、Logistic Regression、SVM、k-NNです。ULはKMeans、GMM、階層法4種類で、既定k=2〜10の54候補。DLは32-16-8のMLPを使っています。
 
 SL/DLの予測指標とULのクラスタ指標を混ぜた総合ランキングは作りません。たとえばSilhouetteが高いことと、正解ラベルによく一致することは、別の性質だからです。
+
+## 新しいモデルで、どこまで結果は変わるか
+
+新しいモデルを使っても、手元のデータでは改善が小さいことがあります。改善幅はデータの性質、評価方法、探索に使う計算予算などによって変わります。モデルの新しさだけで、業務上の効果が大きくなるとは判断できません。
+
+Grinsztajnらの2022年の研究では、中規模の表形式データのベンチマークで木系モデルが強い結果を示しました。ただし、これは当時の手法と実験条件での報告です。[Why do tree-based models still outperform deep learning on tabular data?](https://arxiv.org/abs/2207.08815)
+
+2025年のTabArenaの論文では、勾配ブースティングが引き続き有力である一方、計算予算を増やしたアンサンブルでは深層学習も競争力を持ち、基盤モデルは小規模データで強いと報告されています。[TabArena: A Living Benchmark for Machine Learning on Tabular Data](https://proceedings.neurips.cc/paper_files/paper/2025/hash/1697e3fb412da11dc9488249f9e7bbc9-Abstract-Datasets_and_Benchmarks_Track.html)
+
+また、TabPFNの2025年の論文には、小規模から中規模のデータで既存手法から大きく改善した結果があります。新しい手法の効果が小さいという一般則があるわけではありません。[Accurate predictions on small data with a tabular foundation model](https://www.nature.com/articles/s41586-024-08328-6)
+
+これらは文献での知見です。このリポジトリで勾配ブースティングやTabPFNを比較検証した結果ではありません。同梱3データでの検証から、最新モデルと同等の性能だと主張することもできません。追加モデル、特に計算負荷の高いものの検証は今後のTo Doにしています。
+
+実際の利用では、許容できる誤りや運用負荷を先に整理し、学習側で比較・選定したうえで保留したtestを評価します。精度の差に加え、実行時間、必要なメモリ、結果の説明や再実行のしやすさも、採用を考える材料になります。
 
 ## モデルを選ぶ前にtestを分ける
 
@@ -88,6 +103,15 @@ python3.12 -m venv .venv
 
 `report.xlsx` には候補の設定、各foldの結果、平均・SD、選定した1モデルのtest結果、bootstrapと区間などが入ります。`arrays.npz` と `manifest.json` も一緒に残すことで、保存後に分割の混入や指標・設定の対応を検査できます。出力先は新規フォルダだけを使い、既存の実行を上書きしません。
 
+0.4.0a5では、この保存結果から図付きExcelも作れます。
+
+```sh
+.venv/bin/python -m diy_automl report --run runs/wine-tune --output runs/wine-tune-illustrated
+.venv/bin/python scripts/validate_excel_report.py runs/wine-tune-illustrated
+```
+
+開くファイルは `report_with_figures.xlsx` です。元の数値セル・シート名・順序を保ち、選定済みモデルのconfusion matrixと全候補の学習側CV平均・fold SDを埋め込みます。元の数値Excelも残します。
+
 探索的なSL/UL比較だけなら `run --methods sl ul` も使えます。DLも実行する場合は、READMEにある全依存用のロックでTensorFlow CPU/Kerasを導入します。
 
 ## どこまで確認したか
@@ -102,10 +126,14 @@ SLの探索では、開発環境と独立したwheel環境で、全候補のCV�
 
 [UL部分抽出の検証記録](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/VALIDATION_UL_SUBSAMPLE.md)
 
+[図付きExcelとNotebookの検証記録](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/VALIDATION_EXCEL_REPORT.md)
+
 同じCPU環境での一致確認であり、他OS・GPU・ライブラリ版での完全一致を保証するものではありません。また、指標が高いという理由だけで、そのモデルを実用途に使えると判断する機能はありません。
 
 ## 今後整えたいところ
 
-現在はラベル付き・欠損なし・数値特徴量の分類用CSVが対象です。回帰、欠損やカテゴリ特徴量への一般的な前処理、ラベルなしULには対応していません。Excelへの画像埋込、Web画面、Windows実機・exe化、ライセンスの選定も残っています。
+現在はラベル付き・欠損なし・数値特徴量の分類用CSVが対象です。回帰、欠損やカテゴリ特徴量への一般的な前処理、ラベルなしULには対応していません。Web画面、Windows実機・exe化、ライセンスの選定も残っています。
+
+この記事を入口として、DS向けにはNotebook/CLIからの詳細な使い方とモデル比較の広がりを、ビジネスパーソン向けには意味を理解しやすい業務データと主要モデルを使う手順を、別の記事へ分ける予定です。ファイルを渡してExcelを受け取るアプリも今後の実装です。
 
 開発中の小さな道具ですが、学習・評価・表示を分け、結果の根拠を後から追える形にする過程も含めて紹介していきたいと思います。

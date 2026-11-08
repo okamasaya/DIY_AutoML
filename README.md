@@ -87,4 +87,4 @@ Zenn用の新規紹介記事は `articles/diy-automl-evaluation-framework.md`、
 .venv/bin/python scripts/validate_excel_report.py runs/wine-tune-illustrated
 ```
 
-利用者が開くファイルは `report_with_figures.xlsx` です。操作と表示方針は `docs/EXCEL_REPORT_GUIDE.md`、検証は `docs/VALIDATION_EXCEL_REPORT.md` にあります。DS向けNotebook/CLIと、将来のビジネス向けアプリ・子記事をどう分けるかは `docs/AUDIENCE_PLAN.md` に記録しています。親記事のレビュー済み本文は0.4.0a4時点のまま保全しています。
+利用者が開くファイルは `report_with_figures.xlsx` です。操作と表示方針は `docs/EXCEL_REPORT_GUIDE.md`、検証は `docs/VALIDATION_EXCEL_REPORT.md` にあります。DS向けNotebook/CLIと、将来のビジネス向けアプリ・子記事をどう分けるかは `docs/AUDIENCE_PLAN.md` に記録しています。親記事は0.4.0a5へ更新し、モデルの新しさと改善幅の関係を参考文献付きで追記しました。追加モデル・データの検証、特に計算負荷の高い実験は `docs/MODEL_VALIDATION_TODO.md` の後続作業です。
