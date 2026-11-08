@@ -12,6 +12,9 @@ def validate(directory,schema=None,allow_failed=False):
     m=json.loads((root/"manifest.json").read_text())
     version=m["schema_version"]
     if schema is not None and schema!=version: raise ValueError("Unexpected schema")
+    if version==6:
+        from .ul_subsample_validation import validate_ul_subsample
+        return validate_ul_subsample(root,allow_failed=allow_failed)
     if version==5:
         from .dl_repeat_validation import validate_dl_repeat
         return validate_dl_repeat(root,allow_failed=allow_failed)

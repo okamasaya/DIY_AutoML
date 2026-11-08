@@ -1,6 +1,6 @@
 # DIY AutoML 再実装版
 
-旧クラウド環境の0.4.0a1ソースは未取得です。このリポジトリは元資料ZIPと引継ぎ仕様から新たに実装しました。初回再実装は **0.4.0a1.post1**、DL反復を追加した現在版は **0.4.0a2** です。旧実装とのAPI・数値・manifest互換性は保証していません。schema番号2/3/4は引継ぎの用途区分を採用したもので、旧validatorとの互換を意味しません。過去の96 passedは今回の検証結果ではありません。
+旧クラウド環境の0.4.0a1ソースは未取得です。このリポジトリは元資料ZIPと引継ぎ仕様から新たに実装しました。初回再実装は **0.4.0a1.post1**、DL反復を追加した版は **0.4.0a2**、UL部分抽出を追加した現在版は **0.4.0a3** です。旧実装とのAPI・数値・manifest互換性は保証していません。schema番号2/3/4は引継ぎの用途区分を採用したもので、旧validatorとの互換を意味しません。過去の96 passedは今回の検証結果ではありません。
 
 Python 3.12、数値特徴量・欠損なし・分類ラベル付きCSVが対象です。ULも外部診断のためtarget列が必要です。元資料は `originals/` に変更せず保存しています。ライセンスは未選定です。
 
@@ -53,3 +53,14 @@ Gitからの再開手順と、ローカルコミット・pushの確認方法は 
 ```
 
 詳細は `docs/DL_REPEAT_GUIDE.md`、今回の検証は `docs/VALIDATION_DL_REPEAT.md` を参照してください。初回再実装の検証記録は上書きせず保持しています。
+
+## ULの部分抽出による安定性（0.4.0a3）
+
+`subsample-ul`（schema 6）は80%の行を非復元抽出し、各部分集合だけで標準化と学習をやり直します。抽出seedとモデルseedを分離し、全データ参照とのARI、反復間の共通行だけのARI、元行index・scaler・全割当を保存します。少ない共通行や単一クラスタの比較は状態を明示して未採点とします。自動選定やSEM/CIはありません。
+
+```sh
+.venv/bin/python -m diy_automl subsample-ul --csv data/reference/wine.csv --target target --sample-seeds 42 43 44 --output runs/wine-subsample
+.venv/bin/python scripts/validate_ul_subsample.py runs/wine-subsample
+```
+
+新入口の上限は2,000行・100特徴量・参照を含む2,000候補fitです。詳細は `docs/UL_SUBSAMPLE_GUIDE.md`、検証結果は `docs/VALIDATION_UL_SUBSAMPLE.md` を参照してください。旧run/repeat-ulの動作と上限は維持しています。

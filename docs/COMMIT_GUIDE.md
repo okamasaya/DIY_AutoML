@@ -30,7 +30,7 @@ python3.12 -m venv .venv
 .venv/bin/python -m pytest -q
 ```
 
-DLはこの実行環境でTensorFlow CPU 2.20.0/Keras 3.15.1による100epochの学習を確認しました。別環境でのDL実行可否は、その環境の依存導入と実行結果で確認してください。今回の検証時点では23 passed、独立wheel環境でも23 passedです。詳細はtests/results/validation.jsonに保存しています。0.4.0a2のDL反復に関する追加結果はtests/results/0.4.0a2とdocs/VALIDATION_DL_REPEAT.mdを参照してください。このJSON内のcommit_pushは検証実行時点の記録であり、その後のGit保存状況は実際のGit履歴で確認してください。
+DLはこの実行環境でTensorFlow CPU 2.20.0/Keras 3.15.1による100epochの学習を確認しました。別環境でのDL実行可否は、その環境の依存導入と実行結果で確認してください。今回の検証時点では23 passed、独立wheel環境でも23 passedです。詳細はtests/results/validation.jsonに保存しています。0.4.0a2のDL反復に関する追加結果はtests/results/0.4.0a2とdocs/VALIDATION_DL_REPEAT.mdを参照してください。0.4.0a3のUL部分抽出の追加結果はtests/results/0.4.0a3とdocs/VALIDATION_UL_SUBSAMPLE.mdを参照してください。このJSON内のcommit_pushは検証実行時点の記録であり、その後のGit保存状況は実際のGit履歴で確認してください。
 
 .venv、キャッシュ、build、distは.gitignoreで除外しています。原本と参照CSVは.gitattributesで改行変換を無効にし、ハッシュを保ちます。wheelはソースから再作成できます。バックアップを作る場合:
 
