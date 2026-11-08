@@ -12,7 +12,7 @@ def select_csv(csv,target,output,seed=42,metric="F1",bootstrap_repeats=1000,boot
         d=load_csv(csv,target); train,test=split_indices(d.y,seed)
         model,name,folds,means,sd,ties,indices=select(d.X[train],d.y[train],seed,metric)
         pred=model.predict(d.X[test])
-        samples,intervals=bootstrap(d.y[test],pred,bootstrap_repeats,confidence,bootstrap_seed)
+        samples,intervals=bootstrap(d.y[test],pred,bootstrap_repeats,confidence,bootstrap_seed,classes=np.unique(d.y))
         m["selected_parameters"]=repr(model.get_params())
         m.update(classes=d.classes,features=d.feature_names,selected_model=name,tied_candidates=means.iloc[ties].Model.tolist(),
                  interval_scope="Conditional on fixed fitted model and observed class counts; excludes training and selection variability")

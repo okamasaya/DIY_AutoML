@@ -1,0 +1,9 @@
+flowchart TD
+    A[ラベル付き数値CSV] --> B[層化した固定分割]
+    B --> C[学習側の共通5foldで比較]
+    B --> T[保留するtest]
+    C --> D[CV平均で1設定を選ぶ]
+    D --> E[学習側全体で再学習]
+    E --> F[選定した1モデルだけ評価]
+    T --> F
+    F --> G[Excel・NPZ・manifest]

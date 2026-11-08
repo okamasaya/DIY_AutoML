@@ -26,11 +26,15 @@ def select(X,y,seed=42,metric="F1"):
     fitted=pipeline(model).fit(X,y)
     return fitted,name,scores,means,sd,ties,folds
 
-def bootstrap(y,pred,repeats=1000,confidence=.95,seed=43):
+def bootstrap(y,pred,repeats=1000,confidence=.95,seed=43,classes=None):
     if repeats<1 or not 0<confidence<1: raise ValueError("Invalid bootstrap settings")
     rng=np.random.default_rng(seed)
-    classes=np.unique(y)
-    groups=[np.flatnonzero(y==c) for c in classes]
+    y=np.asarray(y);pred=np.asarray(pred)
+    if y.ndim!=1 or pred.shape!=y.shape or len(y)==0: raise ValueError("Invalid bootstrap observations")
+    classes=np.unique(y) if classes is None else np.asarray(classes)
+    if classes.ndim!=1 or len(classes)!=len(np.unique(classes)) or not np.isin(y,classes).all():
+        raise ValueError("Invalid bootstrap classes")
+    groups=[np.flatnonzero(y==c) for c in classes if np.any(y==c)]
     samples=[]
     for _ in range(repeats):
         idx=np.concatenate([rng.choice(g,len(g),replace=True) for g in groups])

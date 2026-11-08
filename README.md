@@ -1,6 +1,6 @@
 # DIY AutoML 再実装版
 
-旧クラウド環境の0.4.0a1ソースは未取得です。このリポジトリは元資料ZIPと引継ぎ仕様から新たに実装しました。初回再実装は **0.4.0a1.post1**、DL反復を追加した版は **0.4.0a2**、UL部分抽出を追加した現在版は **0.4.0a3** です。旧実装とのAPI・数値・manifest互換性は保証していません。schema番号2/3/4は引継ぎの用途区分を採用したもので、旧validatorとの互換を意味しません。過去の96 passedは今回の検証結果ではありません。
+旧クラウド環境の0.4.0a1ソースは未取得です。このリポジトリは元資料ZIPと引継ぎ仕様から新たに実装しました。初回再実装は **0.4.0a1.post1**、DL反復を追加した版は **0.4.0a2**、UL部分抽出は **0.4.0a3**、SLの設定探索を追加した現在版は **0.4.0a4** です。旧実装とのAPI・数値・manifest互換性は保証していません。schema番号2/3/4は引継ぎの用途区分を採用したもので、旧validatorとの互換を意味しません。過去の96 passedは今回の検証結果ではありません。
 
 Python 3.12、数値特徴量・欠損なし・分類ラベル付きCSVが対象です。ULも外部診断のためtarget列が必要です。元資料は `originals/` に変更せず保存しています。ライセンスは未選定です。
 
@@ -64,3 +64,16 @@ Gitからの再開手順と、ローカルコミット・pushの確認方法は 
 ```
 
 新入口の上限は2,000行・100特徴量・参照を含む2,000候補fitです。詳細は `docs/UL_SUBSAMPLE_GUIDE.md`、検証結果は `docs/VALIDATION_UL_SUBSAMPLE.md` を参照してください。旧run/repeat-ulの動作と上限は維持しています。
+
+## SLの設定探索と紹介記事（0.4.0a4）
+
+`tune`（schema 7）は宣言した27設定を学習側の共通5foldで比較し、選定した1設定だけを再学習・test評価します。各foldのtrain-only scaler、同率時の候補順、条件付きbootstrapを使います。詳細は `docs/SL_TUNING_GUIDE.md`、検証結果は `docs/VALIDATION_SL_TUNING.md` に記載しています。
+
+```sh
+.venv/bin/python -m diy_automl tune --csv data/reference/wine.csv --target target --output runs/wine-tune
+.venv/bin/python scripts/validate_tuning_run.py runs/wine-tune
+```
+
+TensorFlowを導入せずSL/ULを試す場合は、`requirements-core.lock.txt` を導入してから `pip install --no-deps -e .` を実行できます。DLを含む全テストは従来の `requirements-local.lock.txt` を使用してください。
+
+Zenn用の新規紹介記事は `articles/diy-automl-evaluation-framework.md`、図は `images/diy-automl/selection-flow.png` に保存しています。`published: false` の下書きで、Zennへの投稿・公開は行っていません。操作と確認範囲は `docs/ZENN_GUIDE.md` を参照してください。

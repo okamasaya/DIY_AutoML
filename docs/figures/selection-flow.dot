@@ -1,0 +1,14 @@
+digraph evaluation {
+  graph [rankdir=TB, bgcolor="white", pad="0.35", nodesep="0.65", ranksep="0.48", dpi=160];
+  node [shape=box, style="rounded,filled", fontname="Noto Sans CJK JP", fontsize=16, margin="0.22,0.14", color="#c8d7e8", fillcolor="#f2f6fc", fontcolor="#183044", penwidth=1.5];
+  edge [color="#5a748d", penwidth=1.6, arrowsize=0.8];
+  A [label="ラベル付き数値CSV"];
+  B [label="最初に層化して固定分割"];
+  C [label="学習側 約80%\n共通5foldで27設定を比較\n各fold内の学習部分だけで標準化"];
+  T [label="test 約20%を保留\n設定選定には使わない", fillcolor="#fff6e7", color="#e8cf9e"];
+  D [label="CV平均で1設定を決定\n同率は宣言した候補順"];
+  E [label="学習側全体で再学習"];
+  F [label="選定した1モデルだけtest評価", fillcolor="#e7f7f2", color="#8fcbbb"];
+  G [label="Excel・NPZ・manifestへ保存"];
+  A -> B; B -> C; B -> T; C -> D; D -> E; E -> F; T -> F; F -> G;
+}

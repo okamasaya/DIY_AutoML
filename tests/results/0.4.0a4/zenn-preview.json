@@ -1,0 +1,20 @@
+{
+  "cli_version": "0.5.14",
+  "browser": "system Chromium, headless Playwright",
+  "article": "articles/diy-automl-evaluation-framework.md",
+  "article_sha256": "64fd3e1e1996488d82b0a54845efaf6c2856ebb4f7e9e0efac87136a85c2d0bf",
+  "published": false,
+  "deployed_to_zenn": false,
+  "page_errors": [],
+  "request_failures": [
+    {
+      "url": "https://embed.zenn.studio/js/listen-embed-event.js",
+      "failure": "net::ERR_TUNNEL_CONNECTION_FAILED"
+    }
+  ],
+  "diagram_loaded": true,
+  "diagram_bytes": 170770,
+  "external_embeds": 0,
+  "local_url": "http://127.0.0.1:8766/articles/diy-automl-evaluation-framework",
+  "rendered_title": "PythonでSL・UL・DLの比較と検証を追える自作評価ツールを作る"
+}
