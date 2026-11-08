@@ -43,3 +43,5 @@ DS向けは既存から新しいモデルまで任意の比較範囲、ビジネ
 0.4.0a6では`uncertainty`を実装し、親・DS記事の対象版を更新しました。bootstrap SE・クラス別区間・通常/層化の2方式・保存結果入口を追記し、ビジネス記事には3テーマで実際に計算したSEと出力先を追加しました。今回の原稿の変換・数値照合は `tests/results/0.4.0a6/editorial.json`、実装の検証は `tests/results/0.4.0a6/verification.json` です。3本ともpublished=falseを維持します。
 
 利用者の追加依頼により、親記事とDS記事に「ビジネス向けは使い勝手を重視した廉価版アプリ、DS向けはPythonで駆動しPyPIへ公開するパッケージ」という完成目標を追記しました。共通の評価コア、DS版の導入から結果検証までの完成条件、TestPyPI→PyPIのα版→正式版という配布方針を記載しています。公開名・ライセンスは未確定で、PyPI/TestPyPIへの公開やアプリ提供を完了した記述にはしません。今回の文書確認は `tests/results/editorial-distribution-goals-20261108.json` です。Zennの3下書きも未公開のままです。
+
+原稿下書きの依頼を受け、親記事を動機→実例→誤差評価→完成形の順で読める一次稿へ整えました。仮題は「機械学習のスコアに、誤差評価まで添えたくてAutoMLを自作しています」です。詳細な導入手順とCVフロー図はDS記事へ移し、ビジネス記事は導入と締めを整えています。外部の参考記事との文体比較は未実施で、これまで確認された語り口を基準にしています。編集意図と確認する観点は[ZENN_EDITORIAL_NOTES.md](ZENN_EDITORIAL_NOTES.md)、今回の変換・数値照合は `tests/results/editorial-readable-drafts-20261108.json` です。公開設定は変更しません。

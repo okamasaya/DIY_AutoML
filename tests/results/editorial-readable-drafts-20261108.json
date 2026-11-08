@@ -1,0 +1,101 @@
+{
+  "status": "passed",
+  "kind": "documentation-only-readable-article-drafts",
+  "base_commit": "aee21ba0452aca8f91fe87f48b91c9180a946a52",
+  "renderer": "zenn-markdown-html 0.5.14",
+  "no_code_changes": true,
+  "no_new_model_runs": true,
+  "pytest_rerun": false,
+  "external_style_reference_provided": false,
+  "external_style_comparison_performed": false,
+  "pypi_publication_performed": false,
+  "zenn_publication_performed": false,
+  "browser_preview_performed": false,
+  "checks": {
+    "markdown_files": 6,
+    "articles_remain_unpublished": true,
+    "repository_and_relative_links": 23,
+    "local_images": 2,
+    "shell_syntax_blocks": 4,
+    "python_syntax_blocks": 1,
+    "source_hashes_match_a6_validation": true,
+    "saved_business_metrics_and_comparisons_match": true,
+    "ds_display_equations_converted": 4
+  },
+  "files": [
+    {
+      "file": "articles/diy-automl-evaluation-framework.md",
+      "sha256": "15720693463b31bdcbf40bfdf10071517f4125d15225014521b11ea252a7d5aa",
+      "rendered": true,
+      "characters": 6399,
+      "front_matter": {
+        "title": "機械学習のスコアに、誤差評価まで添えたくてAutoMLを自作しています",
+        "emoji": "🧪",
+        "type": "tech",
+        "topics": [
+          "python",
+          "scikitlearn",
+          "machinelearning",
+          "automl",
+          "codex"
+        ],
+        "published": false
+      }
+    },
+    {
+      "file": "articles/diy-automl-ds-uncertainty.md",
+      "sha256": "ca74f826f6d94b43c5224f7e7c5c4610618a88440fbe6c550b1df6db488b63d6",
+      "rendered": true,
+      "characters": 8326,
+      "front_matter": {
+        "title": "DIY AutoMLの誤差評価を検査する：選定・条件付き区間・反復の設計",
+        "emoji": "📐",
+        "type": "tech",
+        "topics": [
+          "python",
+          "statistics",
+          "machinelearning",
+          "scikitlearn",
+          "automl"
+        ],
+        "published": false
+      }
+    },
+    {
+      "file": "articles/diy-automl-business-three-experiments.md",
+      "sha256": "24520137c09030c337ab1ef190a29553fa16fcdffe4f1406c02a75b5facbfb44",
+      "rendered": true,
+      "characters": 6497,
+      "front_matter": {
+        "title": "旅行・カフェ・買い物のデータを機械学習にかけたら、何が分かった？",
+        "emoji": "☕",
+        "type": "idea",
+        "topics": [
+          "machinelearning",
+          "python",
+          "dataanalysis",
+          "automl"
+        ],
+        "published": false
+      }
+    },
+    {
+      "file": "docs/AUDIENCE_PLAN.md",
+      "sha256": "82554d969544554deb64681af637ffdc4c003c9353f0313a5df9618038007f6c",
+      "rendered": true,
+      "characters": 4020
+    },
+    {
+      "file": "docs/ZENN_GUIDE.md",
+      "sha256": "27f6bfeb290c7058aa5a715cbb4c0903df707c832cd8a161f4398330834db0f2",
+      "rendered": true,
+      "characters": 3814
+    },
+    {
+      "file": "docs/ZENN_EDITORIAL_NOTES.md",
+      "sha256": "ab470dea9dfbd452938934199d24c9bc16926a9b532ef64130129b41db5b1b3b",
+      "rendered": true,
+      "characters": 1920
+    }
+  ]
+}

@@ -8,7 +8,11 @@ published: false
 
 ## スコアと一緒に、推定対象を記録する
 
-DIY AutoMLは、比較結果に誤差評価を含め、データ量・品質・学習の不安定さについて議論できる道具を目指しています。[親記事](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-evaluation-framework.md)から、ここでは推定対象と実装条件まで掘り下げます。[ビジネス向け](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-business-three-experiments.md)と同じ根拠を使い、説明の粒度を変えています。
+評価表に95%区間が付いていても、それが何の変動を含むかは別に確認したいところです。test標本だけを動かしたのか、学習や選定からやり直したのか。初期化seedを変えた結果と、同じ量として読めるのか。
+
+DIY AutoMLでは、その問いに戻れるように、分割・予測・反復値・設定を残します。この記事では、自分で計算と保存結果を検査するための条件を、数式と実装に沿って説明します。
+
+[親記事](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-evaluation-framework.md)では作り始めた理由と全体像を、[ビジネス向け](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-business-three-experiments.md)では身近なデータと誤りの件数を扱います。ここでは同じ根拠を、推定対象・評価単位・再現条件まで詳しく追います。
 
 対象は開発中の **0.4.0a6** です。`select/tune`のtest区間は、学習済みモデルと観測クラス別件数に条件付けています。新しい`uncertainty`は保存済みSL/DLへSE・クラス別区間を広げ、クラス件数固定/通常の行bootstrapを選べます。選定を含む学習手続き全体の不確かさや、系統誤差を網羅した区間は未実装です。現在の仕様と拡張設計を分けて記載します。
 
@@ -47,6 +51,10 @@ DS版は、Pythonから駆動するパッケージとして整え、**PyPIへ公
 
 `select`は固定5モデル、`tune`は宣言した27設定が対象です。約20%を層化testとして最初に分離し、学習側で共通の層化5foldを使います。各foldのStandardScalerはfoldの学習部分だけでfitします。既定主指標はmacro F1です。
 
+![学習側CVで設定を選び、保留したtestは最後の1モデルだけ評価する流れ](/images/diy-automl/selection-flow.png)
+
+図は`tune`の27設定を示しています。`select`は同じ手順で固定5モデルを比較します。
+
 候補$j$のfoldスコアを$s_{jk}$とすると、選定に使う値は次です。
 
 $$
@@ -83,7 +91,7 @@ $$
 
 `--resampling ordinary`では各反復で全test行から同数を復元抽出し、クラス件数も変動します。macroのクラス集合と`zero_division=0`は固定です。反復内でクラスが消える場合もあり、通常方式にすればクラス不足や行の依存が解消するわけではありません。各指標の周辺区間であり、複数モデルや指標に対する同時被覆を主張しません。
 
-主な解釈条件は次です。
+既定のクラス件数固定方式について、主な解釈条件は次です。
 
 - **学習済みモデルを固定**。学習・選定・再学習をやり直した変動は含みません。
 - **観測クラス別件数を固定**。クラス割合が変わる変動は含みません。あるクラスのtest観測が0なら、そのクラスの情報は復元できません。
@@ -120,7 +128,18 @@ ULでは正解とのTarget ARIと、割当どうしのAssignment ARIを分けま
 
 ## NotebookでもCLIでも、同じ評価経路を使う
 
-環境の導入は[親記事の手順](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-evaluation-framework.md)を使います。以下はリポジトリのルートから実行し、出力先は未作成のフォルダにします。
+現在の開発版はGitHubから導入します。以下はPython 3.12/Linux CPUで確認した構成です。コア用ロックにはTensorFlowを含めず、まずSL/ULを使える環境を作ります。
+
+```sh
+git clone --single-branch --branch main https://github.com/okamasaya/DIY_AutoML.git
+cd DIY_AutoML
+python3.12 -m venv .venv
+.venv/bin/python -m pip install -r requirements-core.lock.txt
+.venv/bin/python -m pip install --no-deps -e .
+.venv/bin/python -m pip check
+```
+
+DLを学習する場合は、[README](https://github.com/okamasaya/DIY_AutoML/blob/main/README.md)にある全依存用ロックを使います。ここからのコマンドはリポジトリのルートで実行し、出力先は未作成のフォルダにします。PyPI公開後の導入例は、公開レジストリからの手順を検証してから追加します。
 
 ```sh
 .venv/bin/python -m diy_automl select --csv data/reference/wine.csv --target target --output runs/ds-select
