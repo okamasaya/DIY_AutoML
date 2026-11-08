@@ -1,24 +1,37 @@
 # Gitへの保存と次の環境での再開
 
-2026年11月8日（日本時間）、利用者から「やってみましょう」「codexでgitへのcommitをやってみてください」と承認を受けました。以前のcommit/push保留方針を変更し、現在のコード・原本・資料・検証結果を専用ブランチへ保存する手順です。
+2026年11月8日（日本時間）、利用者から「codexでgitへのcommitをやってみてください」と承認を受け、まず専用の復旧ブランチへ保存しました。その後の「今のrecoverをメインに移動しても良いかな」という依頼により、mainを変更しない旧方針を更新し、成果物をmainへ反映しました。現在の通常の取得先はmainです。
 
 - リポジトリ: https://github.com/okamasaya/DIY_AutoML
-- 保存ブランチ: `recovery/reimplemented-0.4.0a1-post1`
+- 現在の案内・取得先: `main`
+- 移行前の保管ブランチ: `recovery/reimplemented-0.4.0a1-post1`（`b7e8a93`）
 - 開始時のmain: `b4f6f176182c7c10001ca5c82cbed7fe269c1f8e`（.gitkeepのみ）
-- mainへのマージ、force push、他のブランチの変更は行いません。
+- mainの初期commitから復旧ブランチまでは分岐がなく、履歴をそのまま引き継ぐfast-forwardで反映しました。案内先の修正はその上に文書commitとして追加しています。
+- 復旧ブランチは残し、履歴の書換え・force push・削除は行いません。既定ブランチは元からmainです。次の機能追加は別の作業ブランチで進めます。
 
-commitはローカルGitへの記録、pushはGitHubへの転送です。実行後、`git rev-parse HEAD` と `git ls-remote origin refs/heads/recovery/reimplemented-0.4.0a1-post1` のハッシュが一致することを確認します。さらに別ディレクトリへcloneして、同じファイルを取得できるか検証します。手元へのダウンロード成功とは別の確認です。
+commitはローカルGitへの記録、pushはGitHubへの転送です。mainへの反映後、`git rev-parse main` と `git ls-remote origin refs/heads/main` のハッシュが一致することを確認します。さらに別ディレクトリへmainをcloneして、同じファイルを取得できるか検証します。手元へのダウンロード成功とは別の確認です。
 
 ## 新しい環境での再開
 
 ```sh
-git clone --branch recovery/reimplemented-0.4.0a1-post1 --single-branch https://github.com/okamasaya/DIY_AutoML.git
+git clone --branch main --single-branch https://github.com/okamasaya/DIY_AutoML.git
 cd DIY_AutoML
 ```
 
-すでにこのリポジトリがある環境では、未保存の作業を確認・保全してから、通常のfetchとbranch切り替えを行ってください。mainのままでは今回の成果物は表示されません。
+すでにこのリポジトリがある環境では、未保存の作業を確認・保全してからmainを取得します。以前の復旧ブランチだけのsingle-branch cloneでも取得できるよう、mainを追跡対象へ追加しています。
+
+```sh
+git remote set-branches --add origin main
+git fetch origin
+git switch main
+git pull --ff-only origin main
+```
+
+mainがローカルにない場合、通常は`git switch main`がorigin/mainを追跡するブランチを作ります。ローカル独自の変更でfast-forwardできない場合は、作業を保全して差分を確認します。resetやforce pushで上書きする手順ではありません。
 
 最初にREADME.md、docs/RESET_HANDOFF.md、docs/ROADMAP.md、docs/UL_REPEAT_GUIDE.md、docs/VALIDATION_UL_REPEAT.md、tests/TEST_PLAN.mdを読みます。コードはsrc、原本はoriginals、検証結果はtests/results、実行済み出力はvalidation/currentにあります。旧0.4の復元ではなく、元資料からの再実装です。
+
+現在の版は0.4.0a6です。開発・独立wheel環境の各176 passedと48出力の照合記録はtests/results/0.4.0a6、誤差評価の手順はdocs/METRIC_UNCERTAINTY_GUIDE.mdにあります。mainへの移行は文書とGitの参照先の変更で、学習コードの変更や新しいテスト実行ではありません。以下の23 passed等は初回再実装時点の記録です。
 
 Python 3.12/Linux CPU環境を作る場合:
 

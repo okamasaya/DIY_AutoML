@@ -12,7 +12,7 @@ published: false
 
 こうした疑問を、公開データと自作の評価ツールDIY AutoMLで試してみました。既存の主要5モデルを使い、各テーマ最大2,000行のQuick & dirtyな試行です。結果が良くなかった例も、そのまま残しています。
 
-この記事はビジネス向けの実験解説の下書きです。ファイルを渡してExcelを受け取る画面アプリは今後の実装です。[ツール全体を紹介する親記事の下書き](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/articles/diy-automl-evaluation-framework.md)と、[実装ブランチ](https://github.com/okamasaya/DIY_AutoML/tree/recovery/reimplemented-0.4.0a1-post1)も参照できます。
+この記事はビジネス向けの実験解説の下書きです。ファイルを渡してExcelを受け取る画面アプリは今後の実装です。[ツール全体を紹介する親記事の下書き](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-evaluation-framework.md)と、[実装ブランチ](https://github.com/okamasaya/DIY_AutoML/tree/main)も参照できます。
 
 ## ここでいう「誤差」とは？
 
@@ -104,7 +104,7 @@ macro F1は、陽性・陰性の両側を重視する指標で、1が最大で�
 | カフェ券 | 0.692 | 0.0233 | 0.647〜0.739 |
 | 再購入 | 0.624 | 0.0254 | 0.573〜0.672 |
 
-[3テーマの誤差評価Excelと図](https://github.com/okamasaya/DIY_AutoML/tree/recovery/reimplemented-0.4.0a1-post1/validation/metric-uncertainty-0.4.0a6)を保存しています。モデルは学習し直さず、元の評価結果も残しました。
+[3テーマの誤差評価Excelと図](https://github.com/okamasaya/DIY_AutoML/tree/main/validation/metric-uncertainty-0.4.0a6)を保存しています。モデルは学習し直さず、元の評価結果も残しました。
 
 これは学習済みモデルを固定し、保留したデータから、正解クラス別の件数を保って重複を許して行を取り出し直す計算で求めた幅です。各行を独立な評価単位として扱えることなどが前提で、学習データやモデル選びのやり直し、将来の変化は含みません。F1=0.692は「69.2%の確率で当たる」という意味でもありません。
 
@@ -125,8 +125,8 @@ macro F1は、陽性・陰性の両側を重視する指標で、1が最大で�
 
 ビジネス向けは、主要モデル・少ない列・小規模な計算から使う構成を目指します。ここでいう簡易版は、計算量と説明を絞るという意味です。最初のExcelには件数、単純ルールとの比較、数値の揺れと注意点をまとめ、詳しい条件は後ろで確認できるようにします。この持ち込み用の画面や対比シートの自動生成は、今後の実装です。
 
-区間だけを見て「データ不足だから増やす」とは決めません。同じ人の繰返しなのか、正解ラベルは確かか、使いたい時期のデータなのかで、次に確認すべきことが変わります。専門的な推定条件と検証方法は、[DS向けの詳細下書き](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/articles/diy-automl-ds-uncertainty.md)へ分けています。
+区間だけを見て「データ不足だから増やす」とは決めません。同じ人の繰返しなのか、正解ラベルは確かか、使いたい時期のデータなのかで、次に確認すべきことが変わります。専門的な推定条件と検証方法は、[DS向けの詳細下書き](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-ds-uncertainty.md)へ分けています。
 
 見ているのは限られた公開データでの試行です。一般的な見方との方向の照合、条件を決めたモデル選定、単純な判断との比較までを行いました。施策の利益、実運用の効果、最新モデルとの差は検証していません。
 
-数値列の抽出、意味を固定した二値化、購入履歴の集計は、この実験用の加工です。汎用的なカテゴリ/欠損処理をツールへ追加したわけではありません。[加工条件・区間・参考ルール・保存結果の詳細](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/BUSINESS_QUICK_RESULTS.md)と、[再実行手順](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/experiments/business_quick_20261108/README.md)を残しています。
+数値列の抽出、意味を固定した二値化、購入履歴の集計は、この実験用の加工です。汎用的なカテゴリ/欠損処理をツールへ追加したわけではありません。[加工条件・区間・参考ルール・保存結果の詳細](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/BUSINESS_QUICK_RESULTS.md)と、[再実行手順](https://github.com/okamasaya/DIY_AutoML/blob/main/experiments/business_quick_20261108/README.md)を残しています。

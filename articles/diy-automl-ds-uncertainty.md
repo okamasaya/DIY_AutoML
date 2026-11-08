@@ -8,7 +8,7 @@ published: false
 
 ## スコアと一緒に、推定対象を記録する
 
-DIY AutoMLは、比較結果に誤差評価を含め、データ量・品質・学習の不安定さについて議論できる道具を目指しています。[親記事](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/articles/diy-automl-evaluation-framework.md)から、ここでは推定対象と実装条件まで掘り下げます。[ビジネス向け](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/articles/diy-automl-business-three-experiments.md)と同じ根拠を使い、説明の粒度を変えています。
+DIY AutoMLは、比較結果に誤差評価を含め、データ量・品質・学習の不安定さについて議論できる道具を目指しています。[親記事](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-evaluation-framework.md)から、ここでは推定対象と実装条件まで掘り下げます。[ビジネス向け](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-business-three-experiments.md)と同じ根拠を使い、説明の粒度を変えています。
 
 対象は開発中の **0.4.0a6** です。`select/tune`のtest区間は、学習済みモデルと観測クラス別件数に条件付けています。新しい`uncertainty`は保存済みSL/DLへSE・クラス別区間を広げ、クラス件数固定/通常の行bootstrapを選べます。選定を含む学習手続き全体の不確かさや、系統誤差を網羅した区間は未実装です。現在の仕様と拡張設計を分けて記載します。
 
@@ -73,7 +73,7 @@ $$
 
 この区間を個別予測の確率、将来の観測値の予測区間、学習手続き全体の区間と読み替えません。1つの区間を計算した後で「真の値が95%の確率でここに入る」とする解釈も使いません。
 
-実装は[selection.py](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/src/diy_automl/selection.py)、分割・保存との接続は[selection_workflow.py](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/src/diy_automl/selection_workflow.py)で確認できます。
+実装は[selection.py](https://github.com/okamasaya/DIY_AutoML/blob/main/src/diy_automl/selection.py)、分割・保存との接続は[selection_workflow.py](https://github.com/okamasaya/DIY_AutoML/blob/main/src/diy_automl/selection_workflow.py)で確認できます。
 
 ## seed反復と数値計算の検証を混同しない
 
@@ -97,11 +97,11 @@ ULでは正解とのTarget ARIと、割当どうしのAssignment ARIを分けま
 | カフェ券 | 同一回答者の複数回答だが回答者IDがない | 回答者単位で分離できるデータ。実購買を問うなら別の正解も必要 |
 | 通販 | 1顧客1行、1つの観測・追跡期間 | 予測時点をずらす時間外評価。取消を除いた正の売上という集計定義も点検 |
 
-カフェ券のF1=0.692、行単位の条件付き区間0.647〜0.739を、新しい回答者に対する妥当な95%区間とは扱いません。[実験条件と結果](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/BUSINESS_QUICK_RESULTS.md)に、取得元・加工・評価単位を残しています。
+カフェ券のF1=0.692、行単位の条件付き区間0.647〜0.739を、新しい回答者に対する妥当な95%区間とは扱いません。[実験条件と結果](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/BUSINESS_QUICK_RESULTS.md)に、取得元・加工・評価単位を残しています。
 
 ## NotebookでもCLIでも、同じ評価経路を使う
 
-環境の導入は[親記事の手順](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/articles/diy-automl-evaluation-framework.md)を使います。以下はリポジトリのルートから実行し、出力先は未作成のフォルダにします。
+環境の導入は[親記事の手順](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-evaluation-framework.md)を使います。以下はリポジトリのルートから実行し、出力先は未作成のフォルダにします。
 
 ```sh
 .venv/bin/python -m diy_automl select --csv data/reference/wine.csv --target target --output runs/ds-select
@@ -129,7 +129,7 @@ result = select_csv(
 )
 ```
 
-CLIの`select`もこの関数を呼びます。上の例は同じ設定ですが、今回の原稿編集に伴って再実行したコードではありません。既存の[実行済み比較Notebook](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/notebooks/Local_Comparison.ipynb)は探索的なSL/UL/DL比較で、`select`のCV選定とは入口が異なります。
+CLIの`select`もこの関数を呼びます。上の例は同じ設定ですが、今回の原稿編集に伴って再実行したコードではありません。既存の[実行済み比較Notebook](https://github.com/okamasaya/DIY_AutoML/blob/main/notebooks/Local_Comparison.ipynb)は探索的なSL/UL/DL比較で、`select`のCV選定とは入口が異なります。
 
 `select`のschema 3では、7シートの数値Excel、分割・foldのindex、test正解と予測、scaler情報、設定とハッシュを保存します。bootstrapの全反復値はExcelへ残します。`report`は別のschema 8成果物として図付きExcelを作り、元の評価結果を上書きしません。検証器は保存結果の整合性を確認するもので、標本の代表性や業務での妥当性まで認定するものではありません。`python -O`でassertを無効にせず実行します。
 
@@ -139,4 +139,4 @@ CLIの`select`もこの関数を呼びます。上の例は同じ設定ですが
 
 低い性能で曲線が頭打ちになっても、品質不良と一意に診断はできません。特徴量・モデルの適合、ラベル、本来的な予測困難さなどを照合します。確率を業務の判断へ使う場合は、[校正](https://scikit-learn.org/stable/modules/calibration.html)と[判定閾値](https://scikit-learn.org/stable/modules/classification_threshold.html)も別に評価します。Brier/log lossは校正だけの尺度ではありません。現行では確率校正・費用・閾値の最適化は未実装です。
 
-これらの設計は[UNCERTAINTY_DESIGN.md](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/UNCERTAINTY_DESIGN.md)に記録しています。重い追加モデルは引き続きTo Doです。比較対象を広げる際も、推定対象・分割・計算予算をそろえ、testを見て目的・候補・seedを選び直しません。
+これらの設計は[UNCERTAINTY_DESIGN.md](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/UNCERTAINTY_DESIGN.md)に記録しています。重い追加モデルは引き続きTo Doです。比較対象を広げる際も、推定対象・分割・計算予算をそろえ、testを見て目的・候補・seedを選び直しません。

@@ -12,7 +12,7 @@ published: false
 
 Notebookで進めていた教師あり学習（SL）・教師なし学習（UL）・深層学習（DL）の比較を、Codexと作業しながらPythonパッケージにまとめています。名前は **DIY AutoML** です。
 
-[GitHubの実装ブランチはこちらです](https://github.com/okamasaya/DIY_AutoML/tree/recovery/reimplemented-0.4.0a1-post1)。
+[GitHubリポジトリのmainはこちらです](https://github.com/okamasaya/DIY_AutoML/tree/main)。
 
 「一番よさそうなモデルを自動で出す」ことより、**比較の手順と判断材料を残すこと**に重点を置いています。Excelに加えて、分割index・予測・クラスタ割当などのNPZと、設定・版・ハッシュを記録するmanifestを保存します。
 
@@ -22,7 +22,7 @@ DIYした主な理由は、**MLの結果に誤差評価まで含めたい**か�
 
 さらに、データを使えるかという判断から、**何を測れば用途に合うモデル活用へ進めるか**を考えます。見逃しや誤案内をどこまで許容するかを先に決め、目的に合う指標で比較すること、DS以外の人にも誤りの件数と限界が伝わることを、これからの設計の軸にしています。[評価指標と目的の対応](https://scikit-learn.org/stable/modules/model_evaluation.html)も参考にしています。現状は既定macro F1等での選定までで、業務の費用や判定閾値まで最適化する機能は未実装です。
 
-この記事は開発中の **0.4.0a6** を対象としています。現在の実装は上記の専用ブランチにあります。mainは初期状態のため、下のcloneでもブランチを指定しています。元のクラウド環境のソース一式は取得できず、手元に残った元資料と引継ぎ仕様から再実装したものです。以前の制作物をそのまま復元したという扱いにはしていません。
+この記事は開発中の **0.4.0a6** を対象としています。現在の実装と案内先はmainです。移行前の復旧ブランチも履歴保管のため残しています。元のクラウド環境のソース一式は取得できず、手元に残った元資料と引継ぎ仕様から再実装したものです。以前の制作物をそのまま復元したという扱いにはしていません。
 
 ## このツールで扱いたい「誤差」
 
@@ -99,7 +99,7 @@ testの区間は、固定した学習済みモデルに対して、正解クラ�
 .venv/bin/python scripts/validate_uncertainty_run.py runs/wine-uncertainty
 ```
 
-開くのは`runs/wine-uncertainty/report.xlsx`です。元の学習結果を保持し、正解/予測の対応・全再標本化index・反復値を別に保存します。[評価対象と出力の詳しい説明](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/METRIC_UNCERTAINTY_GUIDE.md)を用意しました。
+開くのは`runs/wine-uncertainty/report.xlsx`です。元の学習結果を保持し、正解/予測の対応・全再標本化index・反復値を別に保存します。[評価対象と出力の詳しい説明](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/METRIC_UNCERTAINTY_GUIDE.md)を用意しました。
 
 ULの反復では、正解との一致である **Target ARI** と、割当どうしの一致である **Assignment ARI** を分けています。10seedから得る45対は互いにseedやデータを共有するので、独立標本としてSEMや信頼区間を作りません。
 
@@ -109,14 +109,14 @@ ULの反復では、正解との一致である **Target ARI** と、割当ど�
 
 データ量を議論する次の段階は、学習件数を増やしたときのtrain/validationの性能とばらつきを見る学習曲線です。再学習・選定をやり直す変動や、顧客・時間を分けた評価も加えていきたいと考えています。これらは未実装です。曲線が低いままでも、特徴量・モデル・ラベル・予測対象の難しさなど複数の原因候補があるため、品質を自動判定したとは説明しません。[学習曲線の参考資料](https://scikit-learn.org/stable/auto_examples/model_selection/plot_learning_curve.html)
 
-既存AutoMLにも、[H2OのCV指標の安定性確認](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/cross-validation.html)や、[AutoGluonの時系列予測の分位点](https://auto.gluon.ai/stable/tutorials/timeseries/forecasting-quick-start.html)など、不確かさを扱う仕組みがあります。予測値の区間と評価指標の区間を区別しつつ、本ツールでは不確かさの由来・前提・保存記録を追えることを重視します。[現在の範囲と次の設計](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/UNCERTAINTY_DESIGN.md)に整理しています。
+既存AutoMLにも、[H2OのCV指標の安定性確認](https://docs.h2o.ai/h2o/latest-stable/h2o-docs/cross-validation.html)や、[AutoGluonの時系列予測の分位点](https://auto.gluon.ai/stable/tutorials/timeseries/forecasting-quick-start.html)など、不確かさを扱う仕組みがあります。予測値の区間と評価指標の区間を区別しつつ、本ツールでは不確かさの由来・前提・保存記録を追えることを重視します。[現在の範囲と次の設計](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/UNCERTAINTY_DESIGN.md)に整理しています。
 
 ## TensorFlowなしで試す
 
 まずSL/ULだけを動かせるよう、コア用のロックを分けました。以下はPython 3.12/Linuxで確認する手順です。PyPIからのパッケージ名によるインストールではなく、リポジトリを取得して導入します。
 
 ```sh
-git clone --single-branch --branch recovery/reimplemented-0.4.0a1-post1 https://github.com/okamasaya/DIY_AutoML.git
+git clone --single-branch --branch main https://github.com/okamasaya/DIY_AutoML.git
 cd DIY_AutoML
 python3.12 -m venv .venv
 .venv/bin/python -m pip install -r requirements-core.lock.txt
@@ -167,7 +167,7 @@ python3.12 -m venv .venv
 
 ただし、ホテルの選定モデルは単純ルールに及ばず、再購入での差も約0.011にとどまりました。差の有意性や施策の利益は検証していません。傾向が見えることと、モデルを採用できることは別です。これは既存モデルでの小規模試行で、最新モデルでも結果が変わらないことの実証ではありません。
 
-クーポンは実購買ではなく複数回答の調査で、回答者単位の分離ができていません。ホテルの予約受付時点・別施設、再購入の将来の別期間での性能も未検証です。[ビジネス向けの詳しい解説下書き](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/articles/diy-automl-business-three-experiments.md)に、観察した割合と一般的な見方の比較をまとめました。[加工・評価条件と保存結果](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/BUSINESS_QUICK_RESULTS.md)も確認できます。
+クーポンは実購買ではなく複数回答の調査で、回答者単位の分離ができていません。ホテルの予約受付時点・別施設、再購入の将来の別期間での性能も未検証です。[ビジネス向けの詳しい解説下書き](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-business-three-experiments.md)に、観察した割合と一般的な見方の比較をまとめました。[加工・評価条件と保存結果](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/BUSINESS_QUICK_RESULTS.md)も確認できます。
 
 ## どこまで確認したか
 
@@ -175,15 +175,15 @@ Iris、Wine、Breast Cancerの同梱CSVを、繰り返し参照する開発用�
 
 SLの探索では、開発環境と独立したwheel環境で、全候補のCV結果・選定・予測・保存配列などを照合しています。テスト件数や実行条件は、版ごとの検証資料と機械可読な記録に残しています。
 
-[SL探索の検証記録](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/VALIDATION_SL_TUNING.md)
+[SL探索の検証記録](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/VALIDATION_SL_TUNING.md)
 
-[DL反復の検証記録](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/VALIDATION_DL_REPEAT.md)
+[DL反復の検証記録](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/VALIDATION_DL_REPEAT.md)
 
-[UL部分抽出の検証記録](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/VALIDATION_UL_SUBSAMPLE.md)
+[UL部分抽出の検証記録](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/VALIDATION_UL_SUBSAMPLE.md)
 
-[図付きExcelとNotebookの検証記録](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/VALIDATION_EXCEL_REPORT.md)
+[図付きExcelとNotebookの検証記録](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/VALIDATION_EXCEL_REPORT.md)
 
-[評価値の誤差評価の検証記録（0.4.0a6）](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/VALIDATION_METRIC_UNCERTAINTY.md)
+[評価値の誤差評価の検証記録（0.4.0a6）](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/VALIDATION_METRIC_UNCERTAINTY.md)
 
 同じCPU環境での一致確認であり、他OS・GPU・ライブラリ版での完全一致を保証するものではありません。また、指標が高いという理由だけで、そのモデルを実用途に使えると判断する機能はありません。
 
@@ -193,8 +193,8 @@ SLの探索では、開発環境と独立したwheel環境で、全候補のCV�
 
 この記事を入口として、詳しさの違う2つの子記事を用意しています。
 
-- [ビジネスパーソン向け：旅行・カフェ・買い物の実験と、誤差の読み方](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/articles/diy-automl-business-three-experiments.md)。誤りの件数、数値の揺れ、データの偏りを平易に説明し、自分のデータでは何を確認するかへつなぎます。主要モデルと小規模な計算から使う入口を目指します。
-- [DS向け：選定・条件付き区間・反復の設計を検査する](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/articles/diy-automl-ds-uncertainty.md)。Notebook/CLIを選んで使い、推定対象、数式、再標本化単位、保存配列、計算条件、系統的な偏りの検証まで掘り下げます。
+- [ビジネスパーソン向け：旅行・カフェ・買い物の実験と、誤差の読み方](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-business-three-experiments.md)。誤りの件数、数値の揺れ、データの偏りを平易に説明し、自分のデータでは何を確認するかへつなぎます。主要モデルと小規模な計算から使う入口を目指します。
+- [DS向け：選定・条件付き区間・反復の設計を検査する](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-ds-uncertainty.md)。Notebook/CLIを選んで使い、推定対象、数式、再標本化単位、保存配列、計算条件、系統的な偏りの検証まで掘り下げます。
 
 ビジネス向けは、説明と計算量を必要なところから使える構成にします。重要な評価条件や限界も、短い言葉で添えます。ファイルを渡してExcelを受け取るアプリと、その画面を使う手順は今後の実装です。両記事とも下書きで、未実装の評価は今後の設計として区別しています。
 

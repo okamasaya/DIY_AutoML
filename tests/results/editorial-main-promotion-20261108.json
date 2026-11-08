@@ -1,0 +1,68 @@
+{
+  "status": "passed",
+  "kind": "main-promotion-preflight-and-documentation",
+  "base_commit": "b7e8a930664e39556c452fb504c7e709ed7f63d4",
+  "previous_main": "b4f6f176182c7c10001ca5c82cbed7fe269c1f8e",
+  "target_branch": "main",
+  "recovery_branch_preserved_at": "b7e8a930664e39556c452fb504c7e709ed7f63d4",
+  "default_branch_already_main": true,
+  "fast_forward_possible": true,
+  "no_code_changes": true,
+  "pytest_rerun": false,
+  "published_articles": false,
+  "checks": {
+    "markdown_files": 9,
+    "main_links": 26,
+    "relative_links": 23,
+    "shell_syntax_blocks": 19,
+    "validated_source_hashes_match": true
+  },
+  "renderer": "zenn-markdown-html 0.5.14",
+  "files": [
+    {
+      "file": "README.md",
+      "sha256": "0f766037d3e193d5f622751116d52f839dfe59d43b8c404ca5c4669b4fa38993",
+      "rendered": true
+    },
+    {
+      "file": "articles/diy-automl-business-three-experiments.md",
+      "sha256": "691100fcf3e40cb1271b2c410aef18cce54271ff991a0011b762090dcfae2fad",
+      "rendered": true
+    },
+    {
+      "file": "articles/diy-automl-ds-uncertainty.md",
+      "sha256": "ef09a228719614d2698f9cf74c6d9b5df4a8e1e84f9fd7f93165579949da02c1",
+      "rendered": true
+    },
+    {
+      "file": "articles/diy-automl-evaluation-framework.md",
+      "sha256": "61d68977b06ba1bcd312ef4fef0af7f33ef81db73775fc3eb836aa12691f1439",
+      "rendered": true
+    },
+    {
+      "file": "docs/AUDIENCE_PLAN.md",
+      "sha256": "546b6dfe2870984d8dbc3bc3aa101c40279da4ce5b2c0e2d2de5affe5e63f16d",
+      "rendered": true
+    },
+    {
+      "file": "docs/COMMIT_GUIDE.md",
+      "sha256": "5b3e10a6097d434319fb309165c5237321fe496c8eaa295c6ad1f08fc374a2c4",
+      "rendered": true
+    },
+    {
+      "file": "docs/RESET_HANDOFF.md",
+      "sha256": "4d7072259659122b5896cf4c44882aa7f3aa42acb1e697fcd2f857d745ba85a6",
+      "rendered": true
+    },
+    {
+      "file": "docs/ROADMAP.md",
+      "sha256": "de87f383f5c03374945d75a150000d330bc6852347cb531224ff5ecb3931fa59",
+      "rendered": true
+    },
+    {
+      "file": "docs/ZENN_GUIDE.md",
+      "sha256": "80c4812f4c2a37c1072d85b9e437a4745351c4f624aeda0cb49fab92bb457fb1",
+      "rendered": true
+    }
+  ]
+}

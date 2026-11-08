@@ -45,7 +45,7 @@ ULは固定データ最大5,000行、KMeans n_init=auto、GMM n_init=1/full、�
 
 `notebooks/Local_Comparison.ipynb` は共通関数を呼ぶ5シートと図5枚のローカル入口です。図付きExcelは共通のreport関数で別ファイルへ出力します。組込み3データセットは開発用で、未見の外部検証データではありません。SL/DLとULを総合順位にしません。
 
-復旧範囲と今回の検証結果は `docs/RESET_HANDOFF.md` と `docs/VALIDATION_UL_REPEAT.md` を参照してください。利用者の承認により、今回の成果物を専用ブランチ `recovery/reimplemented-0.4.0a1-post1` にcommit・pushする方針へ変更しました。mainブランチには変更を加えません。
+復旧範囲と検証結果は `docs/RESET_HANDOFF.md` と `docs/VALIDATION_UL_REPEAT.md` を参照してください。2026年11月8日（日本時間）、利用者の依頼により再実装した成果物を **main** へ反映しました。通常の取得・参照先はmainです。`recovery/reimplemented-0.4.0a1-post1` は移行前の履歴を保管するブランチとして残しています。
 
 Notebookを使う場合は、必要に応じて `.venv/bin/python -m pip install ipykernel` を追加し、エディタでこの.venvをカーネルに指定してください。0.4.0a5では専用カーネルで全コードセルを実行し、100epochのDLを含む数値出力・外部PNG5枚・8枚を埋め込んだExcel生成まで確認しました。手順はdocs/NOTEBOOK_GUIDE.md、任意のNotebook実行ツールのロックはrequirements-notebook.lock.txtです。
 
