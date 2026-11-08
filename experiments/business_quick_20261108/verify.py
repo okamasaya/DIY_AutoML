@@ -82,7 +82,8 @@ def main():
                     assert len(history) > 0
                     assert frame.loc[i, 'frequency_invoices'] == history.InvoiceNo.nunique()
                     assert np.isclose(frame.loc[i, 'monetary_gbp'], (history.Quantity * history.UnitPrice).sum())
-        print(name + ': saved metrics, split, scaler, references, images and reconstruction passed', flush=True)
+        raw_scope = 'raw reconstruction checked' if args.raw_dir is not None else 'raw reconstruction not requested'
+        print(name + ': saved metrics, split, scaler, references and images passed; ' + raw_scope, flush=True)
 
 
 if __name__ == '__main__':
