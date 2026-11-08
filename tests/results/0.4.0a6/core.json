@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "version": "0.4.0a6",
+  "tensorflow_available": false,
+  "module": "/workspace/work/core-a4-venv/lib/python3.12/site-packages/diy_automl/__init__.py",
+  "evaluations": 10,
+  "all_arrays_tables_and_png_identical_to_development": true,
+  "pip_check": "passed"
+}

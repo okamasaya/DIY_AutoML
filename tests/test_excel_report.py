@@ -41,7 +41,8 @@ def test_all_source_schemas(tmp_path,schema,illustrated):
     assert m['figure_count']==(8 if schema==2 else 2)
     source_manifest=json.loads((out/'manifest.json').read_text())
     assert source_manifest['version']!=m['version']
-    assert m['version']=='0.4.0a5'
+    from diy_automl import __version__
+    assert m['version']==__version__
 
 
 def test_data_and_original_files_unchanged(illustrated):

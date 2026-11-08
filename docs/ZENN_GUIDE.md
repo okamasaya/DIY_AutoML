@@ -39,3 +39,5 @@ DS向けは既存から新しいモデルまで任意の比較範囲、ビジネ
 3テーマの実験と原稿変換の記録は `tests/results/business-quick-20261108/`、今回の目的・設計の追記は `tests/results/editorial-uncertainty-20261108.json` です。記事や文書のハッシュは各記録作成時点のスナップショットであり、後の編集で過去の検証記録を書き換えません。
 
 利用者別の誤差評価説明を反映した3原稿と関連文書の今回の変換・整合性確認は `tests/results/editorial-uncertainty-audiences-20261108.json` に記録します。新しいモデル学習や、追加診断機能の検証を行った記録ではありません。
+
+0.4.0a6では`uncertainty`を実装し、親・DS記事の対象版を更新しました。bootstrap SE・クラス別区間・通常/層化の2方式・保存結果入口を追記し、ビジネス記事には3テーマで実際に計算したSEと出力先を追加しました。今回の原稿の変換・数値照合は `tests/results/0.4.0a6/editorial.json`、実装の検証は `tests/results/0.4.0a6/verification.json` です。3本ともpublished=falseを維持します。

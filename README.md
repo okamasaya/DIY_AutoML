@@ -1,10 +1,12 @@
 # DIY AutoML 再実装版
 
-旧クラウド環境の0.4.0a1ソースは未取得です。このリポジトリは元資料ZIPと引継ぎ仕様から新たに実装しました。初回再実装は **0.4.0a1.post1**、DL反復を追加した版は **0.4.0a2**、UL部分抽出は **0.4.0a3**、SLの設定探索は **0.4.0a4**、図付きExcelを追加した現在版は **0.4.0a5** です。旧実装とのAPI・数値・manifest互換性は保証していません。schema番号2/3/4は引継ぎの用途区分を採用したもので、旧validatorとの互換を意味しません。過去の96 passedは今回の検証結果ではありません。
+旧クラウド環境の0.4.0a1ソースは未取得です。このリポジトリは元資料ZIPと引継ぎ仕様から新たに実装しました。初回再実装は **0.4.0a1.post1**、DL反復は **0.4.0a2**、UL部分抽出は **0.4.0a3**、SL設定探索は **0.4.0a4**、図付きExcelは **0.4.0a5**、評価値の誤差評価を広げた現在版は **0.4.0a6** です。旧実装とのAPI・数値・manifest互換性は保証していません。schema番号2/3/4は引継ぎの用途区分を採用したもので、旧validatorとの互換を意味しません。過去の96 passedは今回の検証結果ではありません。
 
 Python 3.12、数値特徴量・欠損なし・分類ラベル付きCSVが対象です。ULも外部診断のためtarget列が必要です。元資料は `originals/` に変更せず保存しています。ライセンスは未選定です。
 
 DIYの主目的は、MLの結果に誤差評価を含め、データ量・品質・学習の不安定さについて議論できる材料を残すことです。現状は固定モデルに条件付きのtest区間と一部の反復を実装しています。データ量に対する学習曲線、再学習・選定をやり直す変動、グループ/時間の評価は今後で、区間幅だけから量不足や品質不良を自動判定する機能ではありません。目的と優先順は `docs/UNCERTAINTY_DESIGN.md` に記録しています。
+
+0.4.0a6の`uncertainty`は保存済みSL/DLの4指標とクラス別指標へbootstrap SE・percentile区間を付け、図付きExcelを別出力します。クラス件数固定/通常の2方式を選べます。元の学習結果は変更せず、学習・選定のやり直しや系統誤差まで評価した意味ではありません。使い方は[評価値の誤差評価](docs/METRIC_UNCERTAINTY_GUIDE.md)です。
 
 定量化した指標を用途に合うモデル選定へつなぎ、DS以外にも拾えた件数・見逃し・誤案内と限界を説明できる構成を目指します。費用・確率校正・閾値の最適化と、一般利用者への伝わり方の検証は未実施です。
 
@@ -46,6 +48,17 @@ ULは固定データ最大5,000行、KMeans n_init=auto、GMM n_init=1/full、�
 Notebookを使う場合は、必要に応じて `.venv/bin/python -m pip install ipykernel` を追加し、エディタでこの.venvをカーネルに指定してください。0.4.0a5では専用カーネルで全コードセルを実行し、100epochのDLを含む数値出力・外部PNG5枚・8枚を埋め込んだExcel生成まで確認しました。手順はdocs/NOTEBOOK_GUIDE.md、任意のNotebook実行ツールのロックはrequirements-notebook.lock.txtです。
 
 Gitからの再開手順と、ローカルコミット・pushの確認方法は `docs/COMMIT_GUIDE.md` に記載しています。
+
+## 評価値の誤差評価（0.4.0a6）
+
+```sh
+.venv/bin/python -m diy_automl uncertainty --run runs/wine-select --output runs/wine-uncertainty
+.venv/bin/python scripts/validate_uncertainty_run.py runs/wine-uncertainty
+```
+
+`report.xlsx`のMetric_UncertaintyにAccuracy・macro Precision/Recall/F1の点推定、bootstrap標準誤差、95%区間を、Class_Uncertaintyにクラス別結果を出します。Intervalsに図を埋め込み、全反復と再標本化indexも保存します。標準誤差はbootstrap指標の標本SDで、反復数の平方根では割りません。既定はクラス別件数固定の1,000反復・seed 43です。`--resampling ordinary`でクラス件数も動かせます。
+
+`run`のSL/DL、`select`、`tune`、`repeat-dl`に対応し、モデルやseedの順序を保ちます。ULには既存の安定性評価を使用します。行の独立性・代表性は別途確認が必要です。詳細は[ガイド](docs/METRIC_UNCERTAINTY_GUIDE.md)、検証結果は[0.4.0a6の記録](docs/VALIDATION_METRIC_UNCERTAINTY.md)にまとめています。
 
 ## DLの学習seed反復（0.4.0a2）
 

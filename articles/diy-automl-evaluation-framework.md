@@ -22,7 +22,7 @@ DIYした主な理由は、**MLの結果に誤差評価まで含めたい**か�
 
 さらに、データを使えるかという判断から、**何を測れば用途に合うモデル活用へ進めるか**を考えます。見逃しや誤案内をどこまで許容するかを先に決め、目的に合う指標で比較すること、DS以外の人にも誤りの件数と限界が伝わることを、これからの設計の軸にしています。[評価指標と目的の対応](https://scikit-learn.org/stable/modules/model_evaluation.html)も参考にしています。現状は既定macro F1等での選定までで、業務の費用や判定閾値まで最適化する機能は未実装です。
 
-この記事は開発中の **0.4.0a5** を対象としています。現在の実装は上記の専用ブランチにあります。mainは初期状態のため、下のcloneでもブランチを指定しています。元のクラウド環境のソース一式は取得できず、手元に残った元資料と引継ぎ仕様から再実装したものです。以前の制作物をそのまま復元したという扱いにはしていません。
+この記事は開発中の **0.4.0a6** を対象としています。現在の実装は上記の専用ブランチにあります。mainは初期状態のため、下のcloneでもブランチを指定しています。元のクラウド環境のソース一式は取得できず、手元に残った元資料と引継ぎ仕様から再実装したものです。以前の制作物をそのまま復元したという扱いにはしていません。
 
 ## このツールで扱いたい「誤差」
 
@@ -30,7 +30,7 @@ DIYした主な理由は、**MLの結果に誤差評価まで含めたい**か�
 
 | 観点 | 確認したいこと | 現状と、これから |
 | --- | --- | --- |
-| 統計的な不確かさ | 調べる標本や学習データが変わると、性能はどの程度変わるか | 固定モデルのtest指標の条件付き区間を実装。学習曲線や、選定からやり直す評価は今後 |
+| 統計的な不確かさ | 調べる標本や学習データが変わると、性能はどの程度変わるか | 固定モデルのSE・区間を実装。クラス件数固定/通常の行bootstrapを選択。学習曲線や選定からの反復は今後 |
 | 学習手順による変動 | 初期値や学習順序を変えても、似た結果になるか | DL/ULの初期化反復などを実装。データ自体の変動とは分ける |
 | 数値計算の誤差 | 丸め、計算精度、収束の判定が結果へどう影響するか | 一部の収束情報・失敗状態は保存。精度や収束許容値を変えた系統的な比較は未実装 |
 | 系統的な偏り | 測定、ラベル、対象の選び方や時期に、片寄ったずれがないか | 分割や予測時点を点検し、実験ごとの制約を記載。汎用監査や群・時間を分ける評価は今後 |
@@ -50,6 +50,7 @@ DIYした主な理由は、**MLの結果に誤差評価まで含めたい**か�
 | `repeat-dl` | 分割を固定してMLPの学習seedを変えたときの違い |
 | `subsample-ul` | データの一部を取り除いたとき、クラスタ構造が保たれるか |
 | `report` | 保存済みの結果から、再学習せずに図付きExcelを作る |
+| `uncertainty` | 保存済みSL/DL指標の標準誤差・区間・クラス別結果を、図付きExcelへ出す |
 
 SLはDecision Tree、Random Forest、Logistic Regression、SVM、k-NNです。ULはKMeans、GMM、階層法4種類で、既定k=2〜10の54候補。DLは32-16-8のMLPを使っています。
 
@@ -90,6 +91,15 @@ Grinsztajnらの2022年の研究では、中規模の表形式データのベン
 testの区間は、固定した学習済みモデルに対して、正解クラス別の観測件数を固定したpaired percentile bootstrapで計算します。既定は1,000反復・95%・seed=43です。点推定と区間でmacro平均の対象クラスをそろえています。
 
 この区間には、学習データやモデル選定をやり直したときの変動は含まれません。区間がゼロ幅でも、未知の不確かさがゼロという意味にはなりません。
+
+0.4.0a6の`uncertainty`では、保存済みの`run`のSL/DL、`select`、`tune`、全seedの`repeat-dl`にも評価値の誤差評価を適用できます。4指標とクラス別指標のbootstrap標準誤差・percentile区間を、図付きExcelへ出します。標準誤差は反復値の標本SDで、反復数の平方根では割りません。通常の行bootstrapを選ぶとクラス件数も変わりますが、行の独立性・代表性は引き続き確認が必要です。
+
+```sh
+.venv/bin/python -m diy_automl uncertainty --run runs/wine-select --output runs/wine-uncertainty
+.venv/bin/python scripts/validate_uncertainty_run.py runs/wine-uncertainty
+```
+
+開くのは`runs/wine-uncertainty/report.xlsx`です。元の学習結果を保持し、正解/予測の対応・全再標本化index・反復値を別に保存します。[評価対象と出力の詳しい説明](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/METRIC_UNCERTAINTY_GUIDE.md)を用意しました。
 
 ULの反復では、正解との一致である **Target ARI** と、割当どうしの一致である **Assignment ARI** を分けています。10seedから得る45対は互いにseedやデータを共有するので、独立標本としてSEMや信頼区間を作りません。
 
@@ -172,6 +182,8 @@ SLの探索では、開発環境と独立したwheel環境で、全候補のCV�
 [UL部分抽出の検証記録](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/VALIDATION_UL_SUBSAMPLE.md)
 
 [図付きExcelとNotebookの検証記録](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/VALIDATION_EXCEL_REPORT.md)
+
+[評価値の誤差評価の検証記録（0.4.0a6）](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/docs/VALIDATION_METRIC_UNCERTAINTY.md)
 
 同じCPU環境での一致確認であり、他OS・GPU・ライブラリ版での完全一致を保証するものではありません。また、指標が高いという理由だけで、そのモデルを実用途に使えると判断する機能はありません。
 

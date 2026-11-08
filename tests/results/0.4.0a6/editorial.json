@@ -1,0 +1,74 @@
+{
+  "status": "passed",
+  "version": "0.4.0a6",
+  "renderer": "zenn-markdown-html 0.5.14",
+  "checks": {
+    "markdown_files": 11,
+    "articles_published": false,
+    "local_images": 2,
+    "internal_links": 35,
+    "shell_syntax_blocks": 19,
+    "python_syntax_blocks": 2,
+    "business_se_and_intervals_match_saved_results": true,
+    "display_equations_converted": 4,
+    "browser_math_rendering_checked": false,
+    "zenn_publication_performed": false
+  },
+  "files": [
+    {
+      "file": "articles/diy-automl-evaluation-framework.md",
+      "sha256": "ca13a403cf8ef443db4dda185a4859d8254dca1402da907291824d987269a9a1",
+      "rendered": true
+    },
+    {
+      "file": "articles/diy-automl-business-three-experiments.md",
+      "sha256": "4fc003eb694816f7615a74b3d47b41f4874946eab1498db27e5199816898ed15",
+      "rendered": true
+    },
+    {
+      "file": "articles/diy-automl-ds-uncertainty.md",
+      "sha256": "258f6e9a3bcd10ad11d2916473f44f3ea47bc0c7abf8d4b3cbbe000f8fc27cb4",
+      "rendered": true
+    },
+    {
+      "file": "README.md",
+      "sha256": "6032abc2c7a5107604623672b25b6d345df2886db7ca690febf4918a57d98e70",
+      "rendered": true
+    },
+    {
+      "file": "docs/RESET_HANDOFF.md",
+      "sha256": "ee8380a29e1ce92b007a85edf1239fa547cfc7c7200a38e69e678fb930aec599",
+      "rendered": true
+    },
+    {
+      "file": "docs/ROADMAP.md",
+      "sha256": "e00d1a1a99d3d86f40bad4518279032d82479fd12f9d0d43af6c22bf09afb5a2",
+      "rendered": true
+    },
+    {
+      "file": "docs/UNCERTAINTY_DESIGN.md",
+      "sha256": "266dc284388ed3396d10cc2b7cdfa0674ea18d2c508ebf0e75a2d449f42a7cc0",
+      "rendered": true
+    },
+    {
+      "file": "docs/ZENN_GUIDE.md",
+      "sha256": "388e68dd198a6b19ba10716695ff594f74414ccbf94b27ee871590f81db8837a",
+      "rendered": true
+    },
+    {
+      "file": "docs/METRIC_UNCERTAINTY_GUIDE.md",
+      "sha256": "b335e91ab6985fc6763bdbd4dd181303473c56694c3f200365a6e84695defa46",
+      "rendered": true
+    },
+    {
+      "file": "docs/VALIDATION_METRIC_UNCERTAINTY.md",
+      "sha256": "a07224a6758c62d55d7b648fc4119c877b81608128c907ced2ebe04fc56651ae",
+      "rendered": true
+    },
+    {
+      "file": "tests/TEST_PLAN.md",
+      "sha256": "4a86146fd7b6b4d31ed57306ee0c7975f54ac842fd3deb9d671e106f8441e8d9",
+      "rendered": true
+    }
+  ]
+}

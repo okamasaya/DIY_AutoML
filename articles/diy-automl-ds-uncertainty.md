@@ -10,13 +10,13 @@ published: false
 
 DIY AutoMLは、比較結果に誤差評価を含め、データ量・品質・学習の不安定さについて議論できる道具を目指しています。[親記事](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/articles/diy-automl-evaluation-framework.md)から、ここでは推定対象と実装条件まで掘り下げます。[ビジネス向け](https://github.com/okamasaya/DIY_AutoML/blob/recovery/reimplemented-0.4.0a1-post1/articles/diy-automl-business-three-experiments.md)と同じ根拠を使い、説明の粒度を変えています。
 
-対象は開発中の **0.4.0a5** です。現在のtest区間は、学習済みモデルと観測クラス別件数に条件付けています。選定を含む学習手続き全体の不確かさや、系統誤差を網羅した区間は未実装です。本稿は現在の仕様と拡張設計の下書きで、追加の実験を完了した報告ではありません。
+対象は開発中の **0.4.0a6** です。`select/tune`のtest区間は、学習済みモデルと観測クラス別件数に条件付けています。新しい`uncertainty`は保存済みSL/DLへSE・クラス別区間を広げ、クラス件数固定/通常の行bootstrapを選べます。選定を含む学習手続き全体の不確かさや、系統誤差を網羅した区間は未実装です。現在の仕様と拡張設計を分けて記載します。
 
 ## 評価したい量と、動かすものを分ける
 
 | 問い | 変化させるもの | 現状 |
 | --- | --- | --- |
-| 固定モデルのtest指標をどの程度精密に推定できるか | 正解クラス別件数を固定したtest行の再標本化 | select/tuneで実装 |
+| 固定モデルのtest指標をどの程度精密に推定できるか | クラス件数固定、または通常のtest行の再標本化 | select/tuneの区間と、uncertaintyのSE・全体/クラス別区間を実装 |
 | 学習手続きから得る性能はどれほど変動するか | 学習データ、前処理fit、候補選定、再学習 | 手続き全体の反復評価は今後 |
 | 同じデータでも学習結果が変わるか | 初期化・shuffle等の学習seed | DL/ULの指定した反復を実装 |
 | 数値計算条件へ敏感か | dtype、収束許容値、ソルバ、計算基盤 | 一部の診断・条件保存まで。感度評価は今後 |
@@ -53,6 +53,16 @@ $$
 $$
 
 現在の実装はpandasの既定の線形補間による分位点を使います。Accuracyとmacro Precision/Recall/F1を計算し、macro対象クラスを点推定と反復でそろえ、`zero_division=0`とします。これはクラス別F1の平均であり、macro Precision/Recallの調和平均ではありません。
+
+`uncertainty`は同じ線形補間をNumPyで計算し、bootstrap SEも保存します。
+
+$$
+\widehat{\mathrm{SE}}_{\mathrm{boot}}(T)=\sqrt{\frac{1}{B-1}\sum_{b=1}^{B}\left(T^{*(b)}-\bar{T}^{*}\right)^2}
+$$
+
+これは評価指標の標準誤差のbootstrap近似で、SD/√Bではありません。後者はbootstrap平均を有限反復で近似するMonte Carlo誤差に関係する量です。反復数を増やすことと評価標本を増やすことは別です。クラス別Precision/Recall/F1も計算し、すべての再標本化indexとクラス別反復値をNPZへ保存します。
+
+`--resampling ordinary`では各反復で全test行から同数を復元抽出し、クラス件数も変動します。macroのクラス集合と`zero_division=0`は固定です。反復内でクラスが消える場合もあり、通常方式にすればクラス不足や行の依存が解消するわけではありません。各指標の周辺区間であり、複数モデルや指標に対する同時被覆を主張しません。
 
 主な解釈条件は次です。
 
@@ -98,6 +108,13 @@ ULでは正解とのTarget ARIと、割当どうしのAssignment ARIを分けま
 .venv/bin/python scripts/validate_selection_run.py runs/ds-select
 .venv/bin/python -m diy_automl report --run runs/ds-select --output runs/ds-select-figures
 .venv/bin/python scripts/validate_excel_report.py runs/ds-select-figures
+```
+
+保存済み予測の誤差評価は、次の入口で別出力します。`uncertainty`の`report.xlsx`には最初から区間図を埋め込みます。
+
+```sh
+.venv/bin/python -m diy_automl uncertainty --run runs/ds-select --output runs/ds-uncertainty
+.venv/bin/python scripts/validate_uncertainty_run.py runs/ds-uncertainty
 ```
 
 Notebookで同じ選定を呼ぶ場合は、同じ環境をkernelにして、リポジトリのルートを作業ディレクトリにします。

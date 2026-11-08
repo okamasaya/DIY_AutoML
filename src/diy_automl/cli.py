@@ -7,6 +7,7 @@ from .deep_learning_repeat_workflow import repeat_deep_learning_csv
 from .clustering_subsample_workflow import subsample_clustering_csv
 from .tuning_workflow import tune_csv
 from .excel_report import render_excel_report
+from .uncertainty_workflow import evaluate_uncertainty
 
 def main():
     parser=argparse.ArgumentParser(description="Reimplemented DIY AutoML evaluation")
@@ -43,6 +44,14 @@ def main():
     p.add_argument("--output",default=None)
     p.add_argument("--csv",default=None)
     p.add_argument("--max-models",type=int,default=3)
+    p=sub.add_parser("uncertainty",help="Evaluate fixed-model metric sampling uncertainty from a saved classification run")
+    p.add_argument("--run",dest="source",required=True)
+    p.add_argument("--output",default=None)
+    p.add_argument("--csv",default=None,help="Original hash-matching CSV if a historical run lacks target labels")
+    p.add_argument("--bootstrap-repeats",type=int,default=1000)
+    p.add_argument("--bootstrap-seed",type=int,default=43)
+    p.add_argument("--confidence",type=float,default=.95)
+    p.add_argument("--resampling",choices=["stratified","ordinary"],default="stratified")
     args=vars(parser.parse_args()); command=args.pop("command")
     if args["output"] is None: args["output"]="runs/"+command+"-"+datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-    print({"run":run_csv,"select":select_csv,"repeat-ul":repeat_clustering_csv,"repeat-dl":repeat_deep_learning_csv,"subsample-ul":subsample_clustering_csv,"tune":tune_csv,"report":render_excel_report}[command](**args))
+    print({"run":run_csv,"select":select_csv,"repeat-ul":repeat_clustering_csv,"repeat-dl":repeat_deep_learning_csv,"subsample-ul":subsample_clustering_csv,"tune":tune_csv,"report":render_excel_report,"uncertainty":evaluate_uncertainty}[command](**args))
