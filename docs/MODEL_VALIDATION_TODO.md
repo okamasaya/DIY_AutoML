@@ -30,7 +30,7 @@
 - ビジネス向け分類の公開データ候補: UCI Iranian Churn。3,150顧客の利用状況と後の解約を扱う。採用列と符号化されたカテゴリ・算出指標の意味を確認する。購買履歴のCDNOWや、架空教材のIBM Telco Customer Churnも後続候補。
 - 自作の説明補助例: 意味の明確な数値列を少数持つ営業案件CSV（架空・説明用）。作る場合は成約前に分かる情報だけで成約有無を予測する。生成条件・seed・架空データであることを明記し、実際の営業効果の根拠にはしない。
 - ビジネス向け公開データ候補: [UCI Wholesale customers](https://archive.ics.uci.edu/dataset/292/wholesale+customers)。440顧客の購入額を扱う小規模データ。6購入額列とChannel/Regionを区別し、Channel/Regionをクラスタの真の正解にはしない。現在のULのtarget要件を満たす実験設計か、ラベルなしUL入口の整備が先に必要。
-- Bank Marketing、Online Retail、Bike Sharingは、カテゴリ処理・集約・回帰/時系列対応などが必要な後続候補。
+- Bank Marketing、Bike Sharingはカテゴリ処理・回帰/時系列対応などを整えてからの後続候補。Online Retailは限定した顧客集計・再購入分類を実行済みで、汎用入力支援や別期間での評価は今後。
 
 ## 実験を始めるときの記録
 

@@ -1,0 +1,45 @@
+{
+  "status": "passed",
+  "kind": "documentation-only-status-and-next-work",
+  "base_commit": "6c4eae03e6da882e20f6ac24df4e480485d7017e",
+  "package_version": "0.4.0a6",
+  "renderer": "zenn-markdown-html 0.5.14",
+  "no_code_changes": true,
+  "no_new_model_runs": true,
+  "pytest_rerun": false,
+  "existing_validation_source_hashes_match": true,
+  "relative_links_checked": 25,
+  "article_drafts_remain_unpublished": true,
+  "files": [
+    {
+      "file": "README.md",
+      "sha256": "ee0f6136076b0a3b3b454d5fbc3c7584a32dea832ee11c36514fb22b8e4344ee",
+      "rendered": true
+    },
+    {
+      "file": "docs/AUDIENCE_PLAN.md",
+      "sha256": "c94965f5c574e0ac035f2d09e51a983ac0467c40d8491bbbba75b6349c3310a1",
+      "rendered": true
+    },
+    {
+      "file": "docs/MODEL_VALIDATION_TODO.md",
+      "sha256": "867e0bb77ffc19a6f56255dd4a51e38e9c701ac23a2a1a39bf046cc0e5469701",
+      "rendered": true
+    },
+    {
+      "file": "docs/RESET_HANDOFF.md",
+      "sha256": "47542049afd303e4a9498e3dccf4c57ba35d35ebce353d2f6cd484cd273162e7",
+      "rendered": true
+    },
+    {
+      "file": "docs/ROADMAP.md",
+      "sha256": "7963d6d2e87f34c2885336d3420725a0a4928cf5a810911df938b0c84fd08cb4",
+      "rendered": true
+    },
+    {
+      "file": "docs/UNCERTAINTY_DESIGN.md",
+      "sha256": "3ebc9fdd6bbf0ae77e5df11bab70bbaec097b6c62cc5459f2bc7233d82183d0d",
+      "rendered": true
+    }
+  ]
+}
