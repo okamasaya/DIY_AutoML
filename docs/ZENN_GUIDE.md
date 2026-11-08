@@ -4,6 +4,8 @@
 
 利用者の追加依頼により、3業務テーマのQuick & dirty実験を親記事へ追記し、`articles/diy-automl-business-three-experiments.md` をビジネス向けの実験解説下書きとして追加しました。両方published=falseです。図はimages/business-quick-20261108/associations.png、加工・評価条件はdocs/BUSINESS_QUICK_RESULTS.md、再実行はexperiments/business_quick_20261108/README.mdにあります。アプリ画面の利用手順とは区別します。
 
+親記事の目的を、利用者が示した「実行結果に誤差評価を含め、データ量・品質について議論したい」という軸で追記しました。現行の条件付き区間と、未実装の学習曲線・再学習/選定の変動は区別します。他のAutoMLにも不確かさを扱う機能があるため、未調査の市場全体について有無を断定せず、評価対象・由来・前提・記録を説明する設計を重視します。詳しくはdocs/UNCERTAINTY_DESIGN.mdです。
+
 Front MatterはZenn公式の形式に合わせ、`published: false` としています。記事の投稿、ZennとのGitHub連携、公開予約、公開操作は行いません。この設定はZenn上の公開設定です。ファイル自体は公開GitHubリポジトリの作業ブランチで閲覧できます。
 
 公式ガイド: https://zenn.dev/zenn/articles/zenn-cli-guide
@@ -31,3 +33,5 @@ DS向けは既存から新しいモデルまで任意の比較範囲、ビジネ
 ライセンスは未選定のままで、記事でも自由利用可能なOSSという説明はしていません。今回の作業でライセンスや配布先、リポジトリ公開範囲を変更していません。
 
 0.4.0a4原稿の手順検証・ローカルプレビューの確認結果は `tests/results/0.4.0a4/`、図付きExcelの実行検証は `tests/results/0.4.0a5/` に保存しています。これらに含まれる記事のハッシュは当時の原稿の記録で、今回の編集後の記事と同一という意味ではありません。記事をZennへ投稿した事実や、利用者が編集後の公開内容を最終確認した事実とも区別します。
+
+3テーマの実験と原稿変換の記録は `tests/results/business-quick-20261108/`、今回の目的・設計の追記は `tests/results/editorial-uncertainty-20261108.json` です。記事や文書のハッシュは各記録作成時点のスナップショットであり、後の編集で過去の検証記録を書き換えません。

@@ -1,0 +1,40 @@
+{
+  "status": "passed",
+  "kind": "documentation-only-uncertainty-purpose",
+  "base_commit": "07544960082ee80f6d901f924c113e7123a10983",
+  "renderer": "zenn-markdown-html 0.5.14",
+  "no_new_model_runs": true,
+  "no_code_changes": true,
+  "files": [
+    {
+      "file": "README.md",
+      "sha256": "0c507c1a8e47ae045de194094c1760a7977d057fff9c0e69c49df4ed25d81af7",
+      "rendered": true
+    },
+    {
+      "file": "articles/diy-automl-evaluation-framework.md",
+      "sha256": "4cf267249374af4aa176f90fb7c92bfec9c704c12fa07fd835f1f07454f71e77",
+      "rendered": true
+    },
+    {
+      "file": "docs/UNCERTAINTY_DESIGN.md",
+      "sha256": "54baa4576940ac3c6009217264bf1dd84baa4a0ecf5bb94654ebcf75f07209e4",
+      "rendered": true
+    },
+    {
+      "file": "docs/ROADMAP.md",
+      "sha256": "b3a254d3a506f850e7a2601b6c61939cc9b4976d78498144cd58bf30ddaed142",
+      "rendered": true
+    },
+    {
+      "file": "docs/RESET_HANDOFF.md",
+      "sha256": "10fb289bd9025fc866bdafb190f1dd69fa23a5857bac59d4c710e019daa3bef8",
+      "rendered": true
+    },
+    {
+      "file": "docs/ZENN_GUIDE.md",
+      "sha256": "c995d46c926b2ab99aa383ebfd5e34f2acf0e032d523648590c519d588add799",
+      "rendered": true
+    }
+  ]
+}
