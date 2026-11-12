@@ -3,7 +3,7 @@
   "retrained": false,
   "source_files_unchanged": true,
   "input_sha256": {
-    "scripts/render_evaluation_article_figures.py": "81973421297deec5efdb99cb00339579fa99ae0b7bce5c424219352aea9101a5",
+    "scripts/render_evaluation_article_figures.py": "bd6c3371af143ebde7bc5c672bfe64a02f0cc232712f32f9ee98653830d37f74",
     "data/reference/iris.csv": "c993429e0f6e8c45b422cb9f1346ffc08852c71c92bdc53c38a231c256e111a1",
     "validation/dl-backend-preparation-0.4.0a7/iris/arrays.npz": "ae3b33c6d2b7c4fc9e79e954525c0da7bdcac7de012783042fc00a7ad91db02b",
     "validation/dl-backend-preparation-0.4.0a7/iris/manifest.json": "b2104e6bdd0fc9d2b9eee9d0b325b120e3559f08650c4e6a741727c017056dcb",
@@ -131,6 +131,17 @@
   "joint_bootstrap": {
     "dataset": "breast_cancer",
     "training_seed": 42,
+    "axis_limits": {
+      "x": [
+        0.75,
+        1.25
+      ],
+      "y": [
+        0.75,
+        1.25
+      ]
+    },
+    "ellipse_clipped_to_metric_domain": false,
     "correlation": 0.9162700478170535,
     "method": "Empirical quantiles of squared Mahalanobis distances around bootstrap mean; descriptive point coverage, not parameter confidence coverage",
     "ellipses": [
@@ -154,6 +165,6 @@
   "output_sha256": {
     "evaluation-with-and-without-uncertainty.png": "490e433050f57b356454fb02e8cd10e09e5fbe174df066357130b29d169cf6c3",
     "evaluation-training-history.png": "0b09ba2b871f74ca641e4e02b847808763641fb28fc82f54b83be153b4cb9f7d",
-    "evaluation-joint-bootstrap.png": "43fb13649b6836e42d457059839ad39e07a4fe69c90b5bbb01f37f1a386d8893"
+    "evaluation-joint-bootstrap.png": "cc0efa1cf3f3898237e0a7e771cc34eebfcb114a72310bc075404674d8a40755"
   }
 }

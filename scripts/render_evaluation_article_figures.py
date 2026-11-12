@@ -12,7 +12,7 @@ os.environ.setdefault('MPLCONFIGDIR', str(Path(tempfile.gettempdir()) / 'diy-aut
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from matplotlib.patches import Ellipse, Rectangle
+from matplotlib.patches import Ellipse
 import numpy as np
 import pandas as pd
 from sklearn.metrics import f1_score
@@ -153,19 +153,23 @@ def main():
                           fill=False, edgecolor=color, lw=1.7,
                           label=f'反復点の約{fraction:.0%}を囲む楕円')
         ax.add_patch(ellipse)
-        ellipse.set_clip_path(Rectangle((0, 0), 1, 1, transform=ax.transData))
         ellipse_records.append(dict(fraction=fraction, actual_fraction=coverage,
                                      squared_distance_threshold=threshold))
     point = next(r for r in records if r['dataset'] == 'breast_cancer' and r['training_seed'] == 42)
-    ax.set(xlabel='macro Precision', ylabel='macro Recall', xlim=(.82, 1.005), ylim=(.82, 1.005),
+    ax.set(xlabel='macro Precision', ylabel='macro Recall', xlim=(.75, 1.25), ylim=(.75, 1.25),
            title='2指標の連動：同じ行を再標本化した1,000点')
+    ax.set_xticks(np.linspace(.75, 1.25, 6))
+    ax.set_yticks(np.linspace(.75, 1.25, 6))
+    ax.axvline(1, color='#777777', ls='--', lw=1, label='指標の上限（1）')
+    ax.axhline(1, color='#777777', ls='--', lw=1)
     ax.set_aspect('equal')
     ax.grid(alpha=.2)
     ax.legend(loc='upper left', fontsize=9)
     fig.text(.5, .025, f"乳がん・固定MLP seed 42・test {point['test_rows']}件・クラス件数固定\n"
-             '楕円は0〜1の範囲のみ表示。反復点の要約であり、母数の95%信頼領域ではない。',
+             '指標は0〜1。楕円は1を超える部分も表示する。\n'
+             '反復点の要約であり、母数の95%信頼領域ではない。',
              ha='center', fontsize=9)
-    fig.tight_layout(rect=(0, .1, 1, 1))
+    fig.tight_layout(rect=(0, .14, 1, 1))
     save(fig, 'evaluation-joint-bootstrap.png')
 
     assert before == {str(p.relative_to(ROOT)): digest(p) for p in inputs}, 'Inputs changed'
@@ -175,6 +179,8 @@ def main():
         validated_saved_runs=6, independent_sklearn_checks=24, estimates=records,
         breast_cancer_history=history_summary,
         joint_bootstrap=dict(dataset='breast_cancer', training_seed=42,
+            axis_limits=dict(x=[.75, 1.25], y=[.75, 1.25]),
+            ellipse_clipped_to_metric_domain=False,
             correlation=float(np.corrcoef(points, rowvar=False)[0, 1]),
             method='Empirical quantiles of squared Mahalanobis distances around bootstrap mean; '
                    'descriptive point coverage, not parameter confidence coverage',
