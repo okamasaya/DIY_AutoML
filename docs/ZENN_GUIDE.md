@@ -1,5 +1,7 @@
 # Zenn紹介記事の下書き
 
+2026年11月12日の更新：親・DS・BPの改稿は利用者確認後にmainへ統合済み。掲載先URLは共有済みで、親記事は利用者から公開完了の共有がある。以下には各版を作成した当時の記録も含むため、現在の完了・残件は[スレッドまとめ](THREAD_SUMMARY_20261112.md)と[HANDOFF](HANDOFF.md)を優先する。Git原稿の`published: false`は維持し、Zenn側の更新操作は別に扱う。
+
 新規下書きは `articles/diy-automl-evaluation-framework.md` です。過去に作成したとされる5本の原稿は未取得であり、それらを復元したものではありません。今回のコードと実測記録を基に、リポジトリ紹介を1本新しく作成しています。
 
 利用者の追加依頼により、3業務テーマのQuick & dirty実験を親記事へ追記し、`articles/diy-automl-business-three-experiments.md` をビジネス向けの実験解説下書きとして追加しました。両方published=falseです。図はimages/business-quick-20261108/associations.png、加工・評価条件はdocs/BUSINESS_QUICK_RESULTS.md、再実行はexperiments/business_quick_20261108/README.mdにあります。アプリ画面の利用手順とは区別します。
