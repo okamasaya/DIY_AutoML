@@ -1,0 +1,65 @@
+{
+  "status": "passed",
+  "records": [
+    {
+      "dataset": "hotel",
+      "test_rows": 400,
+      "model_f1": 0.5270973233708502,
+      "rule_f1": 0.5713265063110264,
+      "difference": -0.04422918294017619,
+      "lower": -0.10854388640333965,
+      "upper": 0.017536596018601327,
+      "reference_name": "Lead time >= training median"
+    },
+    {
+      "dataset": "coupon",
+      "test_rows": 400,
+      "model_f1": 0.6924980781129881,
+      "rule_f1": 0.6521492666147037,
+      "difference": 0.0403488114982844,
+      "lower": 0.00127950627117166,
+      "upper": 0.07843652434703526,
+      "reference_name": "Published coffee context rule"
+    },
+    {
+      "dataset": "retail",
+      "test_rows": 349,
+      "model_f1": 0.6237227972399151,
+      "rule_f1": 0.6131805157593123,
+      "difference": 0.010542281480602766,
+      "lower": -0.04161615926564045,
+      "upper": 0.05895950834627545,
+      "reference_name": "At least two prior invoices"
+    }
+  ],
+  "repeats": 2000,
+  "seed": 43,
+  "scope": "Conditional fixed-model paired class-count-preserving row bootstrap; excludes training, group/time dependence and causal effects",
+  "article_supplement_not_package_feature": true,
+  "overview_limits": [
+    -1,
+    1
+  ],
+  "display_limits": [
+    -0.13,
+    0.13
+  ],
+  "input_sha256": {
+    "validation/business-quick-20261108/hotel/comparison_predictions.npz": "08c5941330eda805df5c4a961ad10798fde36778b66a0789fe5cfa5c5fefc5d9",
+    "validation/business-quick-20261108/hotel/comparisons.csv": "6af2c5bfe94348189341f8ab8475f833e27963461f56932d24c38b4e0681ab66",
+    "validation/business-quick-20261108/hotel/selected/arrays.npz": "436be69ef98852ab1bd670946a2808463f5be648f083405fc92298c7c81fa8fa",
+    "validation/business-quick-20261108/hotel/selected/manifest.json": "a640cfd9b037676f75eb9d815aaf6fd0a35401dd48f64965ac42401a648eab43",
+    "validation/business-quick-20261108/coupon/comparison_predictions.npz": "8ede7640890f05d88df357b88e3e131248d5d1b68b056276ac8ba0e940c2d81d",
+    "validation/business-quick-20261108/coupon/comparisons.csv": "47b74e486e303646caaef74071a684e53f7e40eae02685d92d54ce1771e0a9f4",
+    "validation/business-quick-20261108/coupon/selected/arrays.npz": "10702aa766d169eff1bc651c3a281c6596334e516491c7c97d23012b2079a119",
+    "validation/business-quick-20261108/coupon/selected/manifest.json": "a46cd962d80769fec8228020ae7a09fe88b9f8d4627ea01b0de974a15055c889",
+    "validation/business-quick-20261108/retail/comparison_predictions.npz": "cab0dee4e28e33949da8e1c870f541a576e41149689e39f0bcd943e6e58b2855",
+    "validation/business-quick-20261108/retail/comparisons.csv": "8b28b228d73b350df04ae3b537354f994caaea069b47c9ea0b41b1e2244c715e",
+    "validation/business-quick-20261108/retail/selected/arrays.npz": "07dcfdeb8b04660f924f5895196094208890f9dc227b67d29a5bc7463518f9f2",
+    "validation/business-quick-20261108/retail/selected/manifest.json": "42f1f5d64888a4cb0704fd821523ed7e9a8cc0dc409a43a7bef55e289ec5068d"
+  },
+  "script_sha256": "6873e57bc8e1421acabcaa35ed0337870832eabd3be3e0c0198c507dbf9c8ec9",
+  "image_sha256": "876205cf4c6231271c8835d9b7daa00852426b859f55e9b63dfbbdd6144f42a8",
+  "arrays_sha256": "f3531ad3b90f4c3be6b6064a558cb09146847c4dc72b4b4498052d5b8cd9d4e8",
+  "source_files_unchanged": true
+}

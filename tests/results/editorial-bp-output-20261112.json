@@ -1,0 +1,250 @@
+{
+  "date": "2026-11-12",
+  "status": "passed",
+  "target": "articles/diy-automl-business-three-experiments.md",
+  "article_sha256": "37360f0f1a5142087d0f1150e7654bf8b98f98230b08dd9f652f8172a1b58e23",
+  "validators": [
+    {
+      "output": "selected",
+      "schema": 3,
+      "status": "passed"
+    },
+    {
+      "output": "illustrated",
+      "schema": 8,
+      "status": "passed"
+    },
+    {
+      "output": "uncertainty",
+      "schema": 9,
+      "status": "passed"
+    }
+  ],
+  "iris": {
+    "status": "passed",
+    "input_rows": 150,
+    "features": 4,
+    "train_rows": 120,
+    "test_rows": 30,
+    "correct": 29,
+    "wrong": 1,
+    "selected_model": "SVM",
+    "accuracy": 0.9666666666666667,
+    "macro_f1": 0.9665831244778612,
+    "bootstrap_se": 0.03276471080498462,
+    "lower": 0.8976982097186701,
+    "upper": 1.0,
+    "classes": [
+      "setosa",
+      "versicolor",
+      "virginica"
+    ],
+    "confusion_matrix": [
+      [
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        9,
+        1
+      ],
+      [
+        0,
+        0,
+        10
+      ]
+    ],
+    "mistakes": [
+      [
+        79,
+        "versicolor",
+        "virginica",
+        6.7,
+        3.0,
+        5.0,
+        1.7
+      ]
+    ],
+    "source_input_sha256": "c993429e0f6e8c45b422cb9f1346ffc08852c71c92bdc53c38a231c256e111a1",
+    "script_sha256": "4841b8ecdaba39d942e579b12233597cbf9d149a2c5369b97e499b55ef54022c",
+    "original_uncertainty_cells_unchanged": true,
+    "workbook_sha256": "5a028968db349666adf0ca6e3e99892d85c5bc3f722f3cff16fe33594ca4dc5a",
+    "kind": "Article-specific Japanese cover over verified standard outputs; no GUI"
+  },
+  "original_selected_arrays_exact_match": true,
+  "sklearn_point_metrics_and_wrong_csv_row_verified": true,
+  "original_uncertainty_cells_and_embedded_interval_png_unchanged": true,
+  "actual_workbook_render": {
+    "tool": "LibreOfficeDev 26.8.0.0.alpha0",
+    "pdf_pages": 1,
+    "size": "A4",
+    "screenshot": "images/business-output-20261112/iris-report.png",
+    "displayed_metrics_verified_with_pdftotext": true
+  },
+  "paired_comparison": {
+    "records": [
+      {
+        "dataset": "hotel",
+        "test_rows": 400,
+        "model_f1": 0.5270973233708502,
+        "rule_f1": 0.5713265063110264,
+        "difference": -0.04422918294017619,
+        "lower": -0.10854388640333965,
+        "upper": 0.017536596018601327,
+        "reference_name": "Lead time >= training median"
+      },
+      {
+        "dataset": "coupon",
+        "test_rows": 400,
+        "model_f1": 0.6924980781129881,
+        "rule_f1": 0.6521492666147037,
+        "difference": 0.0403488114982844,
+        "lower": 0.00127950627117166,
+        "upper": 0.07843652434703526,
+        "reference_name": "Published coffee context rule"
+      },
+      {
+        "dataset": "retail",
+        "test_rows": 349,
+        "model_f1": 0.6237227972399151,
+        "rule_f1": 0.6131805157593123,
+        "difference": 0.010542281480602766,
+        "lower": -0.04161615926564045,
+        "upper": 0.05895950834627545,
+        "reference_name": "At least two prior invoices"
+      }
+    ],
+    "repeats": 2000,
+    "seed": 43,
+    "regenerated_indices_exact_match": true,
+    "independent_sklearn_draws": 9,
+    "point_and_percentile_intervals_verified": true,
+    "broad_limits": [
+      -1,
+      1
+    ],
+    "zoom_limits": [
+      -0.13,
+      0.13
+    ],
+    "all_intervals_within_zoom": true,
+    "article_supplement_not_package_feature": true
+  },
+  "article_checks": {
+    "images": 3,
+    "repository_file_links": 9,
+    "all_targets_exist": true,
+    "values_match_outputs": true,
+    "published_false": true
+  },
+  "preview": {
+    "tool": "Zenn CLI 0.5.14 with Chromium/Playwright",
+    "results": [
+      {
+        "viewport": {
+          "width": 1280,
+          "height": 900
+        },
+        "status": "passed",
+        "figures": [
+          {
+            "src": "/images/business-output-20261112/iris-report.png",
+            "width": 1241,
+            "displayedWidth": 702.390625
+          },
+          {
+            "src": "/images/business-quick-20261108/associations.png",
+            "width": 2240,
+            "displayedWidth": 702.375
+          },
+          {
+            "src": "/images/business-output-20261112/model-rule-difference.png",
+            "width": 1890,
+            "displayedWidth": 702.390625
+          }
+        ],
+        "pageErrors": [],
+        "horizontalOverflow": false,
+        "layoutWorkaround": false,
+        "outputDownloadLinksPresent": true
+      },
+      {
+        "viewport": {
+          "width": 390,
+          "height": 844
+        },
+        "status": "passed",
+        "figures": [
+          {
+            "src": "/images/business-output-20261112/iris-report.png",
+            "width": 1241,
+            "displayedWidth": 311.984375
+          },
+          {
+            "src": "/images/business-quick-20261108/associations.png",
+            "width": 2240,
+            "displayedWidth": 311.96875
+          },
+          {
+            "src": "/images/business-output-20261112/model-rule-difference.png",
+            "width": 1890,
+            "displayedWidth": 311.984375
+          }
+        ],
+        "pageErrors": [],
+        "horizontalOverflow": false,
+        "layoutWorkaround": false,
+        "outputDownloadLinksPresent": true
+      }
+    ],
+    "public_zenn_site_checked": false,
+    "mobile_sidebar_collapsed": true
+  },
+  "unchanged_paths": [
+    "src",
+    "pyproject.toml",
+    "requirements-local.lock.txt",
+    "data/reference",
+    "validation/current",
+    "validation/business-quick-20261108"
+  ],
+  "iris_new_training": true,
+  "business_cases_retrained": false,
+  "generic_gui_added": false,
+  "time_series_implemented": false,
+  "full_test_suite_rerun": false,
+  "full_suite_reason": "No application or dependency changes; generated outputs validated with their schema-specific validators.",
+  "zenn_published": false,
+  "artifact_sha256": {
+    "validation/business-output-20261112/README.md": "011f4e9a7d22dcf0dd581f20be6421a44c7ea5c11cf5264e1bff13c6992e4251",
+    "validation/business-output-20261112/comparison/comparison.json": "8a050fbc86b4741cdcab220b92a393d78790e0521e8a3214a9be4e84943a0998",
+    "validation/business-output-20261112/comparison/overview.png": "df2f21f60cd3aa369d06d3a11e698d78e31a1d02ff86d76f181cb1f10743fcf7",
+    "validation/business-output-20261112/comparison/paired_bootstrap.npz": "f3531ad3b90f4c3be6b6064a558cb09146847c4dc72b4b4498052d5b8cd9d4e8",
+    "validation/business-output-20261112/iris/example_summary.json": "9692435cf019ddc154e3e65e3cb47b6f436fc348f44c9378c5659efcac96f68c",
+    "validation/business-output-20261112/iris/illustrated/arrays.npz": "c39e94cddd0f35c2df845384112a82862c0ca36244d0e098c567ad569d3fe1dc",
+    "validation/business-output-20261112/iris/illustrated/figure_data.npz": "a5407b05166d365ee54fd640f16934c7cdd79b57e6ae3e5e0884ca6597fbbcd0",
+    "validation/business-output-20261112/iris/illustrated/figures/sl_selected_cm.png": "2c31e828f4eabc32547d2e7b636c1bafb0f50d1ff318f175fa400388c8fbbac6",
+    "validation/business-output-20261112/iris/illustrated/figures/sl_training_cv.png": "e22cd4c9a768b5862ce090be1e91524aa37c3386ef3e569c240b2e7ae245db09",
+    "validation/business-output-20261112/iris/illustrated/manifest.json": "03bf4a4f2fdc36269069b5e58103916bfdeaa98f6a6393567d91679ad7c894f6",
+    "validation/business-output-20261112/iris/illustrated/render_manifest.json": "5af046ef5bb8460c108a116bed447b27b6c03485c5f9f3967cc8c82aaea833d8",
+    "validation/business-output-20261112/iris/illustrated/report.xlsx": "fd727226e0cce1ad4a1a5ea50657a8bd50af8cc3f03b0aee6be35843a4cb6f27",
+    "validation/business-output-20261112/iris/illustrated/report_with_figures.xlsx": "8cd8066211ddcc9c05fae9b3649e9efb5af1cf4a71a19d9dab3f4e2c66bcc3c7",
+    "validation/business-output-20261112/iris/illustrated/source_input.csv": "c993429e0f6e8c45b422cb9f1346ffc08852c71c92bdc53c38a231c256e111a1",
+    "validation/business-output-20261112/iris/input.csv": "c993429e0f6e8c45b422cb9f1346ffc08852c71c92bdc53c38a231c256e111a1",
+    "validation/business-output-20261112/iris/iris_business_report.xlsx": "5a028968db349666adf0ca6e3e99892d85c5bc3f722f3cff16fe33594ca4dc5a",
+    "validation/business-output-20261112/iris/selected/arrays.npz": "c39e94cddd0f35c2df845384112a82862c0ca36244d0e098c567ad569d3fe1dc",
+    "validation/business-output-20261112/iris/selected/manifest.json": "03bf4a4f2fdc36269069b5e58103916bfdeaa98f6a6393567d91679ad7c894f6",
+    "validation/business-output-20261112/iris/selected/report.xlsx": "fd727226e0cce1ad4a1a5ea50657a8bd50af8cc3f03b0aee6be35843a4cb6f27",
+    "validation/business-output-20261112/iris/summary.pdf": "7d756f211e21dca8af8c5f3480e47f72f8c5f7a4b1c21b8884487d57421643eb",
+    "validation/business-output-20261112/iris/uncertainty/arrays.npz": "833dfa47acc88daae60084f6f1ee32ad411095d960ce42e6595aa4e814588cc5",
+    "validation/business-output-20261112/iris/uncertainty/manifest.json": "d249727c7aca1bc7a915dc63947e96ab70dd282beb54d8ca9d04d5b9c22479b9",
+    "validation/business-output-20261112/iris/uncertainty/metric_intervals.png": "fb9d035029e29c4edf3c1ca4c0741b9363ef88c97a7713f799c7b1628281de62",
+    "validation/business-output-20261112/iris/uncertainty/report.xlsx": "696c2dcf7329d9548de993998c9a7540b48b0f1c152d7bb7d1dc48ba36572bb9",
+    "validation/business-output-20261112/iris/uncertainty/source_manifest.json": "03bf4a4f2fdc36269069b5e58103916bfdeaa98f6a6393567d91679ad7c894f6",
+    "validation/business-output-20261112/iris/uncertainty/source_report.xlsx": "fd727226e0cce1ad4a1a5ea50657a8bd50af8cc3f03b0aee6be35843a4cb6f27",
+    "images/business-output-20261112/iris-report.png": "289aa1ca920f64a146e7040c540b3fce4e0cee1df53727dbde6dfd74c58f6127",
+    "images/business-output-20261112/model-rule-difference.png": "876205cf4c6231271c8835d9b7daa00852426b859f55e9b63dfbbdd6144f42a8"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "status": "passed",
+  "input_rows": 150,
+  "features": 4,
+  "train_rows": 120,
+  "test_rows": 30,
+  "correct": 29,
+  "wrong": 1,
+  "selected_model": "SVM",
+  "accuracy": 0.9666666666666667,
+  "macro_f1": 0.9665831244778612,
+  "bootstrap_se": 0.03276471080498462,
+  "lower": 0.8976982097186701,
+  "upper": 1.0,
+  "classes": [
+    "setosa",
+    "versicolor",
+    "virginica"
+  ],
+  "confusion_matrix": [
+    [
+      10,
+      0,
+      0
+    ],
+    [
+      0,
+      9,
+      1
+    ],
+    [
+      0,
+      0,
+      10
+    ]
+  ],
+  "mistakes": [
+    [
+      79,
+      "versicolor",
+      "virginica",
+      6.7,
+      3.0,
+      5.0,
+      1.7
+    ]
+  ],
+  "source_input_sha256": "c993429e0f6e8c45b422cb9f1346ffc08852c71c92bdc53c38a231c256e111a1",
+  "script_sha256": "4841b8ecdaba39d942e579b12233597cbf9d149a2c5369b97e499b55ef54022c",
+  "original_uncertainty_cells_unchanged": true,
+  "workbook_sha256": "5a028968db349666adf0ca6e3e99892d85c5bc3f722f3cff16fe33594ca4dc5a",
+  "kind": "Article-specific Japanese cover over verified standard outputs; no GUI"
+}
