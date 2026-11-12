@@ -1,3 +1,4 @@
 * text=auto eol=lf
 data/reference/*.csv -text whitespace=cr-at-eol
+validation/business-output-20261112/**/*.csv -text whitespace=cr-at-eol
 originals/** -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
