@@ -88,9 +88,9 @@ macro F1は各クラスのF1を同じ重みで平均した指標で、1が最大
 
 ### 3つの原稿
 
-- [親記事：動機と全体像](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-evaluation-framework.md)
-- [DS向け：選定・条件付き区間・反復の設計](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-ds-uncertainty.md)
-- [ビジネス向け：ホテル・カフェ券・再購入](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-business-three-experiments.md)
+- [親記事：動機と全体像](https://zenn.dev/okamasaya/articles/diy-automl-evaluation-framework)
+- [DS向け：選定・条件付き区間・反復の設計](https://zenn.dev/okamasaya/articles/diy-automl-ds-uncertainty)
+- [ビジネス向け：ホテル・カフェ券・再購入](https://zenn.dev/okamasaya/articles/diy-automl-business-three-experiments)
 
 ### 数値・現状の確認先
 

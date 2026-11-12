@@ -99,9 +99,9 @@ Gitからの再開手順と、ローカルコミット・pushの確認方法は 
 
 TensorFlowを導入せずSL/ULを試す場合は、`requirements-core.lock.txt` を導入してから `pip install --no-deps -e .` を実行できます。DLを含む全テストは従来の `requirements-local.lock.txt` を使用してください。
 
-Zenn用の新規紹介記事は `articles/diy-automl-evaluation-framework.md`、図は `images/diy-automl/selection-flow.png` に保存しています。`published: false` の下書きで、Zennへの投稿・公開は行っていません。操作と確認範囲は `docs/ZENN_GUIDE.md` を参照してください。
+Zenn用の紹介原稿は `articles/`、選定フロー図は `images/diy-automl/selection-flow.png` に保存しています。2026年11月12日に利用者から公開先の共有があり、以下のリンクからZenn掲載記事を読めます。Git原稿の `published: false` は変更しておらず、掲載版と編集中の原稿は区別します。操作と過去の確認範囲は `docs/ZENN_GUIDE.md` を参照してください。
 
-誤差評価を共通の軸に、[親記事](articles/diy-automl-evaluation-framework.md)、[ビジネス向けの平易な説明と3テーマの実験](articles/diy-automl-business-three-experiments.md)、[DS向けの推定条件・数式・保存結果](articles/diy-automl-ds-uncertainty.md)の3下書きに分けています。統計的な不確かさ、学習の変動、数値計算誤差、系統的な偏りを区別し、現在の実装範囲と今後の設計を明示しています。
+誤差評価を共通の軸に、[親記事](https://zenn.dev/okamasaya/articles/diy-automl-evaluation-framework)、[ビジネス向けの平易な説明と3テーマの実験](https://zenn.dev/okamasaya/articles/diy-automl-business-three-experiments)、[DS向けの推定条件・数式・保存結果](https://zenn.dev/okamasaya/articles/diy-automl-ds-uncertainty)の3本に分けています。統計的な不確かさ、学習の変動、数値計算誤差、系統的な偏りを区別し、現在の実装範囲と今後の設計を明示しています。
 
 ## 図付きExcel（0.4.0a5）
 
