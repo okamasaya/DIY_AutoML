@@ -1,0 +1,93 @@
+{
+  "status": "passed",
+  "date": "2026-11-12",
+  "timezone": "Asia/Tokyo",
+  "scope": "Future-work documentation only; no forecasting implementation or new experiment",
+  "article": "articles/diy-automl-ds-uncertainty.md",
+  "article_sha256": "105a5630a5596639077468358915ba2dc16de8a46eebc14d82c949e2454cf57a",
+  "prior_numeric_and_source_evidence": "tests/results/editorial-ds-uncertainty-20261112.json",
+  "code_blocks_unchanged": true,
+  "display_equations_unchanged": true,
+  "figure_files_unchanged": true,
+  "new_forecasts_computed": false,
+  "preview": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "status": "passed",
+      "images": [
+        {
+          "source": "/images/diy-automl/selection-flow.png",
+          "width": 1111,
+          "displayedWidth": 702.390625
+        },
+        {
+          "source": "/images/diy-automl/evaluation-with-and-without-uncertainty.png",
+          "width": 1980,
+          "displayedWidth": 702.390625
+        },
+        {
+          "source": "/images/diy-automl/evaluation-joint-bootstrap.png",
+          "width": 1170,
+          "displayedWidth": 702.390625
+        },
+        {
+          "source": "/images/diy-automl/evaluation-training-history.png",
+          "width": 1890,
+          "displayedWidth": 702.390625
+        }
+      ],
+      "mathExpressions": 31,
+      "mathErrors": 0,
+      "pageErrors": [],
+      "horizontalOverflow": false,
+      "katexTransport": "Exact CDN assets fetched with verified system TLS and inherited proxy",
+      "previewLayoutWorkaround": ".layout__main { min-width: 0; } for CLI code scrolling",
+      "failedRequests": [
+        "https://embed.zenn.studio/js/listen-embed-event.js"
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": "passed",
+      "images": [
+        {
+          "source": "/images/diy-automl/selection-flow.png",
+          "width": 1111,
+          "displayedWidth": 311.984375
+        },
+        {
+          "source": "/images/diy-automl/evaluation-with-and-without-uncertainty.png",
+          "width": 1980,
+          "displayedWidth": 311.96875
+        },
+        {
+          "source": "/images/diy-automl/evaluation-joint-bootstrap.png",
+          "width": 1170,
+          "displayedWidth": 311.984375
+        },
+        {
+          "source": "/images/diy-automl/evaluation-training-history.png",
+          "width": 1890,
+          "displayedWidth": 311.984375
+        }
+      ],
+      "mathExpressions": 31,
+      "mathErrors": 0,
+      "pageErrors": [],
+      "horizontalOverflow": false,
+      "katexTransport": "Exact CDN assets fetched with verified system TLS and inherited proxy",
+      "previewLayoutWorkaround": ".layout__main { min-width: 0; } for CLI code scrolling",
+      "failedRequests": [
+        "https://embed.zenn.studio/js/listen-embed-event.js"
+      ]
+    }
+  ],
+  "published_zenn_updated": false,
+  "maximum_error_caveat_emphasis_rendered": true
+}
