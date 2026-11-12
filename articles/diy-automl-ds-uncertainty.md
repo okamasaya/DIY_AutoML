@@ -12,7 +12,7 @@ published: false
 
 DIY AutoMLでは、その問いに戻れるように、分割・予測・反復値・設定を残します。この記事では、自分で計算と保存結果を検査するための条件を、数式と実装に沿って説明します。
 
-[親記事](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-evaluation-framework.md)では作り始めた理由と全体像を、[ビジネス向け](https://github.com/okamasaya/DIY_AutoML/blob/main/articles/diy-automl-business-three-experiments.md)では身近なデータと誤りの件数を扱います。ここでは同じ根拠を、推定対象・評価単位・再現条件まで詳しく追います。
+[親記事](https://zenn.dev/okamasaya/articles/diy-automl-evaluation-framework)では作り始めた理由と全体像を、[ビジネス向け](https://zenn.dev/okamasaya/articles/diy-automl-business-three-experiments)では身近なデータと誤りの件数を扱います。ここでは同じ根拠を、推定対象・評価単位・再現条件まで詳しく追います。
 
 対象は開発中の **0.4.0a7** です。`select/tune`のtest区間は、学習済みモデルと観測クラス別件数に条件付けています。新しい`uncertainty`は保存済みSL/DLへSE・クラス別区間を広げ、クラス件数固定/通常の行bootstrapを選べます。選定を含む学習手続き全体の不確かさや、系統誤差を網羅した区間は未実装です。現在の仕様と拡張設計を分けて記載します。
 

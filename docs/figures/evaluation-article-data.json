@@ -1,0 +1,159 @@
+{
+  "status": "passed",
+  "retrained": false,
+  "source_files_unchanged": true,
+  "input_sha256": {
+    "scripts/render_evaluation_article_figures.py": "81973421297deec5efdb99cb00339579fa99ae0b7bce5c424219352aea9101a5",
+    "data/reference/iris.csv": "c993429e0f6e8c45b422cb9f1346ffc08852c71c92bdc53c38a231c256e111a1",
+    "validation/dl-backend-preparation-0.4.0a7/iris/arrays.npz": "ae3b33c6d2b7c4fc9e79e954525c0da7bdcac7de012783042fc00a7ad91db02b",
+    "validation/dl-backend-preparation-0.4.0a7/iris/manifest.json": "b2104e6bdd0fc9d2b9eee9d0b325b120e3559f08650c4e6a741727c017056dcb",
+    "validation/dl-backend-preparation-0.4.0a7/iris/report.xlsx": "997cbcbd77a71e0c4256481eedbacda9ed3be70bc65d5144fcbf1f1d139018f7",
+    "validation/dl-backend-preparation-0.4.0a7/iris-uncertainty/arrays.npz": "b88ff47868f571845e5b75ae5f5a7c9be4db892f1b00f179cdf12fb5f1e07c1e",
+    "validation/dl-backend-preparation-0.4.0a7/iris-uncertainty/manifest.json": "69c75fb24a39a5ab2f0632b682d1b3e6178d8d2db08ec247530292e26aa43d9d",
+    "validation/dl-backend-preparation-0.4.0a7/iris-uncertainty/metric_intervals.png": "82f9e254e9b42e0a946a36fce72d374f55a39ab0ad2c4a40899d70683fc058b3",
+    "validation/dl-backend-preparation-0.4.0a7/iris-uncertainty/report.xlsx": "8adb866a2db3ff3c5b8f474eb3db2b65c4b31565e2e129468b33760cc21503cf",
+    "validation/dl-backend-preparation-0.4.0a7/iris-uncertainty/source_manifest.json": "b2104e6bdd0fc9d2b9eee9d0b325b120e3559f08650c4e6a741727c017056dcb",
+    "validation/dl-backend-preparation-0.4.0a7/iris-uncertainty/source_report.xlsx": "997cbcbd77a71e0c4256481eedbacda9ed3be70bc65d5144fcbf1f1d139018f7",
+    "data/reference/wine.csv": "a297f8c376cd0107b1fe9d66d992e025e1a128d78fbf1801b706d4c8dc43c918",
+    "validation/dl-backend-preparation-0.4.0a7/wine/arrays.npz": "2c96aa078e2cdf48ac801c5979fbb7b5f57506aaccf484ed16aabb444b9388e3",
+    "validation/dl-backend-preparation-0.4.0a7/wine/manifest.json": "2cbc5d8a9fa39db4fded8fe1a85ce7ef3298d1bde3e2dc27a99c18179846a367",
+    "validation/dl-backend-preparation-0.4.0a7/wine/report.xlsx": "e1abeaddbda40d485d7f45b3b8d6fc037872d62c4edab7a4111bbed45c8193bc",
+    "validation/dl-backend-preparation-0.4.0a7/wine-uncertainty/arrays.npz": "cca52023e524769faaf7601e0a16936dbd128815a0dbec39816061e25a2a1e45",
+    "validation/dl-backend-preparation-0.4.0a7/wine-uncertainty/manifest.json": "b822abc7b527f653db6ea3ce9edbde6ae0ae25819106d71bf7868aee2f34f4fc",
+    "validation/dl-backend-preparation-0.4.0a7/wine-uncertainty/metric_intervals.png": "e381a0e9c81de0387d766f4bae66dd656859f3fec81c477fc52243243ceb5262",
+    "validation/dl-backend-preparation-0.4.0a7/wine-uncertainty/report.xlsx": "c47cd6f6be4f13f593d13ea41e44e83d6598b98242a947327877e4a3c3cc42a5",
+    "validation/dl-backend-preparation-0.4.0a7/wine-uncertainty/source_manifest.json": "2cbc5d8a9fa39db4fded8fe1a85ce7ef3298d1bde3e2dc27a99c18179846a367",
+    "validation/dl-backend-preparation-0.4.0a7/wine-uncertainty/source_report.xlsx": "e1abeaddbda40d485d7f45b3b8d6fc037872d62c4edab7a4111bbed45c8193bc",
+    "data/reference/breast_cancer.csv": "32cb9f217d4e04fe3ffc521a396a13336cd0f1e094445d2a0a8d54335458e8e7",
+    "validation/dl-backend-preparation-0.4.0a7/breast_cancer/arrays.npz": "e613a10b2121e5058d09002c867ce18c19a8a3b1785716201608a63786193db9",
+    "validation/dl-backend-preparation-0.4.0a7/breast_cancer/manifest.json": "a3af1bdaa4e1320655d0337059412307c248e0ed29713f240ffc29a14a372b35",
+    "validation/dl-backend-preparation-0.4.0a7/breast_cancer/report.xlsx": "a52aa6770ca70a2b96fb4a8579aa331e5a3f208f0e257e53cf1e42df49ccc08f",
+    "validation/dl-backend-preparation-0.4.0a7/breast_cancer-uncertainty/arrays.npz": "ef34a0d6c796fd26e842b31eb6c053c5191ec3e1c3a1ec0cae58e5bb31476939",
+    "validation/dl-backend-preparation-0.4.0a7/breast_cancer-uncertainty/manifest.json": "2fca09c0c987bda2a465a2a34fcb6acdc260429dd4f8e1bb994195200ae7a2f1",
+    "validation/dl-backend-preparation-0.4.0a7/breast_cancer-uncertainty/metric_intervals.png": "aab869d2450c0a09ead854741efd900fef64a41a6b07bfd7f9d490c028e11349",
+    "validation/dl-backend-preparation-0.4.0a7/breast_cancer-uncertainty/report.xlsx": "5539218f250f1cc30de0dfc6e484ac05d89c1e7b7f8eb9f7f4a815d49efe86d0",
+    "validation/dl-backend-preparation-0.4.0a7/breast_cancer-uncertainty/source_manifest.json": "a3af1bdaa4e1320655d0337059412307c248e0ed29713f240ffc29a14a372b35",
+    "validation/dl-backend-preparation-0.4.0a7/breast_cancer-uncertainty/source_report.xlsx": "a52aa6770ca70a2b96fb4a8579aa331e5a3f208f0e257e53cf1e42df49ccc08f"
+  },
+  "versions": {
+    "diy-automl": "0.4.0a7",
+    "numpy": "2.3.5",
+    "pandas": "2.2.3",
+    "matplotlib": "3.10.8",
+    "scikit-learn": "1.8.0"
+  },
+  "validated_saved_runs": 6,
+  "independent_sklearn_checks": 24,
+  "estimates": [
+    {
+      "dataset": "iris",
+      "training_seed": 42,
+      "test_rows": 30,
+      "estimate": 0.9333333333333332,
+      "se": 0.04724415582360034,
+      "lower": 0.8294970161977835,
+      "upper": 1.0,
+      "bootstrap_repeats": 1000,
+      "bootstrap_seed": 43
+    },
+    {
+      "dataset": "iris",
+      "training_seed": 43,
+      "test_rows": 30,
+      "estimate": 0.9326599326599326,
+      "se": 0.04330682933215595,
+      "lower": 0.8222222222222223,
+      "upper": 1.0,
+      "bootstrap_repeats": 1000,
+      "bootstrap_seed": 43
+    },
+    {
+      "dataset": "wine",
+      "training_seed": 42,
+      "test_rows": 36,
+      "estimate": 0.9709618874773139,
+      "se": 0.02886766694623018,
+      "lower": 0.9089184060721062,
+      "upper": 1.0,
+      "bootstrap_repeats": 1000,
+      "bootstrap_seed": 43
+    },
+    {
+      "dataset": "wine",
+      "training_seed": 43,
+      "test_rows": 36,
+      "estimate": 0.9709618874773139,
+      "se": 0.02886766694623018,
+      "lower": 0.9089184060721062,
+      "upper": 1.0,
+      "bootstrap_repeats": 1000,
+      "bootstrap_seed": 43
+    },
+    {
+      "dataset": "breast_cancer",
+      "training_seed": 42,
+      "test_rows": 114,
+      "estimate": 0.9343480049362403,
+      "se": 0.02404437452036717,
+      "lower": 0.885733377881724,
+      "upper": 0.9809555629802873,
+      "bootstrap_repeats": 1000,
+      "bootstrap_seed": 43
+    },
+    {
+      "dataset": "breast_cancer",
+      "training_seed": 43,
+      "test_rows": 114,
+      "estimate": 0.9535338713621913,
+      "se": 0.02059562977495094,
+      "lower": 0.9081939346885,
+      "upper": 0.99062114356232,
+      "bootstrap_repeats": 1000,
+      "bootstrap_seed": 43
+    }
+  ],
+  "breast_cancer_history": [
+    {
+      "training_seed": 42,
+      "minimum_validation_epoch": 12,
+      "minimum_validation_loss": 0.09005672484636307,
+      "final_training_loss": 0.001735092955641448,
+      "final_validation_loss": 0.246048241853714
+    },
+    {
+      "training_seed": 43,
+      "minimum_validation_epoch": 26,
+      "minimum_validation_loss": 0.08471266180276871,
+      "final_training_loss": 0.0002227579971076921,
+      "final_validation_loss": 0.1208751797676086
+    }
+  ],
+  "joint_bootstrap": {
+    "dataset": "breast_cancer",
+    "training_seed": 42,
+    "correlation": 0.9162700478170535,
+    "method": "Empirical quantiles of squared Mahalanobis distances around bootstrap mean; descriptive point coverage, not parameter confidence coverage",
+    "ellipses": [
+      {
+        "fraction": 0.99,
+        "actual_fraction": 0.991,
+        "squared_distance_threshold": 12.522061458213777
+      },
+      {
+        "fraction": 0.95,
+        "actual_fraction": 0.952,
+        "squared_distance_threshold": 5.738304460868889
+      },
+      {
+        "fraction": 0.9,
+        "actual_fraction": 0.905,
+        "squared_distance_threshold": 3.9414071959671624
+      }
+    ]
+  },
+  "output_sha256": {
+    "evaluation-with-and-without-uncertainty.png": "490e433050f57b356454fb02e8cd10e09e5fbe174df066357130b29d169cf6c3",
+    "evaluation-training-history.png": "0b09ba2b871f74ca641e4e02b847808763641fb28fc82f54b83be153b4cb9f7d",
+    "evaluation-joint-bootstrap.png": "43fb13649b6836e42d457059839ad39e07a4fe69c90b5bbb01f37f1a386d8893"
+  }
+}
