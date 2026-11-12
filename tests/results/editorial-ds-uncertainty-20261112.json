@@ -1,0 +1,181 @@
+{
+  "status": "passed",
+  "date": "2026-11-12",
+  "timezone": "Asia/Tokyo",
+  "article": "articles/diy-automl-ds-uncertainty.md",
+  "article_sha256": "252a94219e9a473ee041f0e62e186c360a288b47f1e5ccbc2757394534d585f3",
+  "sources": [
+    {
+      "version": "scikit-learn 1.8.0",
+      "url": "https://raw.githubusercontent.com/scikit-learn/scikit-learn/1.8.0/examples/ensemble/plot_bias_variance.py",
+      "status": 200,
+      "bytes": 7236,
+      "sha256": "f5500d7e21e1f0d3f50049cb292e4d6993ce9e47c7d8f802176bef8b234256e9",
+      "scope": "MSE bias/variance/noise example"
+    },
+    {
+      "version": "scikit-learn 1.8.0",
+      "url": "https://raw.githubusercontent.com/scikit-learn/scikit-learn/1.8.0/doc/common_pitfalls.rst",
+      "status": 200,
+      "bytes": 25066,
+      "sha256": "6e2b42374fbb521c35f29eeab05bcbfa9744eed344b5f92e41013338ff60a2f5",
+      "scope": "Preprocessing and data leakage"
+    },
+    {
+      "version": "scikit-learn 1.8.0",
+      "url": "https://raw.githubusercontent.com/scikit-learn/scikit-learn/1.8.0/doc/modules/cross_validation.rst",
+      "status": 200,
+      "bytes": 42080,
+      "sha256": "a785c904bfdf6a37b57839d17ec470533a0f94b90bfcb37ab41d671f3dd16583",
+      "scope": "Group and time dependencies"
+    },
+    {
+      "version": "scikit-learn 1.8.0",
+      "url": "https://raw.githubusercontent.com/scikit-learn/scikit-learn/1.8.0/doc/modules/permutation_importance.rst",
+      "status": 200,
+      "bytes": 10612,
+      "sha256": "cfecc5258aed25e697b31b4282dd61f16098ad7895d8e7304c692355eca86438",
+      "scope": "Permutation importance conditional on a fitted model"
+    },
+    {
+      "version": "PyTorch v2.9.0",
+      "url": "https://raw.githubusercontent.com/pytorch/pytorch/v2.9.0/docs/source/notes/numerical_accuracy.rst",
+      "status": 200,
+      "bytes": 10945,
+      "sha256": "383c98439629eb6b38b9a09099d9803f5e1f74e93caa45707c3cef90d41a8feb",
+      "scope": "Finite precision, operation order and platforms"
+    },
+    {
+      "version": "AutoGluon v1.4.0",
+      "url": "https://raw.githubusercontent.com/autogluon/autogluon/v1.4.0/tabular/src/autogluon/tabular/predictor/predictor.py",
+      "status": 200,
+      "bytes": 360587,
+      "sha256": "6a4823050329caebafc5218385a4dc70999886a03c74a60528d9a7f3c73c5488",
+      "scope": "Feature importance stddev/n and t interval implementation"
+    }
+  ],
+  "autogluon_api_source_checked": true,
+  "autogluon_installed_or_executed": false,
+  "pytorch_installed_or_executed": false,
+  "iris_example": {
+    "code_sha256": "c95d15f150917cb8366509167420fef622c4adc4d6fcd1bad3a1343ab72090b2",
+    "replicates": 1000,
+    "all_indices_equal": true,
+    "all_f1_values_equal_atol": 1e-12,
+    "bootstrap_se": 0.04724415582360016,
+    "interval": [
+      0.8294970161977835,
+      1.0
+    ]
+  },
+  "cli_checks": [
+    "select and schema 3 validator",
+    "report and illustrated Excel validator",
+    "uncertainty and schema 9 validator"
+  ],
+  "api_example": "executed; six non-time result sheets exactly equal to CLI",
+  "example_output_sha256": {
+    "runs/ds-iris-bootstrap/bootstrap.npz": "b0d2d11ed9276ad63e0679db5b196fd92b53f7dc89a05f172725265b77ace574",
+    "runs/ds-iris-bootstrap/interval.png": "4875a667ecc18fe14fe5b4881c465e7378eeb4a47d40e33af806f059d289db74",
+    "runs/ds-select/report.xlsx": "3d38a945cc1f9c99bfc13fea557ca37eae8552b08c5641e9ef43b16e64e25402",
+    "runs/ds-select-figures/report_with_figures.xlsx": "4d59aa6bdd310611a7cdf56474be09f5a71b9fc18a5ae24e84a38086a91ddc3d",
+    "runs/ds-uncertainty/report.xlsx": "2d7a26974fb4aa532766505031754a413d41f53918cb7e7feed42c2b54c72d22",
+    "runs/ds-select-notebook/report.xlsx": "4e3818362f95c0ff8c4ac2f3b857fa9fed3961b19264af0848d21305ddccf40c"
+  },
+  "figure_sha256": {
+    "/images/diy-automl/selection-flow.png": "222bab31a132131084bda4a6b909974642f5f809ab56928066f5097d46de86ed",
+    "/images/diy-automl/evaluation-with-and-without-uncertainty.png": "490e433050f57b356454fb02e8cd10e09e5fbe174df066357130b29d169cf6c3",
+    "/images/diy-automl/evaluation-joint-bootstrap.png": "8767bccb23d4f3b3bff69f7638e2ec8e723ea6f09445e3728dff1ad1d9cff2f0",
+    "/images/diy-automl/evaluation-training-history.png": "0b09ba2b871f74ca641e4e02b847808763641fb28fc82f54b83be153b4cb9f7d"
+  },
+  "figures_changed": false,
+  "preview": [
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "status": "passed",
+      "images": [
+        {
+          "source": "/images/diy-automl/selection-flow.png",
+          "width": 1111,
+          "displayedWidth": 702.390625
+        },
+        {
+          "source": "/images/diy-automl/evaluation-with-and-without-uncertainty.png",
+          "width": 1980,
+          "displayedWidth": 702.390625
+        },
+        {
+          "source": "/images/diy-automl/evaluation-joint-bootstrap.png",
+          "width": 1170,
+          "displayedWidth": 702.390625
+        },
+        {
+          "source": "/images/diy-automl/evaluation-training-history.png",
+          "width": 1890,
+          "displayedWidth": 702.390625
+        }
+      ],
+      "mathExpressions": 31,
+      "mathErrors": 0,
+      "pageErrors": [],
+      "horizontalOverflow": false,
+      "katexTransport": "Exact CDN assets fetched with verified system TLS and inherited proxy",
+      "previewLayoutWorkaround": ".layout__main { min-width: 0; } for CLI code scrolling",
+      "failedRequests": [
+        "https://embed.zenn.studio/js/listen-embed-event.js"
+      ]
+    },
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "status": "passed",
+      "images": [
+        {
+          "source": "/images/diy-automl/selection-flow.png",
+          "width": 1111,
+          "displayedWidth": 311.984375
+        },
+        {
+          "source": "/images/diy-automl/evaluation-with-and-without-uncertainty.png",
+          "width": 1980,
+          "displayedWidth": 311.96875
+        },
+        {
+          "source": "/images/diy-automl/evaluation-joint-bootstrap.png",
+          "width": 1170,
+          "displayedWidth": 311.984375
+        },
+        {
+          "source": "/images/diy-automl/evaluation-training-history.png",
+          "width": 1890,
+          "displayedWidth": 311.984375
+        }
+      ],
+      "mathExpressions": 31,
+      "mathErrors": 0,
+      "pageErrors": [],
+      "horizontalOverflow": false,
+      "katexTransport": "Exact CDN assets fetched with verified system TLS and inherited proxy",
+      "previewLayoutWorkaround": ".layout__main { min-width: 0; } for CLI code scrolling",
+      "failedRequests": [
+        "https://embed.zenn.studio/js/listen-embed-event.js"
+      ]
+    }
+  ],
+  "unrun": [
+    "fresh environment install repeated",
+    "full package test suite",
+    "new model training",
+    "numerical sensitivity experiment",
+    "label audit",
+    "group/time external validation",
+    "arXiv review",
+    "usage survey",
+    "published Zenn update"
+  ]
+}
