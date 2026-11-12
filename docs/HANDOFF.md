@@ -50,6 +50,7 @@
 - DS記事を、誤差の分類と系統的な偏りの確認→AutoGluonのstddevの定義→親記事の図の表記・数式・再計算例→実行と検証、の順へ更新した。DS志望者向けの用語説明を加え、配布・別frameworkの展望は折りたたみへ移した。
 - 公式資料6件の版と内容を確認し、Irisの1,000反復とCLI/APIの実行例を検証した。裏付けは [DS_UNCERTAINTY_EVIDENCE.md](DS_UNCERTAINTY_EVIDENCE.md)、結果は [検証記録](../tests/results/editorial-ds-uncertainty-20261112.json)。今回のブランチは `docs/ds-uncertainty-guide`、反映先は `main`。既存図やアプリ本体は変更していない。
 - DS記事はZennローカルプレビューの1280px/390px幅で4画像と数式31か所を確認済み。KaTeX構文・ページ内JavaScriptエラーなし。検証時のCDN取得とCLI固有の幅への対応、公開サイト未検証の範囲は上記裏付け文書に記載した。
+- 利用者の依頼で、DS記事に「今後の課題：時系列の予測区間と性能評価」を追記した。予測範囲は最大誤差の上限とはしないこと、将来の値と性能指標の区間の違い、rolling-origin・先の長さ別の被覆率/幅・依存を保つ再標本化・時点別と経路全体の違いを記載した。ROADMAPと評価設計にも未実装の課題として反映した。今回のブランチは `docs/timeseries-uncertainty-roadmap`、反映先は `main`。
 
 | 作業 | 状態・分担 |
 | --- | --- |
