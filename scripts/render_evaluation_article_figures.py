@@ -156,10 +156,10 @@ def main():
         ellipse_records.append(dict(fraction=fraction, actual_fraction=coverage,
                                      squared_distance_threshold=threshold))
     point = next(r for r in records if r['dataset'] == 'breast_cancer' and r['training_seed'] == 42)
-    ax.set(xlabel='macro Precision', ylabel='macro Recall', xlim=(.75, 1.25), ylim=(.75, 1.25),
+    ax.set(xlabel='macro Precision', ylabel='macro Recall', xlim=(.80, 1.05), ylim=(.80, 1.05),
            title='2指標の連動：同じ行を再標本化した1,000点')
-    ax.set_xticks(np.linspace(.75, 1.25, 6))
-    ax.set_yticks(np.linspace(.75, 1.25, 6))
+    ax.set_xticks(np.linspace(.80, 1.05, 6))
+    ax.set_yticks(np.linspace(.80, 1.05, 6))
     ax.axvline(1, color='#777777', ls='--', lw=1, label='指標の上限（1）')
     ax.axhline(1, color='#777777', ls='--', lw=1)
     ax.set_aspect('equal')
@@ -179,7 +179,7 @@ def main():
         validated_saved_runs=6, independent_sklearn_checks=24, estimates=records,
         breast_cancer_history=history_summary,
         joint_bootstrap=dict(dataset='breast_cancer', training_seed=42,
-            axis_limits=dict(x=[.75, 1.25], y=[.75, 1.25]),
+            axis_limits=dict(x=[.80, 1.05], y=[.80, 1.05]),
             ellipse_clipped_to_metric_domain=False,
             correlation=float(np.corrcoef(points, rowvar=False)[0, 1]),
             method='Empirical quantiles of squared Mahalanobis distances around bootstrap mean; '
