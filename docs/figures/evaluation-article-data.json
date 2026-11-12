@@ -3,7 +3,7 @@
   "retrained": false,
   "source_files_unchanged": true,
   "input_sha256": {
-    "scripts/render_evaluation_article_figures.py": "bd6c3371af143ebde7bc5c672bfe64a02f0cc232712f32f9ee98653830d37f74",
+    "scripts/render_evaluation_article_figures.py": "320a7ebf82690b76a78dca19330c515feac4ee8a3f98850beffec14ec7879039",
     "data/reference/iris.csv": "c993429e0f6e8c45b422cb9f1346ffc08852c71c92bdc53c38a231c256e111a1",
     "validation/dl-backend-preparation-0.4.0a7/iris/arrays.npz": "ae3b33c6d2b7c4fc9e79e954525c0da7bdcac7de012783042fc00a7ad91db02b",
     "validation/dl-backend-preparation-0.4.0a7/iris/manifest.json": "b2104e6bdd0fc9d2b9eee9d0b325b120e3559f08650c4e6a741727c017056dcb",
@@ -133,12 +133,12 @@
     "training_seed": 42,
     "axis_limits": {
       "x": [
-        0.75,
-        1.25
+        0.8,
+        1.05
       ],
       "y": [
-        0.75,
-        1.25
+        0.8,
+        1.05
       ]
     },
     "ellipse_clipped_to_metric_domain": false,
@@ -165,6 +165,6 @@
   "output_sha256": {
     "evaluation-with-and-without-uncertainty.png": "490e433050f57b356454fb02e8cd10e09e5fbe174df066357130b29d169cf6c3",
     "evaluation-training-history.png": "0b09ba2b871f74ca641e4e02b847808763641fb28fc82f54b83be153b4cb9f7d",
-    "evaluation-joint-bootstrap.png": "cc0efa1cf3f3898237e0a7e771cc34eebfcb114a72310bc075404674d8a40755"
+    "evaluation-joint-bootstrap.png": "8767bccb23d4f3b3bff69f7638e2ec8e723ea6f09445e3728dff1ad1d9cff2f0"
   }
 }
