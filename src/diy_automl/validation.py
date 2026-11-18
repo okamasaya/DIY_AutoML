@@ -12,6 +12,12 @@ def validate(directory,schema=None,allow_failed=False):
     m=json.loads((root/"manifest.json").read_text())
     version=m["schema_version"]
     if schema is not None and schema!=version: raise ValueError("Unexpected schema")
+    if version==11:
+        from .sl_uncertainty_audit_validation import validate_sl_uncertainty_audit
+        return validate_sl_uncertainty_audit(root)
+    if version in (10,12,13):
+        from .sl_ranking_validation import validate_sl_ranking
+        return validate_sl_ranking(root)
     if version==9:
         from .uncertainty_validation import validate_uncertainty
         return validate_uncertainty(root)

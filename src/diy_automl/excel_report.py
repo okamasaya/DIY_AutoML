@@ -113,7 +113,7 @@ def render_excel_report(source,output,max_models=3,csv=None):
             sheet.add_image(image,anchor)
             row_by_sheet[sheet.title]=next_row(sheet,row,height)
             description={key:value for key,value in plan.items() if key!='data'}
-            description.update(file=str(path.relative_to(out)),sha256=digest(path),anchor=anchor,
+            description.update(file=path.relative_to(out).as_posix(),sha256=digest(path),anchor=anchor,
                                width=width,height=height,font=font,layout=layouts[sheet.title][2],
                                data_keys={key:plan['id']+'__'+key for key in plan['data']})
             plot_data.update({description['data_keys'][key]:value for key,value in plan['data'].items()})

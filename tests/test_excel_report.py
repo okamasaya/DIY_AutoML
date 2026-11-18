@@ -39,10 +39,22 @@ def test_all_source_schemas(tmp_path,schema,illustrated):
     m=validate_excel_report(out)
     assert m['source_schema']==schema
     assert m['figure_count']==(8 if schema==2 else 2)
+    assert all(figure['file']==f"figures/{figure['id']}.png" for figure in m['figures'])
     source_manifest=json.loads((out/'manifest.json').read_text())
     assert source_manifest['version']!=m['version']
     from diy_automl import __version__
     assert m['version']==__version__
+
+
+def test_legacy_windows_figure_paths(illustrated,tmp_path):
+    out=tmp_path/'windows-report'
+    shutil.copytree(illustrated,out)
+    path=out/'render_manifest.json'
+    manifest=json.loads(path.read_text())
+    for figure in manifest['figures']:
+        figure['file']=figure['file'].replace('/', '\\')
+    path.write_text(json.dumps(manifest))
+    assert validate_excel_report(out)['status']=='completed'
 
 
 def test_data_and_original_files_unchanged(illustrated):
