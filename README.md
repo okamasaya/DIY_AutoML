@@ -10,7 +10,7 @@ DIYの主目的は、MLの結果に誤差評価を含め、データ量・品質
 
 定量化した指標を用途に合うモデル選定へつなぎ、DS以外にも拾えた件数・見逃し・誤案内と限界を説明できる構成を目指します。費用・確率校正・閾値の最適化と、一般利用者への伝わり方の検証は未実施です。
 
-現在の[完了事項・未実装・次の推奨順](docs/ROADMAP.md)を一覧にしました。誤差評価の次の1区切りは「データ点検と評価条件の記録」を推奨し、顧客/時間を考慮した評価、学習曲線、学習・選定からの変動へ進む構成です。このデータ点検機能は未実装です。
+学習前に `audit-data` で欠損・重複・クラス件数と評価条件を点検できます。次は顧客や時間を考慮した分割、学習曲線、学習・選定からの変動へ進む構成です。 [点検手順](docs/DATA_AUDIT.md) · [ロードマップ](docs/ROADMAP.md)
 
 開発作業の再開・引継ぎは、[最新の状態と引継ぎ方針](docs/HANDOFF.md)を入口にしてください。
 
@@ -30,6 +30,16 @@ python3.12 -m venv .venv
 
 ## 実行
 
+初めて使うCSVは、先に `audit-data` で点検できます。学習なしで、確認すべき項目をExcelとJSONに保存します。
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -m diy_automl audit-data --csv data/reference/raisin.csv --target target --row-unit "レーズン1粒" --output runs/raisin-data-audit
+```
+
+元CSVを保管し、繰り返し使う中継データには `--convert parquet` で作る圧縮Parquetを優先します。DBファイルが必要なときは `--convert duckdb` を指定できます。 [変換と直接読み出しの手順](docs/DATA_AUDIT.md#parquetとduckdbへの変換)
+
+`extract-data` で中継ファイルから列・条件・件数を指定し、学習用CSVを作れます。ビジネス向けの点検・圧縮には、日本語の要約を出す `prepare-bp --compress` を使えます。 [抽出の手順](docs/DATA_AUDIT.md#学習用csvを抽出する) · [ビジネス向けの手順](docs/DATA_AUDIT.md#ビジネス向けの点検と圧縮)
+
 ```sh
 .venv/bin/python -m diy_automl run --csv data/reference/wine.csv --target target --output runs/wine
 .venv/bin/python -m diy_automl select --csv data/reference/wine.csv --target target --output runs/wine-select
@@ -47,7 +57,9 @@ DLはtrainだけでscalerをfitします。`--split-seed` と `--training-seed` 
 
 ULは固定データ最大5,000行、KMeans n_init=auto、GMM n_init=1/full、階層4linkage、k=2..10です。UL反復のTarget ARIとAssignment ARIは別の量です。45 seed対を独立標本としたSEM/CIや自動選定は行いません。fold SD、点ごとのSilhouette SD/SE、seed SD、test区間も区別します。
 
-`notebooks/Local_Comparison.ipynb` は共通関数を呼ぶ5シートと図5枚のローカル入口です。図付きExcelは共通のreport関数で別ファイルへ出力します。組込み3データセットは開発用で、未見の外部検証データではありません。SL/DLとULを総合順位にしません。
+`notebooks/Local_Comparison.ipynb` は共通関数を呼ぶ5シートと図5枚のローカル入口です。図付きExcelは共通のreport関数で別ファイルへ出力します。Notebookのscikit-learn由来の3データセットは開発用です。SL/DLとULを総合順位にしません。
+
+小麦の品種分類（Seeds）とレーズンの品種分類（Raisin）も、数値7列のCSVで試せます。 [データの出典・ライセンスとCPU実行例](data/reference/README.md)
 
 復旧範囲と検証結果は `docs/RESET_HANDOFF.md` と `docs/VALIDATION_UL_REPEAT.md` を参照してください。2026年11月8日（日本時間）、利用者の依頼により再実装した成果物を **main** へ反映しました。通常の取得・参照先はmainです。`recovery/reimplemented-0.4.0a1-post1` は移行前の履歴を保管するブランチとして残しています。
 
@@ -71,6 +83,17 @@ Gitからの再開手順と、ローカルコミット・pushの確認方法は 
 同じ分割をAutoGluonで再評価する場合は、[AutoGluonとのクロスチェック手順](experiments/autogluon_sl_crosscheck/README.md)を参照してください。
 
 順位付け時に、選定モデルの統計区間と浮動小数点の丸めの点検も同じExcelに出力します。`--shift "FEATURE=OFFSET"` を指定すると、運用時の校正ずれを仮定した予測感度も計算します。保存済みの順位で別のずれを試す手順は[不確かさの点検手順](docs/SL_UNCERTAINTY_AUDIT.md)にあります。
+
+## Annealing check
+
+`annealing-check` は固定した分類器で、CPUのSimulated Annealingと同予算のランダム探索を比較する任意の特徴量選択です。選定は学習側の共通層化5分割で行い、各手法で選んだ列と全列モデルを保留テストで比較します。Pythonからは `diy_automl.annealing_check_csv` を呼べます。
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -m diy_automl annealing-check --csv data/reference/iris.csv --target target --budget 8 --exhaustive --output runs/annealing-iris
+.\.venv\Scripts\python.exe -X utf8 scripts/validate_annealing_check.py runs/annealing-iris
+```
+
+`report.xlsx` の `Selection` に探索スコア・学習回数・時間、`Selected_Features` に列名、`Test_Differences` に同じテスト行を再標本化した性能差の区間が入ります。探索履歴、誤差評価の読み方、IrisとWineの検証結果は[Annealing checkの記録](docs/ANNEALING_CHECK.md)にあります。
 
 ## 評価値の誤差評価（0.4.0a6）
 

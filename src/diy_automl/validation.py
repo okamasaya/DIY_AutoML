@@ -12,6 +12,15 @@ def validate(directory,schema=None,allow_failed=False):
     m=json.loads((root/"manifest.json").read_text())
     version=m["schema_version"]
     if schema is not None and schema!=version: raise ValueError("Unexpected schema")
+    if version==17:
+        from .data_extract_validation import validate_data_extract
+        return validate_data_extract(root)
+    if version in (15,16):
+        from .data_audit_validation import validate_data_audit
+        return validate_data_audit(root)
+    if version==14:
+        from .annealing_validation import validate_annealing_check
+        return validate_annealing_check(root)
     if version==11:
         from .sl_uncertainty_audit_validation import validate_sl_uncertainty_audit
         return validate_sl_uncertainty_audit(root)

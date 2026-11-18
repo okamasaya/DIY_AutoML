@@ -33,4 +33,4 @@ WindowsのPython 3.13.17で、TensorFlowによる実際の学習を含むpytest 
 
 ## 次に着手すること
 
-文章の更新に先立ち、任意に実行する **CPU版Simulated Annealingによる特徴量選択**を実装・検証する。Irisでは小さい探索空間を全探索で照合し、WineではSAとランダム探索に同じ学習回数を割り当てる。選定列、探索履歴、実際の学習回数、時間を保存し、探索後に保留テストで性能差と区間を確認する。記事にはこの実測を反映する。QUBOとQuantum Annealingは将来テーマとして扱う。 [ロードマップ](ROADMAP.md#annealing-checkの検討)
+文章の更新に先立ち、任意に実行する **CPU版Simulated Annealingによる特徴量選択**を実装・検証する。Irisでは小さい探索空間を全探索で照合し、WineではSAとランダム探索に同じ学習回数を割り当てる。選定列、探索履歴、実際の学習回数、時間を保存し、探索後に保留テストで性能差と区間を確認する。記事にはこの実測を反映する。QUBOとQuantum Annealingは将来テーマとして扱う。 [ロードマップ](ROADMAP.md#annealing-check)

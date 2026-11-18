@@ -1,0 +1,328 @@
+{
+  "started_utc": "2026-11-18T20:13:35+00:00",
+  "host": {
+    "platform": "Windows-11-10.0.26300-SP0",
+    "processor": "Intel(R) Core(TM) i5-14400",
+    "logical_cpus": 16,
+    "physical_memory_bytes": 16848969728,
+    "available_physical_at_start_bytes": 2034524160,
+    "python": "3.13.17",
+    "dependencies": {
+      "numpy": "2.3.5",
+      "pandas": "2.2.3",
+      "scikit-learn": "1.8.0",
+      "pyarrow": "26.0.1",
+      "duckdb": "1.5.6"
+    }
+  },
+  "source_url": "https://archive.ics.uci.edu/static/public/563/iranian%2Bchurn%2Bdataset.zip",
+  "archive": {
+    "bytes": 41943,
+    "sha256": "696c3a1812267980751f30d19193a1b430ac4ad76172bb089e664c96813ead66"
+  },
+  "original": {
+    "bytes": 131728,
+    "sha256": "90d5fb6bd1630cd4de4b4d28fcf8b4cb92a8f6ab7484605b0799d47386f7dbe1"
+  },
+  "features": [
+    "Call  Failure",
+    "Complains",
+    "Subscription  Length",
+    "Seconds of Use",
+    "Frequency of use",
+    "Frequency of SMS",
+    "Distinct Called Numbers"
+  ],
+  "repeats": 3,
+  "temporary_sample_seconds": 0.01,
+  "trials": [
+    {
+      "repeat": 1,
+      "measurements": {
+        "audit": {
+          "repeat": 1,
+          "wall_seconds": 2.1727670000400394,
+          "peak_working_set_bytes": 172867584,
+          "observed_temporary_bytes": 20480,
+          "temporary_samples": 138
+        },
+        "audit_compress": {
+          "repeat": 1,
+          "wall_seconds": 2.2166994999861345,
+          "peak_working_set_bytes": 180142080,
+          "observed_temporary_bytes": 20480,
+          "temporary_samples": 140
+        },
+        "extract": {
+          "repeat": 1,
+          "wall_seconds": 2.2666700000409037,
+          "peak_working_set_bytes": 191471616,
+          "observed_temporary_bytes": 0,
+          "temporary_samples": 144
+        },
+        "recheck": {
+          "repeat": 1,
+          "wall_seconds": 2.1580777999479324,
+          "peak_working_set_bytes": 172924928,
+          "observed_temporary_bytes": 20480,
+          "temporary_samples": 137
+        },
+        "select": {
+          "repeat": 1,
+          "wall_seconds": 4.6772452999139205,
+          "peak_working_set_bytes": 179171328,
+          "observed_temporary_bytes": 163921,
+          "temporary_samples": 295
+        }
+      },
+      "cohort_preparation_seconds": 0.011637000017799437,
+      "cohorts": {
+        "projected_counts": {
+          "0": 2655,
+          "1": 495
+        },
+        "model_input_counts": {
+          "0": 2356,
+          "1": 398
+        },
+        "conflicting_profiles": 20,
+        "conflicting_rows_removed": 128,
+        "repeated_rows_removed": 268
+      },
+      "parquet": {
+        "bytes": 39649,
+        "sha256": "d1c924beb1ee595496437fee83a267a21607aa52a1b7610617aa981cc0a8c8a4"
+      },
+      "model_input": {
+        "bytes": 63988,
+        "sha256": "607eb0c24714dd9e3ab84de4eb8a4c76a74d485accb43879dbb1f500b081457f"
+      },
+      "selection": {
+        "model": "Random Forest",
+        "confusion": [
+          [
+            465,
+            6
+          ],
+          [
+            26,
+            54
+          ]
+        ],
+        "accuracy": 0.941923774954628,
+        "macro_f1": 0.869082269082269,
+        "macro_f1_interval": [
+          0.8240361457381671,
+          0.9086729362591431
+        ],
+        "baseline_label": 0,
+        "baseline": {
+          "confusion": [
+            [
+              471,
+              0
+            ],
+            [
+              80,
+              0
+            ]
+          ],
+          "accuracy": 0.8548094373865699,
+          "macro_f1": 0.4608610567514677
+        }
+      }
+    },
+    {
+      "repeat": 2,
+      "measurements": {
+        "audit": {
+          "repeat": 2,
+          "wall_seconds": 2.240574900060892,
+          "peak_working_set_bytes": 172593152,
+          "observed_temporary_bytes": 20480,
+          "temporary_samples": 140
+        },
+        "audit_compress": {
+          "repeat": 2,
+          "wall_seconds": 2.2740748999640346,
+          "peak_working_set_bytes": 180408320,
+          "observed_temporary_bytes": 20480,
+          "temporary_samples": 143
+        },
+        "extract": {
+          "repeat": 2,
+          "wall_seconds": 2.124746499932371,
+          "peak_working_set_bytes": 191021056,
+          "observed_temporary_bytes": 72349,
+          "temporary_samples": 134
+        },
+        "recheck": {
+          "repeat": 2,
+          "wall_seconds": 2.0768816999625415,
+          "peak_working_set_bytes": 172179456,
+          "observed_temporary_bytes": 20480,
+          "temporary_samples": 132
+        },
+        "select": {
+          "repeat": 2,
+          "wall_seconds": 4.603989600087516,
+          "peak_working_set_bytes": 178835456,
+          "observed_temporary_bytes": 106547,
+          "temporary_samples": 291
+        }
+      },
+      "cohort_preparation_seconds": 0.008325900067575276,
+      "cohorts": {
+        "projected_counts": {
+          "0": 2655,
+          "1": 495
+        },
+        "model_input_counts": {
+          "0": 2356,
+          "1": 398
+        },
+        "conflicting_profiles": 20,
+        "conflicting_rows_removed": 128,
+        "repeated_rows_removed": 268
+      },
+      "parquet": {
+        "bytes": 39649,
+        "sha256": "d1c924beb1ee595496437fee83a267a21607aa52a1b7610617aa981cc0a8c8a4"
+      },
+      "model_input": {
+        "bytes": 63988,
+        "sha256": "607eb0c24714dd9e3ab84de4eb8a4c76a74d485accb43879dbb1f500b081457f"
+      },
+      "selection": {
+        "model": "Random Forest",
+        "confusion": [
+          [
+            465,
+            6
+          ],
+          [
+            26,
+            54
+          ]
+        ],
+        "accuracy": 0.941923774954628,
+        "macro_f1": 0.869082269082269,
+        "macro_f1_interval": [
+          0.8240361457381671,
+          0.9086729362591431
+        ],
+        "baseline_label": 0,
+        "baseline": {
+          "confusion": [
+            [
+              471,
+              0
+            ],
+            [
+              80,
+              0
+            ]
+          ],
+          "accuracy": 0.8548094373865699,
+          "macro_f1": 0.4608610567514677
+        }
+      }
+    },
+    {
+      "repeat": 3,
+      "measurements": {
+        "audit": {
+          "repeat": 3,
+          "wall_seconds": 2.1300147000001743,
+          "peak_working_set_bytes": 173056000,
+          "observed_temporary_bytes": 20480,
+          "temporary_samples": 135
+        },
+        "audit_compress": {
+          "repeat": 3,
+          "wall_seconds": 2.185178800020367,
+          "peak_working_set_bytes": 179814400,
+          "observed_temporary_bytes": 20480,
+          "temporary_samples": 138
+        },
+        "extract": {
+          "repeat": 3,
+          "wall_seconds": 1.9992695999098942,
+          "peak_working_set_bytes": 191049728,
+          "observed_temporary_bytes": 72349,
+          "temporary_samples": 127
+        },
+        "recheck": {
+          "repeat": 3,
+          "wall_seconds": 2.0507090999744833,
+          "peak_working_set_bytes": 172937216,
+          "observed_temporary_bytes": 20480,
+          "temporary_samples": 130
+        },
+        "select": {
+          "repeat": 3,
+          "wall_seconds": 5.041944600059651,
+          "peak_working_set_bytes": 179519488,
+          "observed_temporary_bytes": 106547,
+          "temporary_samples": 318
+        }
+      },
+      "cohort_preparation_seconds": 0.010816500056535006,
+      "cohorts": {
+        "projected_counts": {
+          "0": 2655,
+          "1": 495
+        },
+        "model_input_counts": {
+          "0": 2356,
+          "1": 398
+        },
+        "conflicting_profiles": 20,
+        "conflicting_rows_removed": 128,
+        "repeated_rows_removed": 268
+      },
+      "parquet": {
+        "bytes": 39649,
+        "sha256": "d1c924beb1ee595496437fee83a267a21607aa52a1b7610617aa981cc0a8c8a4"
+      },
+      "model_input": {
+        "bytes": 63988,
+        "sha256": "607eb0c24714dd9e3ab84de4eb8a4c76a74d485accb43879dbb1f500b081457f"
+      },
+      "selection": {
+        "model": "Random Forest",
+        "confusion": [
+          [
+            465,
+            6
+          ],
+          [
+            26,
+            54
+          ]
+        ],
+        "accuracy": 0.941923774954628,
+        "macro_f1": 0.869082269082269,
+        "macro_f1_interval": [
+          0.8240361457381671,
+          0.9086729362591431
+        ],
+        "baseline_label": 0,
+        "baseline": {
+          "confusion": [
+            [
+              471,
+              0
+            ],
+            [
+              80,
+              0
+            ]
+          ],
+          "accuracy": 0.8548094373865699,
+          "macro_f1": 0.4608610567514677
+        }
+      }
+    }
+  ]
+}

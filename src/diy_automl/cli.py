@@ -1,5 +1,6 @@
 import argparse
 from datetime import datetime,timezone
+import json
 from .workflow import run_csv
 from .selection_workflow import select_csv
 from .clustering_repeat_workflow import repeat_clustering_csv
@@ -10,7 +11,11 @@ from .excel_report import render_excel_report
 from .uncertainty_workflow import evaluate_uncertainty
 from .sl_ranking import rank_sl_csv
 from .sl_uncertainty_audit import audit_sl_uncertainty
-from .supervised import METRICS
+from .annealing_workflow import annealing_check_csv
+from .data_audit import audit_data_csv, prepare_bp_csv
+from .data_conversion import FORMATS, TYPE_MODES
+from .data_extract import extract_data
+from .supervised import METRICS, candidates
 
 def main():
     parser=argparse.ArgumentParser(description="Reimplemented DIY AutoML evaluation")
@@ -57,6 +62,52 @@ def main():
     p.add_argument("--confidence",type=float,default=.95)
     p.add_argument("--shift",action="append",default=[],metavar="FEATURE=OFFSET",
                    help="Hypothetical constant test input offset for the selected model, repeatable")
+    p=sub.add_parser("annealing-check",help="Compare CPU simulated annealing and random feature subset search")
+    p.add_argument("--csv",required=True)
+    p.add_argument("--target",required=True)
+    p.add_argument("--output",default=None)
+    p.add_argument("--seed",type=int,default=42,help="Seed for data partitions")
+    p.add_argument("--model",choices=[name for name, _ in candidates()],default="SVM")
+    p.add_argument("--model-seed",type=int,default=42)
+    p.add_argument("--cv-repeats",type=int,default=2)
+    p.add_argument("--metric",choices=METRICS,default="F1")
+    p.add_argument("--budget",type=int,default=32,help="Maximum distinct subsets per search arm")
+    p.add_argument("--max-features",type=int,help="Maximum columns in searched subsets")
+    p.add_argument("--search-seed",type=int,default=44)
+    p.add_argument("--initial-temperature",type=float,default=.03)
+    p.add_argument("--final-temperature",type=float,default=.002)
+    p.add_argument("--exhaustive",action="store_true",help="Add an exhaustive check for a small subset space")
+    p.add_argument("--bootstrap-repeats",type=int,default=1000)
+    p.add_argument("--bootstrap-seed",type=int,default=43)
+    p.add_argument("--confidence",type=float,default=.95)
+    p.add_argument("--shift",action="append",default=[],metavar="FEATURE=OFFSET",
+                   help="Hypothetical constant test input offset, repeatable")
+    p=sub.add_parser("audit-data",help="Inspect a CSV and record evaluation context before training")
+    p.add_argument("--csv",required=True)
+    p.add_argument("--output",default=None)
+    p.add_argument("--target",help="Class label column")
+    p.add_argument("--id-column",help="Identifier used to count groups")
+    p.add_argument("--time-column",help="Timestamp column containing ISO 8601 values")
+    p.add_argument("--prediction-goal",help="What will be predicted")
+    p.add_argument("--prediction-time",help="When a prediction would be made")
+    p.add_argument("--row-unit",help="What one input row represents")
+    p.add_argument("--label-source",help="How the class labels were obtained")
+    p.add_argument("--convert",action="append",choices=FORMATS,default=[],
+                   help="Export to a binary format after auditing, repeatable")
+    p.add_argument("--conversion-types",choices=TYPE_MODES,default="preserve",
+                   help="Preserve CSV text or convert eligible numeric feature columns exactly")
+    p=sub.add_parser("prepare-bp",help="点検結果を日本語で確認し、必要に応じて作業用ファイルを圧縮します")
+    p.add_argument("--csv",required=True,help="元のCSVファイル")
+    p.add_argument("--target",help="正解ラベルの列")
+    p.add_argument("--compress",action="store_true",help="作業用の圧縮Parquetを追加で保存")
+    p.add_argument("--output",default=None,help="結果を保存する新しいフォルダ")
+    p=sub.add_parser("extract-data",help="Select columns and filter a Parquet or DuckDB file into a CSV")
+    p.add_argument("--source",required=True,help="Path to a .parquet or .duckdb file")
+    p.add_argument("--columns",nargs="+",required=True,metavar="COLUMN",help="Output columns in the requested order")
+    p.add_argument("--where",action="append",nargs=3,default=[],metavar=("COLUMN", "OP", "VALUE"),
+                   help="Filter using eq, ne, lt, le, gt or ge. Repeat to apply all conditions.")
+    p.add_argument("--limit",type=int,help="Maximum output rows in source order")
+    p.add_argument("--output",default=None)
     p=sub.add_parser("report")
     p.add_argument("--run",dest="source",required=True)
     p.add_argument("--output",default=None)
@@ -83,5 +134,12 @@ def main():
         "repeat-dl":repeat_deep_learning_csv,"subsample-ul":subsample_clustering_csv,
         "tune":tune_csv,"rank-sl":rank_sl_csv,"report":render_excel_report,
         "uncertainty":evaluate_uncertainty,"audit-uncertainty":audit_sl_uncertainty,
+        "annealing-check":annealing_check_csv,"audit-data":audit_data_csv,"extract-data":extract_data,
+        "prepare-bp":prepare_bp_csv,
     }
-    print(handlers[command](**args))
+    result = handlers[command](**args)
+    print(result, flush=True)
+    if (command == "audit-data" and args["convert"]) or (command == "prepare-bp" and args["compress"]):
+        conversion = json.loads((result / "manifest.json").read_text(encoding="utf-8"))["conversion"]
+        if conversion["status"] != "completed":
+            parser.exit(2, f"Conversion {conversion['status']}: {conversion['reason']}\n")
