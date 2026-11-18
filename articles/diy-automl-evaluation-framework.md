@@ -39,7 +39,7 @@ scikit-learnのサンプルデータでモデル比較を始め、TensorFlowに�
 
 ここには、データの品質も関わります。同じ人の回答が何度も入っていれば、行数と独立した情報の数は違います。ラベルや測定に偏りがあれば、データを増やして統計的な区間が狭まっても、その偏りは残りえます。**狭い区間で答えられることと、使いたい対象について正しく答えられることは、両方確認したい問題です。**
 
-現在のDIY AutoMLでは、固定したモデルの指標の標本不確かさと、DL/ULの指定した反復などを扱っています。数値計算の感度評価や、系統的な偏りを汎用的に照合する機能は、今後の課題です。
+現在のDIY AutoMLでは、固定したモデルの指標の標本不確かさと、DL/ULの指定した反復などを扱っています。分類モデルの順位付けでは、入力をFloat32に丸めたときや、指定した測定値のずれを仮定したときに予測がどう変わるかも点検できます。実際の系統的な偏りを調べるには、校正記録や独立した再測定との照合が必要です。
 
 ## 自作する理由は、結果に至る過程も残したいから
 
@@ -135,20 +135,28 @@ n-sigma表示を使うなら、その分布と次元に合う換算が必要で�
 
 こうした例では、誤差を計算すると同時に「その再標本化の単位でよいのか」「使いたい対象とデータが対応しているか」も確認する必要があります。3テーマの結果・件数・出典は、[ビジネス向けの記事](https://zenn.dev/okamasaya/articles/diy-automl-business-three-experiments)にまとめています。
 
+## 入力に使う列を減らしたとき、予測はどう変わるか
+
+Wineデータの13列を使っていたSVMは、もっと少ない列でも同じように予測できるでしょうか。列の組合せを変えて試すために、必要なときだけCPUで動かす `annealing-check` を追加しました。焼きなまし法（Simulated Annealing、SA）とランダム探索に同じ数の候補を割り当て、学習側で使う列を決めてから、保留した行で予測を比べます。
+
+既定の探索seedでは、SAが選んだ5列で、全13列を使った場合と保留36件すべての予測が一致しました。探索seedを変えた10回のうち、この一致が得られたのは1回でした。既定seedでのSAとランダム探索のmacro F1差は約+0.056で、同じ保留行を一緒に再標本化した95%区間は0.000〜+0.142でした。この差の区間は10回とも0を含み、今回の条件でどちらの探索法が優れるかは判断できませんでした。
+
+選んだ列に加え、候補ごとの得点と学習回数を保存します。どの組合せを試して何が変わったかを、後からたどれるようにするためです。 [Irisの全探索を含む検証記録](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/ANNEALING_CHECK.md)
+
 ## 今できることと、次に確かめたいこと
 
 現行版は、数値特徴量・欠損なし・ラベル付き分類CSVが対象です。scikit-learnの教師あり5モデル、クラスタリング54候補、TensorFlowのMLPを扱います。予測指標とクラスタ指標の総合ランキングは作りません。
 
 モデル選定の`select`、27設定を比べる`tune`、DL/ULの指定した反復、保存済みSL/DLへ標準誤差・区間・クラス別結果を追加する`uncertainty`を用意しています。図付きExcelも出力できます。現在はGitHubから導入する開発版で、PyPI公開と画面アプリは今後です。
 
-今回の3図は、既存の正解・予測・bootstrap反復値・学習履歴から描き直しました。新しい学習は行っていません。保存結果の検証器による照合と、一部の再標本化のscikit-learnによる独立計算を行っています。[再描画コード](https://github.com/okamasaya/DIY_AutoML/blob/main/scripts/render_evaluation_article_figures.py)と[元ファイルのハッシュ・描画値・確認記録](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/figures/evaluation-article-data.json)を残しました。
+掲載したMLPの3図は、保存済みの正解・予測・bootstrap反復値・学習履歴から描き直しました。保存結果の検証器で照合し、一部の再標本化はscikit-learnで独立に計算しています。 [再描画コード](https://github.com/okamasaya/DIY_AutoML/blob/main/scripts/render_evaluation_article_figures.py) · [元ファイルのハッシュ・描画値・確認記録](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/figures/evaluation-article-data.json)
 
 実物を見る場合は、[乳がんデータの学習結果Excel](https://github.com/okamasaya/DIY_AutoML/blob/main/validation/dl-backend-preparation-0.4.0a7/breast_cancer/report.xlsx)の`DL_History`、[誤差評価Excel](https://github.com/okamasaya/DIY_AutoML/blob/main/validation/dl-backend-preparation-0.4.0a7/breast_cancer-uncertainty/report.xlsx)の`Metric_Uncertainty`から確認できます。前者のepoch・loss・val_loss、後者のEstimate・Bootstrap SE・Lower・Upperが、今回見た値に対応します。
 
 :::details 新しいモデルや別の計算基盤も、今後の比較対象
 2022年の[Grinsztajnらの研究](https://arxiv.org/abs/2207.08815)では、中規模の表形式データで木系モデルが強い結果を示しました。2025年の[TabArena](https://proceedings.neurips.cc/paper_files/paper/2025/hash/1697e3fb412da11dc9488249f9e7bbc9-Abstract-Datasets_and_Benchmarks_Track.html)では、計算予算を増やしたアンサンブルで深層学習も競争力を持ち、基盤モデルは小規模データで強いと報告されています。[TabPFNの2025年の論文](https://www.nature.com/articles/s41586-024-08328-6)にも大きな改善の報告があります。今回の5モデルの試行で、最新モデルと同等だと実証したものではありません。
 
-0.4.0a7ではPyTorch追加に備えた処理の分離まで進めました。使える学習バックエンドはTensorFlowで、PyTorch/JAXやJulia/Rust版は今後の検討です。[準備した境界と条件](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/DL_BACKENDS.md)に整理しています。
+通常の学習入口ではTensorFlowを使います。別のCPU実験では、IrisとWineで同じ小規模MLPをTensorFlowとPyTorchで学習しました。各データの3学習seedで分類ラベルは一致し、予測確率には差がありました。JAXやJulia/Rust版は今後の検討です。 [バックエンド比較の条件と結果](https://github.com/okamasaya/DIY_AutoML/tree/main/experiments/dl_backend_crosscheck)
 :::
 
 次に進めたいのは、**性質をまだ十分に知らないデータから出発し、統計量・誤差・処理の記録を積み重ねて、品質を議論できるようにすること**です。今後は、次の順に確かめる流れを整えたいと考えています。

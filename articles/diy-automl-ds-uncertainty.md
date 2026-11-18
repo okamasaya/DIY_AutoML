@@ -76,8 +76,9 @@ $$
 
 これはシャッフル反復の平均に対する計算です。後で説明する「bootstrap反復値のSDを、性能指標のSEの近似に使う」計算とは、推定対象が違います。反復を増やすことだけで、未知の集団への一般化や系統的な偏りまで確認できるわけではありません。
 
-[公式APIの定義](https://github.com/autogluon/autogluon/blob/v1.4.0/tabular/src/autogluon/tabular/predictor/predictor.py#L3376)と、scikit-learnの[置換重要度の説明](https://scikit-learn.org/stable/modules/permutation_importance.html)を確認できます。本稿ではAutoGluon自体を導入・実行した比較は行っていません。また、利用者全体がこの機能をどの程度使っているかも、この資料からは判断できません。
+この定義は、v1.4.0の特徴量重要度の実装を読んで確認しました。 [AutoGluon v1.4.0のAPI定義](https://github.com/autogluon/autogluon/blob/v1.4.0/tabular/src/autogluon/tabular/predictor/predictor.py#L3376) · [scikit-learnの置換重要度の説明](https://scikit-learn.org/stable/modules/permutation_importance.html)
 
+別の実験では、AutoGluon Tabular 1.6.3とDIY AutoMLが学習側で選んだモデルを、IrisとWineの同じ保留行で比較しました。ここで求めたのは、固定した2モデルのmacro F1差の区間です。 [AutoGluonとのクロスチェック](https://github.com/okamasaya/DIY_AutoML/tree/main/experiments/autogluon_sl_crosscheck)
 
 
 ## 評価したい量と、動かすものを分ける
@@ -89,7 +90,7 @@ $$
 | 固定モデルのtest指標をどの程度精密に推定できるか | クラス件数固定、または通常のtest行の再標本化 | select/tuneの区間と、uncertaintyのSE・全体/クラス別区間を実装 |
 | 学習手続きから得る性能はどれほど変動するか | 学習データ、前処理fit、候補選定、再学習 | 手続き全体の反復評価は今後 |
 | 同じデータでも学習結果が変わるか | 初期化・shuffle等の学習seed | DL/ULの指定した反復を実装 |
-| 数値計算条件へ敏感か | dtype、収束許容値、ソルバ、計算基盤 | 一部の診断・条件保存まで。感度評価は今後 |
+| 数値計算条件へ敏感か | dtype、収束許容値、ソルバ、計算基盤 | `rank-sl` と `annealing-check` で、指標のFloat64計算と有理数計算の差、Float32に丸めた入力への感度を点検 |
 | 実際に使う集団や時期で評価できているか | 顧客・施設・時期、測定・ラベルの照合 | 個別実験で制約を記載。汎用の監査・分割は今後 |
 
 予測誤り、性能推定の標本変動、アルゴリズムの乱数、数値計算誤差、系統的な偏りは同じ量ではありません。この表も、それらを独立な成分へ完全分解したものではありません。相互作用や、データだけでは識別できない要因が残ります。
@@ -146,7 +147,7 @@ $$
 T^{*(b)}=T\left(\{(y_i,\hat{y}_i):i\in I^{*(b)}\}\right)
 $$
 
-正解と予測は同じindexで取り出します。ここでのpairedはその対応であり、モデル間差の検定を実装した意味ではありません。既定$B=1000$、seed=43、信頼水準95%で、区間端点は次の経験分位点です。
+単一モデルの評価では、正解と予測を同じindexで取り出します。複数の手法を比較する `annealing-check` では、この対応を手法間でも保ち、反復ごとに指標の差を求めます。既定$B=1000$、seed=43、信頼水準95%で、区間端点は次の経験分位点です。
 
 $$
 \left[Q_{0.025}(T^*),\;Q_{0.975}(T^*)\right]
@@ -270,7 +271,7 @@ ULでは正解とのTarget ARIと、割当どうしのAssignment ARIを分けま
 
 開発環境と独立wheel環境の配列一致は、実装・配布の再現確認です。同じ問題設定に共通する数値誤差や偏りの不在、他OS/GPUでの一致まで証明するものではありません。
 
-浮動小数点の演算順序や計算基盤によって結果が変わりうることは、[PyTorchの数値精度の説明](https://github.com/pytorch/pytorch/blob/v2.9.0/docs/source/notes/numerical_accuracy.rst)でも確認できます。ここでは数値計算の参考資料として用いており、DIY AutoMLにPyTorchを実装・導入した意味ではありません。再現できる計算にも共通の近似や偏りは残りえます。
+浮動小数点の演算順序や計算基盤によって結果が変わることがあります。再現できる計算にも共通の近似や偏りは残りえます。 [PyTorch v2.9.0の数値精度の説明](https://github.com/pytorch/pytorch/blob/v2.9.0/docs/source/notes/numerical_accuracy.rst)
 
 
 ## 学習履歴の曲線も、役割を添えて読む
@@ -343,6 +344,28 @@ CLIの`select`もこの関数を呼びます。上の例は同じ設定ですが
 
 `select`のschema 3では、7シートの数値Excel、分割・foldのindex、test正解と予測、scaler情報、設定とハッシュを保存します。bootstrapの全反復値はExcelへ残します。`report`は別のschema 8成果物として図付きExcelを作り、元の評価結果を上書きしません。検証器は保存結果の整合性を確認するもので、標本の代表性や業務での妥当性まで認定するものではありません。`python -O`でassertを無効にせず実行します。
 
+## 特徴量選択を、同じ学習回数で比べる
+
+`annealing-check` は、分類器を固定して列の組合せを探します。焼きなまし法（Simulated Annealing、SA）は、現在の候補から列を追加・削除・交換し、CVスコアが下がる候補にも温度に応じた確率で移ります。比較するランダム探索は許容された部分集合から重複なしで選びます。2手法で初期候補と学習側のCV分割を共有し、評価する異なる候補数を揃えます。 [焼きなまし法の原論文](https://research.ibm.com/publications/optimization-by-simulated-annealing)
+
+WindowsのPython 3.13.17で、SVM、分割seed 42、学習側の層化5分割を2反復し、探索seed 44〜53で試しました。列を選んだ後に学習側全体で再学習し、手法ごとに同じ保留行を評価しました。全列で学習したモデルも比較に加えています。
+
+| データ | 1手法・1 seedあたりの探索予算 | CVで確認したこと |
+| --- | --- | --- |
+| Iris | 8候補、80学習 | 全15候補を調べたときの最良macro F1は0.9707でした。SAは3/10回、ランダム探索は8/10回この値に達しました。 |
+| Wine | 32候補、320学習、最大6列 | SAとランダム探索がそれぞれ5/10回、相手より高いCVスコアを得ました。 |
+
+Wineの探索seed 44では、SAの5列と全13列で保留36件すべての予測が一致し、両方のmacro F1は0.9710でした。SAからランダム探索を引いた差は+0.0558、95%区間は0.0000〜+0.1419でした。IrisとWineの全seedで、この差の区間は0を含みました。区間は各seedの学習済みモデルと観測クラス別件数に条件を置き、両手法で同じ保留行を再標本化した値です。全seedで同じ保留行を共有するため、10回の結果は固定分割での探索のばらつきを示します。
+
+数値計算と入力ずれも同じ出力から追えます。探索seed 44では、Float32に丸めて予測しても両データでラベルの変化は0件でした。Irisの花弁幅に+0.5 cmのずれを仮定すると、SAが選んだモデルでは30件中8件、全列モデルでは6件の予測が変わりました。このシナリオの変化は、仮定したずれに対する感度です。
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -m diy_automl annealing-check --csv data/reference/wine.csv --target target --budget 32 --max-features 6 --shift 'alcohol=0.5' --output runs/ds-annealing-wine
+.\.venv\Scripts\python.exe -X utf8 scripts/validate_annealing_check.py runs/ds-annealing-wine
+```
+
+`Search_History` で温度・提案・受理を、`Selected_Features` で採用列を、`Test_Differences` で保留テストの差を確認できます。検証器は保存したCV予測とテスト予測から、学習をせずに探索履歴と区間を照合します。QUBOへの定式化と量子アニーリングは将来の検討課題です。 [検証結果とIrisの再実行手順](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/ANNEALING_CHECK.md)
+
 ## 今後の課題：時系列の予測区間と性能評価
 
 時系列では、台風の予報円のように、先の時点ごとに予測の範囲を示すイメージが役立ちます。ただし、**予測誤差の最大値を保証する範囲ではありません。** 例えば90%を目標に構成した区間でも、その外に観測値が出る場合があります。幅は予測する先の長さやモデル、利用できる情報によって変わり、常に単調に広がるとも限りません。
@@ -404,13 +427,13 @@ DS版は、Pythonから駆動するパッケージとして整え、**PyPIへ公
 
 最新モデルをすべてそろえることを公開条件にはしません。各版で対応する評価とその前提を明示し、追加の重いモデルは引き続き後続のTo Doとして扱います。
 
-### TensorFlowを基準に、PyTorchの追加へ備える
+### TensorFlowとPyTorchを同じ条件で比べる
 
-現在のDLはTensorFlow/Kerasです。元のNotebookと引継ぎがこの構成で、そのMLPを再実装しながら、分割・初期化・shuffle・履歴と重みの保存を検証してきました。PyTorchと比較してTensorFlowの方が高精度だった、という採用理由ではありません。
+通常のDL学習はTensorFlow/Kerasです。元のNotebookと引継ぎのMLPを再実装し、分割・初期化・shuffle・履歴と重みの保存を検証してきました。
 
-PyTorchも使えるようにしていくことを見据え、0.4.0a7では共通のデータ準備・結果検査と、TensorFlow固有の学習処理を分離しました。返す予測、分割、seed、履歴、重みの形状と指標の対応を共通側で検査します。既存のTensorFlowの学習条件は維持し、今は追加実装が接続する境界を整える段階です。
+0.4.0a7で分離したデータ準備を使い、別のCPU比較実験でIrisとWineの同じMLPをTensorFlowとPyTorchで学習しました。同じ初期重みと行順を渡した3学習seedでラベルとmacro F1は一致しました。学習後の予測確率の最大差はIrisで0.03053、Wineで0.00211でした。 [CPU比較の実行手順と結果](https://github.com/okamasaya/DIY_AutoML/tree/main/experiments/dl_backend_crosscheck)
 
-PyTorchの学習実装・選択用CLI・追加依存はまだありません。次に同じ小規模MLPから接続し、初期化、Adamの設定、dtype、データ順などを記録して確認する方針です。同じseed番号だけで初期重みや学習順序が一致するとは扱いません。[PyTorchの再現性資料](https://docs.pytorch.org/docs/stable/notes/randomness.html)も参考にします。
+比較用のPyTorchは専用環境に導入し、実験スクリプトから実行します。通常のCLIへ学習バックエンドを接続する際も、実際に渡した初期重み・行順・dtype・最適化の設定を記録する方針です。 [PyTorchの再現性資料](https://docs.pytorch.org/docs/stable/notes/randomness.html)
 
 ### JAX・Julia・Rustも、将来の視野に入れる
 

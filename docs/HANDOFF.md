@@ -1,8 +1,8 @@
 # 引継ぎと再開の入口
 
-更新日：2026-11-18（日本時間）
+更新日：2026-11-19（日本時間）
 
-**最新の作業ログは [THREAD_SUMMARY_20261118.md](THREAD_SUMMARY_20261118.md)。** 分類の順位付け、不確かさ、混同行列、AutoGluonとDLバックエンドの比較、Windowsでの検証結果、次の着手内容を記録した。3記事の改稿と実物出力を統合した経緯は[11月12日の作業ログ](THREAD_SUMMARY_20261112.md)にある。
+**11月19日の区切りは本書の「現在の引継ぎ」に記録した。** 分類の順位付け、不確かさ、混同行列、AutoGluonとDLバックエンドの比較は[11月18日の作業ログ](THREAD_SUMMARY_20261118.md)、3記事の改稿と実物出力の統合は[11月12日の作業ログ](THREAD_SUMMARY_20261112.md)にある。
 
 ## 当面の運用
 
@@ -18,7 +18,7 @@
 ## 再接続したときの読み方
 
 1. 接続先のリポジトリ、ブランチ、コミット、未コミット変更、リモートの更新を確認する。本人のWeb編集や別の作業と照合する。
-2. [最新の作業ログ](THREAD_SUMMARY_20261118.md)と本書の「現在の引継ぎ」を読み、[修正方針](REVISION_POLICY_20261110.md)と[ROADMAP](ROADMAP.md)で作業範囲を確認する。
+2. 本書の「現在の引継ぎ」と関連する作業ログを読み、[修正方針](REVISION_POLICY_20261110.md)と[ROADMAP](ROADMAP.md)で作業範囲を確認する。
 3. 関連する前のチャットが参照できれば、終了報告とコミットを照合する。最新の本人の指示を優先する。
 4. 完了済みの作業を繰り返さず、未完了の次の一手から再開する。状態が変わっていれば、本書を更新する。
 5. 実行が必要な作業では、依存関係と再実行手順を確認する。前の一時環境が残っていることは前提にせず、Git内のファイルや取得先から必要なものを揃える。
@@ -38,10 +38,26 @@
 
 ## 現在の引継ぎ
 
+### 2026年11月19日
+
+- Raisinで、元の900行、面積条件のみの665行、先頭250行の品種別件数を照合した。抽出後に内訳を点検するBP向けの未公開原稿を追加した。 [BP向け原稿](../articles/diy-automl-bp-filtered-rows.md) · [再実行手順](DATA_AUDIT.md#学習用csvを抽出する)
+- TensorFlowとPyTorchの予測確率を比べるDS向けの未公開原稿を追加した。保存済みlogitからlog lossとBrier scoreを再計算し、Wineで再標本化を1,000回から20,000回に増やすと、95%区間がわずかにゼロをまたぐことを確認した。 [DS向け原稿](../articles/diy-automl-ds-backend-probabilities.md) · [比較実験の手順](../experiments/dl_backend_crosscheck/README.md)
+- 16 GBのPCで、模擬CSVを最大100万行まで点検・圧縮し、抽出した最大1万行で5モデルを比較した。各条件3回の計測と出力検証を行い、全体向けの「開発メモ (2)」を下書きした。 [原稿](../articles/diy-automl-development-note-02.md) · [測定コードと実測値](../experiments/tabular_scale_benchmark/README.md)
+- Iranian Churnの公開CSV 3,150行を使い、点検・圧縮・抽出・学習の負荷を実測した。学習用の7特徴量で解約ラベルが異なる組を点検し、今回の実験用に2,754行に整理した。モデル比較の保留テストでは解約80件のうち54件を拾い、26件を見逃した。 [計測と検証](../experiments/bp_churn_pilot/README.md) · [BP向け原稿](../articles/diy-automl-bp-churn-pilot.md)
+- 区切りの検証では、WindowsのPython 3.13.17でTensorFlow・DuckDB・PyArrowを使い、pytest全229件が通過した。変更したZenn原稿7本はHTML変換と未公開設定を確認した。
+- Annealing check、サンプルCSV、データ点検・圧縮・抽出、Windowsでの実測とZenn下書きを今回の区切りとして `codex/annealing-check` にまとめ、統合先を `main` とした。Zennの原稿は未公開。次はBP版のCSV選択から点検プレビューまでを共通処理につなぐ画面を具体化する。 [初回利用の画面で示す内容](AUDIENCE_PLAN.md#ビジネスパーソン向けの子記事とアプリ)
+
 ### 2026年11月18日
 
-- WindowsのPython 3.13.17で `rank-sl`、`audit-uncertainty`、分類品質レポートを検証した。AutoGluon、TensorFlow、PyTorchとの同一条件の比較と、依存の再構築手順を[最新の作業ログ](THREAD_SUMMARY_20261118.md)に記録した。
-- 次の実装は、CPUで必要時に呼び出す特徴量選択のAnnealing check。Irisの全探索で照合し、Wineで同じ学習回数のランダム探索と比較する。QUBOとQuantum Annealingは将来テーマとする。
+- WindowsのPython 3.13.17で `rank-sl`、`audit-uncertainty`、分類品質レポートを検証した。AutoGluon、TensorFlow、PyTorchとの同一条件の比較と、依存の再構築手順を[11月18日の作業ログ](THREAD_SUMMARY_20261118.md)に記録した。
+- 続いてCPU版の `annealing-check` を実装した。Irisでは全15候補を照合し、Wineでは探索手法ごとに320回のCV学習で比較した。QUBOとQuantum Annealingは将来テーマとする。 [実装と検証結果](ANNEALING_CHECK.md)
+- 親記事にWineの例、DS向け記事にIris・Wineの同予算比較と再実行手順を追記した。探索seedを変えた結果と固定モデルの保留テスト区間を記載し、実装・原稿を `codex/annealing-check` にまとめている。次の開発項目は、欠損・重複・クラス件数や評価単位を記録するデータ点検。 [親記事](../articles/diy-automl-evaluation-framework.md) · [DS向け記事](../articles/diy-automl-ds-uncertainty.md) · [ロードマップ](ROADMAP.md)
+- 軽量な分類サンプルとして、UCIのSeedsとRaisinを数値7列のCSVに変換して追加した。WindowsのCPUで `select` と `rank-sl` の計4出力を検証した。BP向けの初回比較はCPUの主要モデルを使い、Annealing checkはDS向けの任意実行として扱う方針を記録した。 [出典・負荷・再実行手順](../data/reference/README.md) · [利用者別の設計](AUDIENCE_PLAN.md)
+- 学習前の `audit-data` を追加した。欠損・非有限値・重複・ラベルの不一致候補・クラス件数・指定したIDと時刻をExcelとJSONに残す。次の開発項目は、点検で分かった評価単位に合わせた顧客・回答者・時間の分割。 [データ点検の手順](DATA_AUDIT.md)
+- `audit-data --convert` でParquetとDuckDBを任意出力できるようにした。既定ではCSVの値を文字列として保持し、`numeric` 指定時は型を付けても精度を保てる特徴量を変換する。中継ファイルの元CSVと行数・列型はmanifestで照合する。 [変換手順](DATA_AUDIT.md#parquetとduckdbへの変換)
+- 元CSVを原本として保管し、大きいデータの反復処理には圧縮Parquetを優先する。DuckDBでParquetを直接読み、絞った行と列を後工程に渡す。 [Parquetでの作業手順](DATA_AUDIT.md#parquetとduckdbへの変換)
+- `extract-data` を追加した。Parquet・DuckDBから列・AND条件・件数を指定してCSVを生成できる。抽出条件と元ファイルのハッシュを保存し、Raisinで抽出から再点検・学習まで照合した。 [抽出手順](DATA_AUDIT.md#学習用csvを抽出する)
+- BP向けに `prepare-bp` を追加し、日本語要約と任意の作業用Parquet圧縮を検証した。全体向け開発メモ (1) の下書きと、全体・DS・BPそれぞれの次の投稿候補を保存した。 [BP向けの手順](DATA_AUDIT.md#ビジネス向けの点検と圧縮) · [開発メモ (1)](../articles/diy-automl-development-note-01.md) · [投稿候補](ZENN_EDITORIAL_NOTES.md)
 
 ### 2026年11月12日
 

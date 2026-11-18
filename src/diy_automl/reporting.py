@@ -12,10 +12,15 @@ def json_default(value):
     raise TypeError(type(value).__name__)
 
 def write_json(path,value):
-    Path(path).write_text(json.dumps(value,ensure_ascii=False,indent=2,default=json_default,allow_nan=False)+"\n")
+    # Escaping Unicode keeps manifests readable across system encodings.
+    Path(path).write_text(json.dumps(value,indent=2,default=json_default,allow_nan=False)+"\n",encoding="ascii")
 
 def source_hashes():
     return {p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(Path(__file__).parent.glob("*.py"))}
+
+def file_sha256(path):
+    with Path(path).open("rb") as stream:
+        return hashlib.file_digest(stream, "sha256").hexdigest()
 
 def prepare(output,schema,settings):
     output=Path(output)
@@ -33,7 +38,7 @@ def prepare(output,schema,settings):
             try: manifest["dependencies"][name]=importlib.metadata.version(name)
             except importlib.metadata.PackageNotFoundError: manifest["dependencies"][name]="not installed"
     csv=settings.get("csv")
-    if csv: manifest["input_sha256"]=hashlib.sha256(Path(csv).read_bytes()).hexdigest()
+    if csv: manifest["input_sha256"]=file_sha256(csv)
     write_json(output/"manifest.json",manifest)
     return output,manifest
 
