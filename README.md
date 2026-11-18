@@ -55,6 +55,23 @@ Notebookを使う場合は、必要に応じて `.venv/bin/python -m pip install
 
 Gitからの再開手順と、ローカルコミット・pushの確認方法は `docs/COMMIT_GUIDE.md` に記載しています。
 
+## 教師あり5モデルの繰り返し比較
+
+`rank-sl` は、固定の5モデルを学習側の共通層化5分割で繰り返し比較します。既定は5反復、主指標はmacro F1です。モデルのseedを固定し、各反復のfold平均、全反復の平均による点順位、順位の範囲、1位になった反復数を記録します。1位タイは該当モデルをすべて数えます。foldや反復のスコアには依存があるため、反復間のSDは分割に対する変動の記述に使います。
+
+```powershell
+.\.venv\Scripts\python.exe -m diy_automl rank-sl --csv data/reference/wine.csv --target target --output runs/wine-ranking
+.\.venv\Scripts\python.exe scripts/validate_sl_ranking.py runs/wine-ranking
+```
+
+出力は `report.xlsx`（先頭の `CV_Ranking` に順位表）、分割と全候補のfold外予測を記録した `arrays.npz`、設定とハッシュを記録した `manifest.json` です。最初に約20%を最終テストとして確保し、CVで選んだ1モデルだけを評価します。混同行列は `Test_Confusion`、クラス別のPrecision・Recall・F1と件数は `Test_By_Class` で確認できます。Python APIは `diy_automl.rank_sl_csv` です。
+
+`--comparison-fraction 0.25` を付けると、最終テストを除いた残りの25%を比較用に確保します。比較用の同じ行に対する各モデルとCV首位の差を、正解クラス別件数を固定したpaired bootstrapで評価し、順位表と `Comparison_Differences` に記録します。差の区間が0を含む場合は優劣を保留します。区間は独立した評価行、学習済みモデル、観測クラス件数を前提とし、モデルごとの比較として読みます。最終テストの対象はCVの結果で決めます。
+
+同じ分割をAutoGluonで再評価する場合は、[AutoGluonとのクロスチェック手順](experiments/autogluon_sl_crosscheck/README.md)を参照してください。
+
+順位付け時に、選定モデルの統計区間と浮動小数点の丸めの点検も同じExcelに出力します。`--shift "FEATURE=OFFSET"` を指定すると、運用時の校正ずれを仮定した予測感度も計算します。保存済みの順位で別のずれを試す手順は[不確かさの点検手順](docs/SL_UNCERTAINTY_AUDIT.md)にあります。
+
 ## 評価値の誤差評価（0.4.0a6）
 
 ```sh

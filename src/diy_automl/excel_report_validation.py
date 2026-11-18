@@ -44,8 +44,10 @@ def validate_excel_report(directory):
     for plan,record in zip(plans,r['figures']):
         expected={key:value for key,value in plan.items() if key!='data'}
         for key,value in expected.items(): require(record[key]==value,'Figure identity or display policy differs')
-        require(record['file']==f"figures/{plan['id']}.png",'Unexpected PNG path')
-        require(digest(root/record['file'])==record['sha256'],'Figure PNG checksum differs')
+        expected_path=f"figures/{plan['id']}.png"
+        legacy_windows_path=expected_path.replace('/', '\\')
+        require(record['file'] in (expected_path,legacy_windows_path),'Unexpected PNG path')
+        require(digest(root/expected_path)==record['sha256'],'Figure PNG checksum differs')
         require(record['data_keys']=={key:plan['id']+'__'+key for key in plan['data']},'Figure data mapping differs')
         for key,value in plan['data'].items():
             name=record['data_keys'][key]

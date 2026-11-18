@@ -2,6 +2,8 @@
 
 PyTorchの追加に備え、データの準備・結果の検査と、TensorFlow固有の学習処理を分離しました。現在実装している学習バックエンドはTensorFlowだけです。PyTorch/JAXの学習実装、選択用CLI、追加依存はまだありません。
 
+同じMLPの予測と学習をCPUで比較する場合は、[TensorFlowとPyTorchのクロスチェック](../experiments/dl_backend_crosscheck/README.md)を参照してください。
+
 ## 現在の境界
 
 | 場所 | 役割 |

@@ -9,3 +9,5 @@ from .tuning_workflow import tune_csv
 from .excel_report import render_excel_report
 from .uncertainty_workflow import evaluate_uncertainty
 from .metric_uncertainty import evaluate_metric_uncertainty
+from .sl_ranking import rank_sl_csv
+from .sl_uncertainty_audit import audit_sl_uncertainty
