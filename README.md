@@ -16,7 +16,7 @@ DIYの主目的は、MLの結果に誤差評価を含め、データ量・品質
 
 ## Full Paper
 
-2026年11月19日・技術論文の初稿。分類評価の実装、主要実験と補足検証、再実行の手順をまとめました。 [PDF](docs/papers/DIY_AutoML_Full_Paper_20261119/DIY_AutoML_Full_Paper_20261119.pdf) · [TeXプロジェクト](docs/papers/DIY_AutoML_Full_Paper_20261119/README.md) · [復元用ZIP](docs/papers/DIY_AutoML_Full_Paper_20261119/DIY_AutoML_Full_Paper_20261119_TeX.zip)
+2026年11月19日・技術論文の改訂稿。データ点検からDS・BP向け出力までの運用フロー、分類評価の実装と実験、再実行の手順をまとめました。 [PDF](docs/papers/DIY_AutoML_Full_Paper_20261119/DIY_AutoML_Full_Paper_20261119.pdf) · [TeXプロジェクト](docs/papers/DIY_AutoML_Full_Paper_20261119/README.md) · [復元用ZIP](docs/papers/DIY_AutoML_Full_Paper_20261119/DIY_AutoML_Full_Paper_20261119_TeX.zip)
 
 ## 技術短報
 

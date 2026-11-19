@@ -7,9 +7,10 @@ import pandas as pd
 from openpyxl import load_workbook
 import pytest
 
+from diy_automl.bp_charts import monthly_figure, read_chart_tables
 from diy_automl.bp_evaluation import evaluate_selection
 from diy_automl.bp_preview import projection_features, run_projection, save_audit
-from diy_automl.calendar_comparison import BY_MONTH, BY_MONTH_CLASS, calendar_comparison, calendar_predictions
+from diy_automl.calendar_comparison import BY_MONTH, BY_MONTH_CLASS, METHODS, calendar_comparison, calendar_predictions
 from diy_automl.chronological_selection import chronological_partitions, require_class_coverage
 from diy_automl.data import load_csv
 from diy_automl.excel_report import render_excel_report
@@ -46,6 +47,11 @@ def test_bp_chronological_selection_keeps_entire_dates_in_order(tmp_path):
     assert manifest["calendar_rule"] == rule
     assert result["calendar"] == {**rule, "correct": 8, "f1": 1.0, "majority_f1": 1 / 3}
     assert result["f1_lower"] is None and result["f1_upper"] is None
+    candidates, monthly = read_chart_tables(output, chronological=True)
+    assert len(candidates) == 5
+    figure = monthly_figure(monthly, ("Model", "Calendar", "Majority"), None)
+    np.testing.assert_allclose(figure.axes[0].lines[0].get_ydata(), [1.0, 1.0])
+    assert [tick.get_text() for tick in figure.axes[0].get_xticklabels()] == ["2024-01", "2024-02"]
     assert pd.read_excel(output / "report.xlsx", sheet_name="SL_Bootstrap").empty
     assert pd.read_excel(output / "report.xlsx", sheet_name="SL_Test_Intervals").empty
     workbook = load_workbook(output / "bp_report.xlsx", read_only=True)
@@ -130,6 +136,17 @@ def test_calendar_rule_uses_training_calendar_majorities_with_fallbacks(tmp_path
     np.testing.assert_array_equal(predictions, [1, 1, 1, 0, 0])
     np.testing.assert_array_equal(overall, [0] * 5)
     assert rule == {"uses_hours": True, "source_rows": {"weekday_hour": 2, "weekday": 2, "overall": 1}}
+
+
+def test_bp_monthly_chart_leaves_a_gap_for_an_unobserved_month():
+    monthly = pd.DataFrame(
+        [(month, method, score) for month, score in (("2025-01", 0.6), ("2025-03", 0.8)) for method in METHODS],
+        columns=["Month", "Method", "F1"],
+    )
+    axes = monthly_figure(monthly, METHODS, None).axes[0]
+    np.testing.assert_array_equal(axes.get_xticks(), [0, 2])
+    for line in axes.lines:
+        np.testing.assert_allclose(line.get_ydata(), [0.6, np.nan, 0.8], equal_nan=True)
 
 
 def test_calendar_report_notes_absent_classes_and_split_months_in_date_only_input():

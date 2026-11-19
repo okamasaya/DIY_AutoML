@@ -1,0 +1,76 @@
+\begin{figure}[!t]
+\centering
+\begingroup
+\setlength{\unitlength}{1mm}
+\setlength{\fboxsep}{0pt}
+\setlength{\fboxrule}{0.4pt}
+\colorlet{FlowBorder}{Accent!65!white}
+\colorlet{FlowStep}{Accent!5!white}
+\colorlet{FlowChoice}{orange!12!white}
+\colorlet{FlowReview}{black!6!white}
+\colorlet{FlowOutput}{Accent!12!white}
+% Arguments give the centre, width, height, fill and text, in that order.
+\newcommand{\workflownode}[6]{%
+  \put(#1,#2){\makebox(0,0){%
+    \fcolorbox{FlowBorder}{#5}{%
+      \parbox[c][#4mm][c]{#3mm}{\centering\fontsize{8.5pt}{11pt}\selectfont #6}}}}}
+\newcommand{\workflowarrowhead}{%
+  \begin{picture}(0,0)
+    \put(-0.48,0.6){\makebox(0,0){\rotatebox{-51}{\rule{1.55mm}{0.4pt}}}}
+    \put(0.48,0.6){\makebox(0,0){\rotatebox{51}{\rule{1.55mm}{0.4pt}}}}
+  \end{picture}}
+\begin{picture}(160,122)
+  \color{FlowBorder}
+  \linethickness{0.4pt}
+  % Input and the choice of working format.
+  \put(116,115){\line(1,0){8}}
+  \put(124,115){\rotatebox[origin=c]{90}{\workflowarrowhead}}
+  \put(80,110){\line(0,-1){5}}
+  \put(80,105){\workflowarrowhead}
+  \put(80,93){\line(0,-1){4}}
+  \put(28,89){\line(1,0){104}}
+  \put(28,89){\line(0,-1){4}}
+  \put(80,89){\line(0,-1){4}}
+  \put(132,89){\line(0,-1){4}}
+  \put(28,85){\workflowarrowhead}
+  \put(80,85){\workflowarrowhead}
+  \put(132,85){\workflowarrowhead}
+  % The three formats converge on the same preparation step.
+  \put(28,75){\line(0,-1){4}}
+  \put(80,75){\line(0,-1){4}}
+  \put(132,75){\line(0,-1){4}}
+  \put(28,71){\line(1,0){104}}
+  \put(80,71){\line(0,-1){2}}
+  \put(80,69){\workflowarrowhead}
+  \put(80,59){\line(0,-1){5}}
+  \put(80,54){\workflowarrowhead}
+  \put(113,49){\line(1,0){5}}
+  \put(118,49){\rotatebox[origin=c]{90}{\workflowarrowhead}}
+  \put(80,44){\line(0,-1){4}}
+  \put(80,40){\workflowarrowhead}
+  % Both outputs use the saved evaluation.
+  \put(80,28){\line(0,-1){5}}
+  \put(40,23){\line(1,0){80}}
+  \put(40,23){\line(0,-1){4}}
+  \put(120,23){\line(0,-1){4}}
+  \put(40,19){\workflowarrowhead}
+  \put(120,19){\workflowarrowhead}
+
+  \color{black}
+  \workflownode{80}{115}{72}{10}{FlowStep}{\textbf{元CSVを保管して点検}}
+  \workflownode{142}{115}{35}{10}{FlowReview}{不備があれば\\点検結果を返す}
+  \workflownode{80}{99}{72}{12}{FlowChoice}{\textbf{中継データを作るか}\\規模・再利用・利用者指定}
+  \workflownode{28}{80}{45}{10}{FlowStep}{元CSVを使う}
+  \workflownode{80}{80}{45}{10}{FlowStep}{圧縮Parquetに変換}
+  \workflownode{132}{80}{45}{10}{FlowStep}{DuckDBファイルに変換}
+  \workflownode{80}{64}{88}{10}{FlowStep}{学習用の列を選び、欠損と件数を再点検}
+  \workflownode{80}{49}{66}{10}{FlowChoice}{\textbf{対象行を保ったまま学習できるか}}
+  \workflownode{138}{49}{39}{12}{FlowReview}{設定を見直す\\収まらなければ保留}
+  \workflownode{80}{34}{104}{12}{FlowStep}{\textbf{保留データを確保し、学習側の交差検証で順位付け}\\保留評価と不確かさの結果を保存}
+  \workflownode{40}{11}{72}{16}{FlowOutput}{\textbf{DS向け}\\コンソール要約・再分析用データ}
+  \workflownode{120}{11}{72}{16}{FlowOutput}{\textbf{BP向け}\\Excel要約・必要に応じて図}
+\end{picture}
+\endgroup
+\caption{データ点検からDS・BP向け出力までの運用フロー。中継形式と学習条件は利用者が指定する。}
+\label{fig:workflow}
+\end{figure}
