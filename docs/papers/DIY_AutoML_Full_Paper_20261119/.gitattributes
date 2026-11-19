@@ -1,0 +1,2 @@
+# Keep the figure data byte-identical to the TeX backup.
+figure-data.json -text whitespace=cr-at-eol

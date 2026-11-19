@@ -1,0 +1,87 @@
+{
+  "bike": {
+    "training_rows": 2331,
+    "training_busy": 1417,
+    "months": [
+      {
+        "month": "2012-08",
+        "label": "Aug 7+",
+        "rows": 100,
+        "busy": 91,
+        "model": 0.813780260707635,
+        "calendar": 0.59375,
+        "overall": 0.4764397905759162
+      },
+      {
+        "month": "2012-09",
+        "label": "Sep",
+        "rows": 120,
+        "busy": 106,
+        "model": 0.6382189239332097,
+        "calendar": 0.6176821983273596,
+        "overall": 0.4690265486725664
+      },
+      {
+        "month": "2012-10",
+        "label": "Oct",
+        "rows": 118,
+        "busy": 105,
+        "model": 0.5003387533875339,
+        "calendar": 0.6193548387096774,
+        "overall": 0.4708520179372198
+      },
+      {
+        "month": "2012-11",
+        "label": "Nov",
+        "rows": 120,
+        "busy": 95,
+        "model": 0.608349146110057,
+        "calendar": 0.7094430992736077,
+        "overall": 0.4418604651162791
+      },
+      {
+        "month": "2012-12",
+        "label": "Dec",
+        "rows": 124,
+        "busy": 76,
+        "model": 0.6242424242424243,
+        "calendar": 0.6757826302028125,
+        "overall": 0.38
+      }
+    ]
+  },
+  "scale": {
+    "reference": "experiments/tabular_scale_benchmark/results-2026-11-19.json",
+    "storage": [
+      {
+        "rows": 10000,
+        "audit_seconds": 2.1520089999539778,
+        "parquet_seconds": 2.3217183999950066
+      },
+      {
+        "rows": 100000,
+        "audit_seconds": 5.490049800020643,
+        "parquet_seconds": 7.3995426000328735
+      },
+      {
+        "rows": 1000000,
+        "audit_seconds": 63.274631800013594,
+        "parquet_seconds": 91.09412469994277
+      }
+    ],
+    "evaluation": [
+      {
+        "rows": 1000,
+        "seconds": 4.966090900008567
+      },
+      {
+        "rows": 5000,
+        "seconds": 7.297287099994719
+      },
+      {
+        "rows": 10000,
+        "seconds": 10.437853700015694
+      }
+    ]
+  }
+}

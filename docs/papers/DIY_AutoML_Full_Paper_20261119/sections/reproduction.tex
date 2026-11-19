@@ -1,0 +1,31 @@
+\section{再実行の入口}\label{sec:repro}
+
+実装の参照点はGitHubのコミット \texttt{80b25cc} である。分類評価、既存の図付きExcel、入力と分割、設定はこのコミットと付属資料を参照する。マイルストーンでは Windows と Python 3.13.17 で全246テストが通過した。保存した行単位・グループ単位・日付順評価と図付きExcelも照合した\cite{milestone}。この件数はソフトウェアの動作検証であり、独立した業務事例の件数とは別である。
+
+\subsection{入力の準備}
+
+\begin{itemize}
+  \item 業務3例の抽出条件、特徴量名、ランダムseedおよび単純ルールは実験記録に固定されている。ホテル・カフェ券の抽出seedは20261108、保留分割seedは42、再標本化seedは43である。カフェ券のルールは、月1回以上のカフェ利用を条件に、急ぎの行き先がなく子どもも同乗していない場合、または有効期限が1日の場合に受取とした\cite{business}。
+  \item Iranian Churnの比較は元の3,150行を保ち、節\ref{sec:experiments}に示した7列と正解ラベルを元の行順でCSVへ出す。表\ref{tab:churn}の再現にはこの入力を使う。2,754行の予備試行で用いた削除・集約は別手順である\cite{audit,churnpilot}。
+  \item Bike Sharingでは \texttt{hour.csv} の8・12・16・20時を抽出する。\texttt{dteday} と \texttt{hr} からISO形式の観測時刻 \texttt{observed} を作り、\texttt{hr}、\texttt{mnth}、\texttt{workingday} を数値特徴量とする。\texttt{cnt} が200以上ならラベルを \texttt{busy}、それ以外を \texttt{regular} とする。元の結果では入力順に依存しないことを点検するため、Pythonの \texttt{random.Random(42)} で行を並べ替えた\cite{audit}。
+\end{itemize}
+
+\subsection{分類評価と保存結果の確認}
+
+仮想環境からリポジトリのルートで実行する例を示す。改行はBashの継続記号で表した。PowerShellでは各コマンドを1行にまとめる。ファイル名と出力先は作業環境に合わせる。
+
+{\small
+\begin{verbatim}
+python -m diy_automl select --csv churn-seven.csv --target Churn \
+  --output runs/paper-churn-row
+python -m diy_automl select --csv churn-seven.csv --target Churn \
+  --group-identical --output runs/paper-churn-group
+python -m diy_automl select --csv bike-calendar.csv --target target \
+  --time-column observed --output runs/paper-bike
+python scripts/validate_selection_run.py runs/paper-bike
+\end{verbatim}
+}
+
+Windowsの画面は \texttt{python -m diy\_automl bp-preview} で起動できる。日付順の出力では、\texttt{report.xlsx} の \texttt{SL\_Test\_Comparison}、\texttt{SL\_Test\_By\_Month}、\texttt{SL\_Test\_By\_Month\_Class} を使う。日本語の評価Excelにも対応するシートがある。学習行、保留行、予測は \texttt{arrays.npz}、クラス順と分割の設定は \texttt{manifest.json} で照会する\cite{audit,milestone}。
+
+本稿の図\ref{fig:bike}と図\ref{fig:scale}は、保存済みの評価表と計測JSONから抜き出した集計値を使って作成した。TeXプロジェクトに集計値と描画スクリプトを同梱する。描画の再実行にモデルの再学習は要らない。AutoGluon、DLバックエンド、Annealing checkの再実行条件と設定は各検証記録を参照する\cite{agcheck,dlcheck,annealing,scalebench}。

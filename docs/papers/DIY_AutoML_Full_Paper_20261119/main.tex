@@ -1,0 +1,64 @@
+% !TeX program = xelatex
+\documentclass[11pt,a4paper]{article}
+\usepackage{fontspec}
+\IfFontExistsTF{Times New Roman}{\setmainfont{Times New Roman}}{}
+\IfFontExistsTF{Consolas}{\setmonofont{Consolas}}{}
+\usepackage{xeCJK}
+\IfFontExistsTF{Harano Aji Mincho}{\setCJKmainfont{Harano Aji Mincho}}{%
+  \IfFontExistsTF{Yu Mincho}{%
+    \IfFontExistsTF{Yu Mincho Demibold}{%
+      \setCJKmainfont[BoldFont={Yu Mincho Demibold},ItalicFont={Yu Mincho},
+        BoldItalicFont={Yu Mincho Demibold}]{Yu Mincho}%
+    }{\setCJKmainfont[AutoFakeBold=2,ItalicFont={Yu Mincho}]{Yu Mincho}}%
+  }{\setCJKmainfont{Noto Serif CJK JP}}}
+\IfFontExistsTF{Harano Aji Gothic}{\setCJKsansfont{Harano Aji Gothic}\setCJKmonofont{Harano Aji Gothic}}{%
+  \IfFontExistsTF{Yu Gothic}{\setCJKsansfont{Yu Gothic}\setCJKmonofont{Yu Gothic}}{%
+    \setCJKsansfont{Noto Sans CJK JP}\setCJKmonofont{Noto Sans CJK JP}}}
+\usepackage[top=24mm,bottom=25mm,left=24mm,right=24mm]{geometry}
+\usepackage{amsmath,amssymb,booktabs,tabularx,array,graphicx}
+\usepackage[font=small,labelfont=bf]{caption}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\definecolor{Accent}{HTML}{1C455B}
+\hypersetup{colorlinks=true,linkcolor=Accent,citecolor=Accent,urlcolor=Accent,
+  pdftitle={DIY AutoML: 分類モデルの選定・不確かさ・データ品質をつなぐ評価基盤}}
+\renewcommand{\figurename}{図}
+\renewcommand{\tablename}{表}
+\renewcommand{\refname}{参考文献}
+\setlength{\parindent}{1em}
+\setlength{\parskip}{0.3em}
+\clubpenalty=10000
+\widowpenalty=10000
+\displaywidowpenalty=10000
+\linespread{1.16}
+\graphicspath{{images/}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\macroF}{\ensuremath{F_{1,\mathrm{macro}}}}
+\newcommand{\project}{DIY AutoML}
+\begin{document}
+\begin{center}
+{\LARGE\bfseries DIY AutoML\par}
+\vspace{0.35em}
+{\Large\bfseries 分類モデルの選定・不確かさ・データ品質をつなぐ評価基盤\par}
+\vspace{0.85em}
+{\small 2026年11月19日 \quad 技術論文・初稿\par}
+\end{center}
+
+\section*{要旨}
+機械学習の性能値を採用判断に使うには、学習と評価に分けた単位、比較対象、誤りの内訳、評価値の不確かさが必要である。\project{}は、データ点検と抽出後の再点検、共通分割での候補比較、保留テスト、固定モデルの区間推定、再検証可能な結果保存を接続する。通信解約データ3,150行では、同一の数値入力をグループ化すると、学習側にも同じ値を持つ保留行が107件から0件になった。自転車貸出データの後続期間582行では、ランダムフォレストと曜日・時間帯の多数決のmacro F1は0.638と0.656だった。「通常」109件の検出数は80件と72件で、月によってmacro F1の大小関係が変わった。補足として、AutoGluonとの照合、TensorFlowとPyTorchの予測確率の比較、焼きなまし法による特徴量探索、16\,GB端末での前処理負荷を報告する。時間依存を考慮した性能差の区間、ラベル確定の遅れ、および独立データでの検証は次の課題である。
+
+\noindent\textbf{キーワード}\quad AutoML、分類評価、グループ分割、日付順評価、ブートストラップ、単純ルール
+
+\section*{Abstract}
+DIY AutoML records the path from tabular data inspection and model selection to held-out evaluation and reporting. In an Iranian Churn example with 3,150 rows, grouping identical feature vectors reduced the number of held-out rows with an identical training input from 107 to zero. On a chronological bike-sharing holdout of 582 rows, the selected random forest and a weekday-by-hour majority rule achieved macro F1 scores of 0.638 and 0.656, respectively. The forest detected 80 of 109 regular-demand observations and the rule detected 72. Their relative performance varied by month. Additional experiments examine cross-library agreement, backend probability differences, feature subset search and the cost of data preparation on a 16 GB PC. Temporal uncertainty intervals and external validation remain open.
+
+\input{sections/background}
+\input{sections/methods}
+\input{sections/experiments}
+\input{sections/additional}
+\input{sections/discussion}
+\clearpage
+\appendix
+\input{sections/reproduction}
+\input{sections/references}
+\end{document}
