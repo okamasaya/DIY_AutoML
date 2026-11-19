@@ -14,6 +14,11 @@ DIYの主目的は、MLの結果に誤差評価を含め、データ量・品質
 
 開発作業の再開・引継ぎは、[最新の状態と引継ぎ方針](docs/HANDOFF.md)を入口にしてください。
 
+## 技術短報
+
+- 2026年11月9日・試読版。評価基盤の方法と、ホテル予約、カフェ券、再購入の3例を収録。 [試読版PDF](docs/letters/DIY_AutoML_Letter_20261109.pdf)
+- 2026年11月19日・改稿案。グループ分割、日付順評価、曜日・時間帯の多数決との比較を追加。 [改稿案PDF](docs/letters/DIY_AutoML_Letter_20261119_review.pdf)
+
 ## セットアップ
 
 0.4.0a7は、PyTorch追加に向けた共通データ/結果形式とTensorFlow学習処理の分離です。現在の学習バックエンドはTensorFlowのみで、PyTorch/JAXの実装や依存追加はまだありません。Julia/Rust版も将来展望です。[準備した境界と次の条件](docs/DL_BACKENDS.md)を参照してください。
