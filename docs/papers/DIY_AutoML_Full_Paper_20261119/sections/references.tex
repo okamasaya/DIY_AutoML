@@ -1,0 +1,132 @@
+\newcommand{\record}[2]{\href{https://github.com/okamasaya/DIY_AutoML/blob/80b25cc/#1}{#2}}
+\begin{thebibliography}{99}
+\small
+\raggedright
+\setlength{\itemsep}{0.18\baselineskip}
+\setlength{\parsep}{0pt}
+
+\bibitem{autogluon}
+N.~Erickson, J.~Mueller, A.~Shirkov, H.~Zhang, P.~Larroy, M.~Li, and A.~Smola.
+\textit{AutoGluon-Tabular: Robust and Accurate AutoML for Structured Data}.
+\href{https://arxiv.org/abs/2003.06505}{arXiv:2003.06505}, 2020.
+
+\bibitem{letters}
+DIY AutoML.
+\textit{モデル選定と条件付き不確かさ評価を接続する評価基盤}.
+\href{https://github.com/okamasaya/DIY_AutoML/blob/c45c0b2/docs/letters/DIY_AutoML_Letter_20261109.pdf}{11月9日試読版}、
+\href{https://github.com/okamasaya/DIY_AutoML/blob/c45c0b2/docs/letters/DIY_AutoML_Letter_20261119_review.pdf}{11月19日改稿案}、2026年。
+
+\bibitem{milestone}
+DIY AutoML.
+\record{docs/BP_CLASSIFICATION_MILESTONE_20261119.md}{BP版の分類評価マイルストーン}、2026年11月19日。
+
+\bibitem{audit}
+DIY AutoML.
+\record{docs/DATA_AUDIT.md}{学習前の点検、列抽出、分類評価の操作と検証}、コミット \texttt{80b25cc}。
+
+\bibitem{ranking}
+DIY AutoML.
+\record{docs/SL_UNCERTAINTY_AUDIT.md}{分類結果の不確かさを点検する}、コミット \texttt{80b25cc}。
+
+\bibitem{varma}
+S.~Varma and R.~Simon.
+Bias in error estimation when using cross-validation for model selection.
+\textit{BMC Bioinformatics}, 7:91, 2006.
+\href{https://doi.org/10.1186/1471-2105-7-91}{doi:10.1186/1471-2105-7-91}.
+
+\bibitem{groupkfold}
+scikit-learn.
+\href{https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.StratifiedGroupKFold.html}{StratifiedGroupKFold}.
+API documentation.
+
+\bibitem{efron1979}
+B.~Efron.
+Bootstrap Methods: Another Look at the Jackknife.
+\textit{Annals of Statistics}, 7(1):1--26, 1979.
+\href{https://doi.org/10.1214/aos/1176344552}{doi:10.1214/aos/1176344552}.
+
+\bibitem{hoteldata}
+N.~Antonio, A.~de Almeida, and L.~Nunes.
+Hotel booking demand datasets.
+\textit{Data in Brief}, 22:41--49, 2019.
+\href{https://doi.org/10.1016/j.dib.2018.11.126}{doi:10.1016/j.dib.2018.11.126}.
+
+\bibitem{coupondata}
+UCI Machine Learning Repository.
+In-Vehicle Coupon Recommendation [Dataset].
+\href{https://doi.org/10.24432/C5GS4P}{doi:10.24432/C5GS4P}.
+
+\bibitem{wang}
+T.~Wang, C.~Rudin, F.~Doshi-Velez, Y.~Liu, E.~Klampfl, and P.~MacNeille.
+A Bayesian Framework for Learning Rule Sets for Interpretable Classification.
+\textit{Journal of Machine Learning Research}, 18(70):1--37, 2017.
+\href{https://jmlr.org/papers/v18/16-003.html}{論文}.
+
+\bibitem{retaildata}
+D.~Chen.
+Online Retail [Dataset].
+UCI Machine Learning Repository, 2015.
+\href{https://doi.org/10.24432/C5BW33}{doi:10.24432/C5BW33}.
+
+\bibitem{business}
+DIY AutoML.
+\record{docs/BUSINESS_QUICK_RESULTS.md}{業務3例の探索的評価}。
+\record{experiments/business_quick_20261108/protocol.json}{入力と実験条件}、2026年11月8日。
+
+\bibitem{metricunc}
+DIY AutoML.
+\record{docs/VALIDATION_METRIC_UNCERTAINTY.md}{保存済み分類予測の不確かさ評価の検証}、開発版 0.4.0a6。
+
+\bibitem{churndata}
+UCI Machine Learning Repository.
+Iranian Churn [Dataset], 2020.
+\href{https://doi.org/10.24432/C5JW3Z}{doi:10.24432/C5JW3Z}.
+
+\bibitem{churnpilot}
+DIY AutoML.
+\record{experiments/bp_churn_pilot/README.md}{通信解約データの準備と予備試行}、2026年11月19日。
+
+\bibitem{bikedata}
+H.~Fanaee-T.
+Bike Sharing [Dataset].
+UCI Machine Learning Repository, 2013.
+\href{https://doi.org/10.24432/C5W894}{doi:10.24432/C5W894}.
+
+\bibitem{worklog}
+DIY AutoML.
+\record{docs/THREAD_SUMMARY_20261118.md}{分類順位・分類品質・誤差点検の作業ログ}、2026年11月18日。
+
+\bibitem{agcheck}
+DIY AutoML.
+\record{experiments/autogluon_sl_crosscheck/README.md}{AutoGluon Tabularとのクロスチェック}、2026年11月18日。
+
+\bibitem{dlcheck}
+DIY AutoML.
+\record{experiments/dl_backend_crosscheck/README.md}{TensorFlowとPyTorchのCPU比較}、2026年11月18日。
+
+\bibitem{dlprob}
+DIY AutoML.
+\record{articles/diy-automl-ds-backend-probabilities.md}{TensorFlowとPyTorchの予測確率とlog lossの追加点検}、2026年11月19日。
+
+\bibitem{kirkpatrick}
+S.~Kirkpatrick, C.~D.~Gelatt Jr., and M.~P.~Vecchi.
+Optimization by Simulated Annealing.
+\textit{Science}, 220(4598):671--680, 1983.
+\href{https://doi.org/10.1126/science.220.4598.671}{doi:10.1126/science.220.4598.671}.
+
+\bibitem{annealing}
+DIY AutoML.
+\record{docs/ANNEALING_CHECK.md}{Annealing checkの設計と検証}、2026年11月19日。
+
+\bibitem{scalebench}
+DIY AutoML.
+\record{experiments/tabular_scale_benchmark/README.md}{Windowsでの表形式データ処理の負荷測定}。
+\record{experiments/tabular_scale_benchmark/results-2026-11-19.json}{実測値}、2026年11月19日。
+
+\bibitem{kuensch}
+H.~R.~Künsch.
+The Jackknife and the Bootstrap for General Stationary Observations.
+\textit{Annals of Statistics}, 17(3):1217--1241, 1989.
+\href{https://doi.org/10.1214/aos/1176347265}{doi:10.1214/aos/1176347265}.
+
+\end{thebibliography}

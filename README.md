@@ -14,6 +14,10 @@ DIYの主目的は、MLの結果に誤差評価を含め、データ量・品質
 
 開発作業の再開・引継ぎは、[最新の状態と引継ぎ方針](docs/HANDOFF.md)を入口にしてください。
 
+## Full Paper
+
+2026年11月19日・技術論文の初稿。分類評価の実装、主要実験と補足検証、再実行の手順をまとめました。 [PDF](docs/papers/DIY_AutoML_Full_Paper_20261119/DIY_AutoML_Full_Paper_20261119.pdf) · [TeXプロジェクト](docs/papers/DIY_AutoML_Full_Paper_20261119/README.md) · [復元用ZIP](docs/papers/DIY_AutoML_Full_Paper_20261119/DIY_AutoML_Full_Paper_20261119_TeX.zip)
+
 ## 技術短報
 
 - 2026年11月9日・試読版。評価基盤の方法と、ホテル予約、カフェ券、再購入の3例を収録。 [試読版PDF](docs/letters/DIY_AutoML_Letter_20261109.pdf)
