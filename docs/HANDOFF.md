@@ -2,7 +2,7 @@
 
 更新日：2026-11-19（日本時間）
 
-**最新の区切りは、BP画面でのCSV点検から、単純ルールとの比較、日本語の評価Excelまで。** 実測、保存状態、再開時の作業をまとめた。 [BP版の分類評価マイルストーン](BP_CLASSIFICATION_MILESTONE_20261119.md)
+**最新の区切りは、Full Paperの処理フロー図とBP画面の結果グラフ。** 確認済みの改訂稿・BPグラフ・詳細グラフのTo Doを今回の統合対象にまとめた。評価基盤は日付順の性能差の区間から再開する。 [11月19日の作業ログと再開手順](THREAD_SUMMARY_20261119.md) · [BP版の分類評価マイルストーン](BP_CLASSIFICATION_MILESTONE_20261119.md)
 
 分類の順位付け、不確かさ、混同行列、AutoGluonとDLバックエンドの比較は11月18日の作業ログ、3記事の改稿と実物出力の統合は11月12日の作業ログにある。 [11月18日の作業ログ](THREAD_SUMMARY_20261118.md) · [11月12日の作業ログ](THREAD_SUMMARY_20261112.md)
 
@@ -41,6 +41,8 @@
 ## 現在の引継ぎ
 
 ### 2026年11月19日
+
+- Full Paper初稿・TeXバックアップをPR #4で統合した。続く改訂稿にDS・BPに分かれる運用フロー図を追加し、BP画面に候補比較の棒グラフと日付順の月別推移を実装した。PyGWalker＋Streamlitによる詳細グラフをTo Doに記録した。区切りの収録対象と再開コマンドは作業ログにある。 [11月19日の作業ログ](THREAD_SUMMARY_20261119.md)
 
 - Raisinで、元の900行、面積条件のみの665行、先頭250行の品種別件数を照合した。抽出後に内訳を点検するBP向けの未公開原稿を追加した。 [BP向け原稿](../articles/diy-automl-bp-filtered-rows.md) · [再実行手順](DATA_AUDIT.md#学習用csvを抽出する)
 - TensorFlowとPyTorchの予測確率を比べるDS向けの未公開原稿を追加した。保存済みlogitからlog lossとBrier scoreを再計算し、Wineで再標本化を1,000回から20,000回に増やすと、95%区間がわずかにゼロをまたぐことを確認した。 [DS向け原稿](../articles/diy-automl-ds-backend-probabilities.md) · [比較実験の手順](../experiments/dl_backend_crosscheck/README.md)
@@ -107,6 +109,8 @@
 親記事の今回の図は、保存済み学習3出力・誤差評価3出力を既存検証器で再検証し、点推定と一部再標本化をscikit-learnで計24照合して生成した。入力ファイルのハッシュ不変、記事の数値・画像パス・Zenn形式を確認済み。Zenn CLI 0.5.14とChromium/Playwrightで1280px/390px幅の表示、全3画像、details変換を確認した（モバイル幅ではプレビュー用サイドバーを閉じた）。新しい学習やパッケージ全テストの再実行は対象に含まない。
 
 ## 関連する記録
+
+- [11月19日の作業ログ・再開手順](THREAD_SUMMARY_20261119.md)
 
 - [このスレッドのまとめ・新しいスレッドでの再開手順](THREAD_SUMMARY_20261112.md)
 - [今回の修正方針・レビュー17件の扱い](REVISION_POLICY_20261110.md)

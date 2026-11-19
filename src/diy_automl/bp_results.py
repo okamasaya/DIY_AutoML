@@ -1,5 +1,7 @@
 """Tk view for the business-facing supervised comparison results."""
 
+from zipfile import BadZipFile
+
 from .bp_evaluation import BP_REPORT, CLASS_HEADERS, calendar_label, interval_caption, overlap_caption, split_caption
 
 
@@ -11,6 +13,8 @@ class EvaluationPanel:
         panel.columnconfigure(0, weight=1)
         panel.rowconfigure(6, weight=1)
         self.directory = None
+        self.result = None
+        self.chart_window = None
         self.model = StringVar(panel)
         self.totals = [StringVar(panel) for _ in range(3)]
         self.baseline = StringVar(panel)
@@ -53,6 +57,7 @@ class EvaluationPanel:
         self.line(ttk, 7, self.notice, (7, 8))
         actions = ttk.Frame(panel, style="Card.TFrame")
         actions.grid(row=8, column=0, sticky="ew")
+        ttk.Button(actions, text="グラフを見る…", command=self.show_charts).pack(side="left", padx=(0, 8))
         ttk.Button(actions, text="評価Excelを開く", command=lambda: open_path(self.directory / BP_REPORT)).pack(
             side="left", padx=(0, 8),
         )
@@ -64,7 +69,7 @@ class EvaluationPanel:
         label.bind("<Configure>", lambda event: label.configure(wraplength=event.width))
 
     def show(self, directory, result):
-        self.directory = directory
+        self.directory, self.result = directory, result
         method = "期間順の5回の比較" if result["confidence"] is None else "学習側の5分割"
         self.model.set(f"{method}で選んだモデル　{result['model']}\n{split_caption(result)}")
         for variable, key in zip(self.totals, ("test_rows", "correct", "incorrect")):
@@ -95,5 +100,19 @@ class EvaluationPanel:
         self.notice.set(notice)
         self.frame.grid(row=0, column=1, sticky="nsew")
 
+    def show_charts(self):
+        from .bp_charts import open_chart_window
+
+        if self.chart_window is not None and self.chart_window.winfo_exists():
+            self.chart_window.lift()
+            return
+        try:
+            self.chart_window = open_chart_window(self.frame, self.directory, self.result)
+        except (OSError, ValueError, KeyError, BadZipFile):
+            self.notice.set("グラフ用の評価表を読み込めませんでした。保存先の report.xlsx を確認してください。")
+
     def hide(self):
+        if self.chart_window is not None and self.chart_window.winfo_exists():
+            self.chart_window.destroy()
+        self.chart_window = None
         self.frame.grid_remove()

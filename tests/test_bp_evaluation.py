@@ -5,6 +5,7 @@ import numpy as np
 import pytest
 from openpyxl import load_workbook
 
+from diy_automl.bp_charts import candidate_figure, read_chart_tables
 from diy_automl.bp_evaluation import BP_REPORT, evaluate_selection, training_blockers
 from diy_automl.bp_preview import run_projection, save_audit
 from diy_automl.selection_workflow import select_csv
@@ -35,6 +36,12 @@ def test_bp_comparison_preserves_labels_and_explains_the_same_holdout(tmp_path):
     assert sum(row[2] for row in result["classes"]) == result["correct"]
     assert sum(row[3] for row in result["classes"]) == sum(row[4] for row in result["classes"]) == result["incorrect"]
     assert result["majority_correct"] == next(row[1] for row in result["classes"] if row[0] == result["majority_label"])
+    candidates, monthly = read_chart_tables(output, chronological=False)
+    assert monthly is None
+    axes = candidate_figure(candidates, None).axes[0]
+    ranked = candidates.sort_values("F1", ascending=False, kind="stable")
+    assert [tick.get_text() for tick in axes.get_yticklabels()] == ranked["Model"].tolist()
+    np.testing.assert_allclose([bar.get_width() for bar in axes.patches], ranked["F1"])
 
     book = load_workbook(output / BP_REPORT, read_only=True, data_only=False)
     try:

@@ -185,7 +185,7 @@ class PreviewWindow:
         self.label_count = StringVar(root)
         self.counts = (self.row_count, self.missing_count, self.duplicate_count, self.label_count)
 
-        root.title("DIY AutoML | データ点検")
+        root.title("DIY AutoML | 分類評価")
         root.geometry("1050x660")
         root.minsize(860, 640)
         root.configure(background="#f0f4f5")
@@ -195,7 +195,7 @@ class PreviewWindow:
         shell = ttk.Frame(root, padding=(24, 20, 24, 24))
         shell.pack(fill="both", expand=True)
         ttk.Label(shell, text="DIY AutoML", style="Brand.TLabel").pack(anchor="w")
-        ttk.Label(shell, text="データ点検", style="Title.TLabel").pack(anchor="w", pady=(4, 14))
+        ttk.Label(shell, text="データ点検と分類評価", style="Title.TLabel").pack(anchor="w", pady=(4, 14))
         body = ttk.Frame(shell)
         body.pack(fill="both", expand=True)
         body.columnconfigure(1, weight=1)
