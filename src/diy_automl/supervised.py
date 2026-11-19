@@ -22,9 +22,10 @@ def candidates(seed=42):
 def pipeline(model):
     return make_pipeline(StandardScaler(), model)
 
-def metrics(y, pred, classes=None):
-    p, r, f, _ = precision_recall_fscore_support(y, pred, labels=classes, average="macro", zero_division=0)
-    return dict(zip(METRICS, map(float, (accuracy_score(y, pred), p, r, f))))
+def metrics(y, pred, classes=None, *, sample_weight=None):
+    p, r, f, _ = precision_recall_fscore_support(y, pred, labels=classes, average="macro",
+                                               zero_division=0, sample_weight=sample_weight)
+    return dict(zip(METRICS, map(float, (accuracy_score(y, pred, sample_weight=sample_weight), p, r, f))))
 
 def run(X, y, seed=42):
     train, test = split_indices(y, seed)

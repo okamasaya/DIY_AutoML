@@ -81,6 +81,13 @@ class ColumnProfile:
         return result
 
 
+def parse_timestamp(value):
+    point = datetime.fromisoformat(value.strip())
+    if point.tzinfo is None:
+        return point, "local_unspecified"
+    return point.astimezone(timezone.utc), "utc"
+
+
 @dataclass
 class TimeProfile:
     parsed: int = 0
@@ -91,10 +98,7 @@ class TimeProfile:
         if value.strip() in MISSING:
             return
         try:
-            point = datetime.fromisoformat(value.strip())
-            zone = "utc" if point.tzinfo is not None else "local_unspecified"
-            if zone == "utc":
-                point = point.astimezone(timezone.utc)
+            point, zone = parse_timestamp(value)
         except (ValueError, OverflowError):
             self.invalid += 1
             return
@@ -227,6 +231,15 @@ def read_record(reader):
         return None, start_line, {"line": start_line, "type": type(error).__name__}
 
 
+def read_header(reader):
+    header, _, error = read_record(reader)
+    leading_blanks = 0
+    while header == []:
+        leading_blanks += 1
+        header, _, error = read_record(reader)
+    return header or [], leading_blanks, error
+
+
 def scan_records(reader, db, header, profiles, positions):
     scan = {
         "status": "complete", "records": 0, "valid_rows": 0, "blank_records": 0,
@@ -273,12 +286,7 @@ def scan_csv(csv_path, settings):
           Path(csv_path).open(encoding="utf-8-sig", newline="") as stream):
         initialize(db)
         reader = csv.reader(stream, strict=True)
-        header, _, error = read_record(reader)
-        leading_blanks = 0
-        while header == []:
-            leading_blanks += 1
-            header, _, error = read_record(reader)
-        header = header or []
+        header, leading_blanks, error = read_header(reader)
         counts, positions, statuses = resolve_roles(header, settings)
         roles = {position: role for role, position in positions.items()}
         numeric_types = settings.get("conversion_types") == "numeric"

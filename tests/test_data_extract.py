@@ -90,3 +90,30 @@ def test_integer_filter_validates_its_range_before_querying():
         bound_filter("BIGINT", "eq", str(2**63), "$value")
     with pytest.raises(ValueError, match="does not fit UBIGINT"):
         bound_filter("UBIGINT", "eq", "-1", "$value")
+
+
+def test_csv_projection_preserves_cell_text_and_order_without_storage(tmp_path):
+    source = tmp_path / "source.csv"
+    with source.open("w", encoding="utf-8-sig", newline="") as stream:
+        writer = csv.writer(stream)
+        writer.writerows([
+            [], ["unused", "値", "label"], ["0", "001", "甲"],
+            [], ["1", '1.20,\r\n"引用"', "乙"], ["2", "", "甲"],
+        ])
+    digest = file_sha256(source)
+    output = extract_data(source, tmp_path / "extract", ["label", "値"], limit=2)
+    manifest = validate_data_extract(output, source=source)
+    assert manifest["duckdb_version"] is None
+    assert manifest["rows"] == 2
+    assert manifest["input_sha256"] == digest == file_sha256(source)
+    with (output / "data.csv").open(encoding="utf-8", newline="") as stream:
+        assert list(csv.reader(stream)) == [["label", "値"], ["甲", "001"], ["乙", '1.20,\r\n"引用"']]
+
+
+def test_csv_projection_checks_rows_after_the_limit(tmp_path):
+    source = tmp_path / "source.csv"
+    source.write_text("x,target\n1,A\nbroken\n", encoding="utf-8")
+    output = tmp_path / "extract"
+    with pytest.raises(ValueError, match="record width differs near line 3"):
+        extract_data(source, output, ["target"], limit=1)
+    assert not (output / "data.csv").exists()

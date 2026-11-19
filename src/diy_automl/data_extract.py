@@ -1,6 +1,8 @@
-"""Export a typed column selection and structured filters from an intermediate file."""
+"""Export selected columns from CSV or from a portable storage file."""
 
+from collections import Counter
 from contextlib import closing
+import csv
 from decimal import Decimal, InvalidOperation
 from hashlib import sha256
 import json
@@ -11,7 +13,7 @@ import re
 from tempfile import TemporaryDirectory
 
 from .data_conversion import CONVERSION_SCHEMA, DUCKDB_CONFIG, FORMATS, converted_path, sql_identifier
-from .data_profile import NUMBER
+from .data_profile import NUMBER, read_header
 from .reporting import fail, file_sha256, prepare, write_json
 
 
@@ -23,8 +25,9 @@ CSV_ARTIFACT = "data.csv"
 
 
 def extraction_settings(source, columns, where=(), limit=None):
-    if Path(source).suffix.lower()[1:] not in FORMATS:
-        raise ValueError("Source must be a .parquet or .duckdb file")
+    kind = Path(source).suffix.lower()[1:]
+    if kind not in ("csv", *FORMATS):
+        raise ValueError("Source must be a .csv, .parquet or .duckdb file")
     selected = [columns] if isinstance(columns, str) else list(columns)
     if not selected or any(not isinstance(name, str) or not name.strip() for name in selected):
         raise ValueError("Select at least one named output column")
@@ -40,6 +43,8 @@ def extraction_settings(source, columns, where=(), limit=None):
         if not isinstance(value, (str, int, float, Decimal)):
             raise ValueError("Filter values must be scalar strings, numbers or booleans")
         filters.append([name, operator, str(value)])
+    if kind == "csv" and filters:
+        raise ValueError("Row filters require a Parquet or DuckDB source")
     if limit is not None and (isinstance(limit, bool) or not isinstance(limit, Integral) or not 0 <= limit < 2**63):
         raise ValueError("limit must be a nonnegative 64-bit integer")
     return {"source": str(source), "columns": selected, "where": filters, "limit": int(limit) if limit is not None else None}
@@ -176,21 +181,56 @@ def export_csv(source, destination, scratch, settings, lineage):
     return rows, columns, duckdb.__version__
 
 
-def extract_data(source, output, columns, where=(), limit=None):
+def export_csv_columns(source, destination, settings):
+    """Project a CSV record at a time, preserving cell text and record order."""
+    with (source.open(encoding="utf-8-sig", newline="") as stream,
+          destination.open("x", encoding="utf-8", newline="") as output):
+        reader = csv.reader(stream, strict=True)
+        header, _, error = read_header(reader)
+        if error or not header:
+            raise ValueError("Cannot read the CSV header")
+        counts = Counter(header)
+        selected = settings["columns"]
+        invalid = [name for name in selected if counts[name] != 1]
+        if invalid:
+            raise ValueError(f"CSV columns must be present and unambiguous: {', '.join(invalid)}")
+        positions = [header.index(name) for name in selected]
+        writer = csv.writer(output)
+        writer.writerow(selected)
+        rows, limit = 0, settings["limit"]
+        for row in reader:
+            if not row:
+                continue
+            if len(row) != len(header):
+                raise ValueError(f"CSV record width differs near line {reader.line_num}")
+            if limit is None or rows < limit:
+                writer.writerow([row[position] for position in positions])
+                rows += 1
+    return rows, [{"name": name, "type": "VARCHAR"} for name in header]
+
+
+def extract_data(source, output, columns, where=(), limit=None, *, expected_input_sha256=None):
     """Select columns and apply AND filters in source order, writing a reproducible CSV."""
     source = Path(source).resolve()
     settings = extraction_settings(source, columns, where, limit)
     if not source.is_file():
         raise ValueError("Choose a single existing source file")
     digest = file_sha256(source)
-    lineage = audit_lineage(source, digest, source.suffix.lower()[1:])
+    if expected_input_sha256 is not None and digest != expected_input_sha256:
+        raise ValueError("The source no longer matches the audited file")
+    kind = source.suffix.lower()[1:]
+    lineage = None if kind == "csv" else audit_lineage(source, digest, kind)
     output, manifest = prepare(output, SCHEMA, settings)
     manifest.update(input_sha256=digest, source_audit=lineage)
     try:
         with TemporaryDirectory(prefix=".extract-", dir=output) as temporary:
             scratch = Path(temporary)
             csv_path = scratch / CSV_ARTIFACT
-            rows, columns, duckdb_version = export_csv(source, csv_path, scratch, settings, lineage)
+            if kind == "csv":
+                rows, columns = export_csv_columns(source, csv_path, settings)
+                duckdb_version = None
+            else:
+                rows, columns, duckdb_version = export_csv(source, csv_path, scratch, settings, lineage)
             if file_sha256(source) != digest:
                 raise ValueError("The source file changed during extraction")
             csv_hash = file_sha256(csv_path)

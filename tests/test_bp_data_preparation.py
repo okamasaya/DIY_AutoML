@@ -4,7 +4,10 @@ import pytest
 from openpyxl import load_workbook
 
 from diy_automl import prepare_bp_csv
+from diy_automl.bp_preview import projection_features, run_projection, save_audit
 from diy_automl.data_audit_validation import validate_data_audit
+from diy_automl.data_extract_validation import validate_data_extract
+from diy_automl.reporting import file_sha256
 
 
 def first_sheet_values(output):
@@ -70,3 +73,38 @@ def test_bp_keeps_the_japanese_report_when_compression_is_blocked(tmp_path):
     assert summary["作業用ファイルを圧縮"] == "元データの確認が必要"
     assert summary["列数が合わない行"] == 1
     assert not (output / "converted").exists()
+
+
+@pytest.mark.parametrize("compress", [False, True])
+def test_bp_compares_a_projected_csv_and_keeps_the_audited_input(tmp_path, compress):
+    if compress:
+        pytest.importorskip("pyarrow")
+        pytest.importorskip("duckdb")
+    source = tmp_path / "input.csv"
+    source.write_text("分類,値,補助列\nA,001,\nB,001,9\nB,002,0\n", encoding="utf-8")
+    digest = file_sha256(source)
+    original = save_audit(source, tmp_path / "original", target="分類", compress=compress)
+    assert projection_features(original.profile) == ["値", "補助列"]
+    selected = run_projection(original, ["値"])
+    extracted = validate_data_extract(selected.csv.parent)
+    assert extracted["settings"]["columns"] == ["分類", "値"]
+    if compress:
+        assert extracted["source_audit"]["original_csv_sha256"] == digest
+    else:
+        assert extracted["input_sha256"] == digest
+    validate_data_audit(selected.audit.directory, csv=selected.csv)
+    before, after = original.profile, selected.audit.profile
+    assert before["target"] == after["target"]
+    assert before["duplicates"]["features"]["conflicting_label_groups"] == 0
+    assert after["duplicates"]["features"]["conflicting_label_groups"] == 1
+    assert first_sheet_values(original.directory)["欠損セル数"] == 1
+    assert first_sheet_values(selected.audit.directory)["欠損セル数"] == 0
+    with selected.csv.open(encoding="utf-8", newline="") as stream:
+        assert list(csv.reader(stream)) == [["分類", "値"], ["A", "001"], ["B", "001"], ["B", "002"]]
+    assert file_sha256(source) == digest
+
+    with source.open("a", encoding="utf-8") as stream:
+        stream.write("A,003,4\n")
+    with pytest.raises(ValueError, match="元CSVが点検後に変更|no longer matches"):
+        run_projection(original, ["値"])
+    assert selected.csv.is_file()
