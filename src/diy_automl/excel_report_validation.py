@@ -9,7 +9,7 @@ from openpyxl.utils.cell import coordinate_to_tuple
 from openpyxl.utils.units import pixels_to_EMU
 
 from .clustering_subsample import integer
-from .excel_report import digest,placement,resolve_data,row_pixels
+from .excel_report import digest,placement,resolve_data,row_pixels,source_artifact_names
 from .report_figures import build_plans
 from .ul_subsample_validation import require
 from .validation import validate
@@ -23,7 +23,7 @@ def validate_excel_report(directory):
     require(set(r['dependencies'])=={'matplotlib','pillow','openpyxl','numpy','scikit-learn'},'Renderer dependency record differs')
     m=validate(root)
     require(r['source_schema']==m['schema_version'] and r['source_version']==m['version'],'Source provenance differs')
-    require(set(r['source_artifacts'])=={'manifest.json','report.xlsx','arrays.npz'},'Source artifact set differs')
+    require(set(r['source_artifacts'])==set(source_artifact_names(m)),'Source artifact set differs')
     for name,expected in r['source_artifacts'].items(): require(digest(root/name)==expected,'Copied source checksum differs')
     require(set(r['artifacts'])=={'report_with_figures.xlsx','figure_data.npz'},'Rendered artifact set differs')
     for name,expected in r['artifacts'].items(): require(digest(root/name)==expected,'Rendered artifact checksum differs')

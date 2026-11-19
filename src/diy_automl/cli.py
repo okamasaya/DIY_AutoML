@@ -32,6 +32,11 @@ def main():
         elif command in ("select","tune"):
             p.add_argument("--metric",choices=["Accuracy","Precision","Recall","F1"],default="F1")
             p.add_argument("--bootstrap-repeats",type=int,default=1000)
+            if command=="select":
+                grouping=p.add_mutually_exclusive_group()
+                grouping.add_argument("--group-column",help="Keep all rows with the same ID together and exclude this column from features")
+                grouping.add_argument("--group-identical",action="store_true",help="Keep exactly matching numeric inputs together")
+                grouping.add_argument("--time-column",help="Use ISO 8601 observation dates for chronological selection and holdout")
             if command=="tune":
                 p.add_argument("--bootstrap-seed",type=int,default=43)
                 p.add_argument("--confidence",type=float,default=.95)
@@ -101,11 +106,14 @@ def main():
     p.add_argument("--target",help="正解ラベルの列")
     p.add_argument("--compress",action="store_true",help="作業用の圧縮Parquetを追加で保存")
     p.add_argument("--output",default=None,help="結果を保存する新しいフォルダ")
-    p=sub.add_parser("extract-data",help="Select columns and filter a Parquet or DuckDB file into a CSV")
-    p.add_argument("--source",required=True,help="Path to a .parquet or .duckdb file")
+    p=sub.add_parser("bp-preview",help="CSVを選び、学習前のデータ点検を画面で確認します")
+    p.add_argument("--csv",help="起動時に選ぶCSVファイル")
+    p.add_argument("--output-dir",default="runs/bp-preview",help="点検結果を保存する親フォルダ")
+    p=sub.add_parser("extract-data",help="Select columns from a CSV, Parquet or DuckDB file")
+    p.add_argument("--source",required=True,help="Path to a .csv, .parquet or .duckdb file")
     p.add_argument("--columns",nargs="+",required=True,metavar="COLUMN",help="Output columns in the requested order")
     p.add_argument("--where",action="append",nargs=3,default=[],metavar=("COLUMN", "OP", "VALUE"),
-                   help="Filter using eq, ne, lt, le, gt or ge. Repeat to apply all conditions.")
+                   help="Filter Parquet or DuckDB using eq, ne, lt, le, gt or ge. Repeat to apply all conditions.")
     p.add_argument("--limit",type=int,help="Maximum output rows in source order")
     p.add_argument("--output",default=None)
     p=sub.add_parser("report")
@@ -128,6 +136,14 @@ def main():
     p.add_argument("--shift",action="append",default=[],metavar="FEATURE=OFFSET",
                    help="Hypothetical constant test input offset, repeatable")
     args=vars(parser.parse_args()); command=args.pop("command")
+    if command=="bp-preview":
+        from .bp_preview import launch_preview
+
+        try:
+            launch_preview(**args)
+        except RuntimeError as error:
+            parser.exit(2, f"{error}\n")
+        return
     if args["output"] is None: args["output"]="runs/"+command+"-"+datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     handlers={
         "run":run_csv,"select":select_csv,"repeat-ul":repeat_clustering_csv,

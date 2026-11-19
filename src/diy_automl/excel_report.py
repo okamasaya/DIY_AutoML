@@ -14,6 +14,7 @@ from openpyxl import load_workbook
 from openpyxl.drawing.image import Image
 from openpyxl.utils import get_column_letter
 
+from .bp_evaluation import BP_REPORT
 from .clustering_subsample import integer
 from .data import load_csv
 from .report_figures import build_plans,draw_figure
@@ -23,6 +24,11 @@ from .validation import validate
 
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def source_artifact_names(manifest):
+    names = ("manifest.json", "report.xlsx", "arrays.npz")
+    return (*names, BP_REPORT) if BP_REPORT in manifest["artifacts"] else names
 
 
 def resolve_data(root,manifest,arrays,csv=None,auto_csv=True):
@@ -35,7 +41,9 @@ def resolve_data(root,manifest,arrays,csv=None,auto_csv=True):
     if csv is not None:
         path=Path(csv)
         if digest(path)!=manifest.get('input_sha256'): raise ValueError('CSV SHA256 differs from the saved input')
-        data=load_csv(path,manifest['settings']['target'])
+        settings = manifest["settings"]
+        data = load_csv(path, settings["target"], target_as_text=settings.get("bp_summary", False),
+                        group_column=settings.get("group_column"), time_column=settings.get("time_column"))
         if data.classes!=manifest['classes'] or data.feature_names!=manifest['features']:
             raise ValueError('CSV label or feature mapping differs from the saved run')
         for key,value in [('features',data.X),('target',data.y)]:
@@ -88,7 +96,7 @@ def render_excel_report(source,output,max_models=3,csv=None):
     started=time.perf_counter()
     write_json(out/'render_manifest.json',record)
     try:
-        for name in ['manifest.json','report.xlsx','arrays.npz']:
+        for name in source_artifact_names(m):
             shutil.copy2(source/name,out/name)
             record['source_artifacts'][name]=digest(out/name)
         if chosen is not None:

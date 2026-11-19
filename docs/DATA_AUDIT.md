@@ -24,6 +24,78 @@
 
 元CSVを原本として保管し、作業用ファイルでは先頭ゼロや欠損表記を含めて文字列値を保持する。圧縮後のサイズはデータの内容により変わる。圧縮結果が元CSVより大きい場合も、実際のサイズを表示する。`--compress` を省くと点検だけを行う。Python APIは `diy_automl.prepare_bp_csv`。
 
+## データ点検の画面を使う
+
+WindowsのTcl/Tk付きPythonで、リポジトリのルートから起動する。CSVの初期選択には `--csv`、保存先の親フォルダーの指定には `--output-dir` を使える。 [PythonのTkinter](https://docs.python.org/3.13/library/tkinter.html)
+
+~~~powershell
+.\.venv\Scripts\python.exe -X utf8 -m diy_automl bp-preview
+.\.venv\Scripts\python.exe -X utf8 -m diy_automl bp-preview --csv data/reference/raisin.csv
+~~~
+
+1. 「CSVを選ぶ」でUTF-8のファイルを開く。正解列を選ぶとラベルの内訳も表示する。正解列は空欄でも点検できる。顧客IDや観測日で評価を分けるときは、点検前に「評価の分割方法」で選ぶ。 [グループ単位の分割](#グループ単位の分割) · [日付順の分割](#日付順の分割)
+2. 「点検する」で走査し、列数が合う行・欠損セル・全列一致の余分な行・ラベルの種類と、確認する項目を表示する。読み取りが途中で止まった場合は、集計できた範囲を表示する。
+3. 「Excelを開く」で詳細を参照する。既定では `runs/bp-preview` の下に点検ごとのフォルダーを作り、Excel、JSON、元CSVの照合用情報を保存する。元CSVは読み取りに使う。
+4. 正解列のあるCSVを点検すると「使う列を選ぶ」が使える。学習に使う列を選び、「抽出して再点検」で保存する。正解列は抽出CSVに含まれ、元の列順・セルの値・行順を保つ。
+5. 「元CSV」と「抽出後」で、それぞれの点検結果とExcelを切り替えられる。比較欄には列数・欠損セル数・同じ入力でラベルが異なる組の数を表示する。「抽出CSVの保存先」から `data.csv` と抽出時の `manifest.json` を開ける。
+6. 抽出後のCSVが学習できる形式なら「5モデルを比較する」で実行できる。対象は欠損のない数値特徴量と分類ラベルで、学習側の各クラスに5分割分の行が必要。点検後に抽出CSVを編集した場合はもう一度抽出と再点検を行う。
+7. 「評価結果」で保留テストの正解・誤分類、ラベル別の見逃しと誤検知、学習側の最多ラベルだけで答えた場合の件数を確認できる。「評価Excelを開く」で日本語要約、ラベル別の件数、5モデルの比較表を参照できる。行またはグループで分ける場合はF1などの評価区間も保存する。
+
+作業用Parquetを保存する場合は `storage` を導入し、「作業用Parquetも保存」を選ぶ。画面に圧縮前後のサイズを表示し、変換が保留・失敗した場合はExcelの `Conversion` シートから理由を確認できる。
+
+画面は `prepare_bp_csv` と `extract_data` を呼び出す。点検で保存したParquetをDuckDBで読める場合は作業用ファイルを使い、圧縮を選ばない場合は元CSVから直接抽出する。抽出時に点検済みファイルのハッシュを照合する。元CSVを変更したら、もう一度「点検する」から始める。列数の違う行や読み取り途中の問題がある場合は、元CSV側の点検結果で確認する。
+
+Iranian Churnで圧縮なしの画面操作を検証した。特徴量を13列から7列に絞ると、3,150行と正解ラベルの内訳（非解約2,655件、解約495件）を保ったまま、ラベル不一致の組は14組から20組になった。圧縮時の131,728バイトから39,649バイトへの変換もExcel・JSONと照合済み。
+
+### 画面からのモデル比較
+
+点検済みの抽出CSVを共通の `select_csv` に渡す。画面の実行では、正解ラベルの文字列表記を保ち、たとえば `001` と `1` はそれぞれのクラスとして扱う。学習側の5分割CVのmacro F1で候補を比較し、選んだモデルを保留テストで評価する。既定の「行単位」では層化80/20分割を使い、固定したモデルの95%区間は保留行をクラス内で再標本化して求める。
+
+評価結果は、選んだ列の実行フォルダーの `evaluations` に保存する。通常の `report.xlsx` と配列に加え、`bp_report.xlsx` は同じ詳細シートの先頭に「まず読む」と「ラベル別」を付ける。学習側にも同じ数値の入力があった保留行は件数を表示する。行の由来や顧客・時期の分割を検討するときの手掛かりになる。
+
+Windowsの画面でIranian Churnの7特徴量・3,150行を使い、保留630行で581正解・49誤分類と表示した。解約99件のうち64件を拾い、35件を見逃し、14件を解約と誤判定した。macro F1は0.839（95%区間0.793〜0.878）。保留の107行は学習側にも同じ入力値があった。これは3,150行での画面操作検証で、別の実験の2,754行への整理とは評価対象が異なる。
+
+### グループ単位の分割
+
+- 「IDでまとめる」では、同じ顧客や回答者を表すID列を選ぶ。IDは文字列として扱い、先頭ゼロを保つ。抽出CSVには分割用のID列を含め、モデルの特徴量からは除く。IDが欠けている行がある場合は、点検結果を確認する。
+- 「同じ入力をまとめる」では、選んだ特徴量を数値として読み込み、そのすべてが一致する行をまとめる。ラベルが異なる行も同じグループに入り、元の行はすべて保持する。一致した入力を学習と評価で共有させないための設定で、顧客や回答者の同一性は確認できない。
+
+どちらも、同じグループが学習と保留テストの両方に入らないようにし、学習側の5分割CVでもグループを維持する。各ラベルが学習・保留テスト・学習側の各検証foldに入る分割を探すため、各ラベルには少なくとも6つのグループが必要。グループの大きさとラベル分布によっては条件を満たせず、評価を中止する。保留の行数は全体の約2割を目安とする。95%区間は固定したモデルの保留テストをグループごとに再標本化して求め、評価Excelの `SL_Test_Intervals` に保存する。 [scikit-learnの層化グループ分割](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.StratifiedGroupKFold.html)
+
+CLIでも同じCPUのモデル比較を実行できる。`--group-column` と `--group-identical` はどちらか一方を指定する。`uncertainty` の追加集計は行単位の再標本化を行うため、グループ分割では比較時に保存した区間を参照する。
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -m diy_automl select --csv customer-data.csv --target churn --group-column customer_id --output runs/customer-grouped
+.\.venv\Scripts\python.exe -X utf8 -m diy_automl select --csv data/reference/raisin.csv --target target --group-identical --output runs/raisin-grouped
+```
+
+同じIranian Churnの7特徴量・3,150行で「同じ入力をまとめる」を選ぶと、学習側にも同じ入力があった保留行は107件から0件になった。保留テストは564グループ・628行で、590正解・38誤分類。macro F1は0.869（95%区間0.823〜0.908）だった。今回は保留する行が変わるため、行単位分割とのスコア差にはテスト対象の違いも含まれる。
+
+### 日付順の分割
+
+「評価の分割方法」で「日付順で分ける」と観測日または観測時刻の列を選ぶ。ISO 8601形式（例 `2012-08-07`）を使う。時差指定付きの時刻はUTCの日付に揃え、時差指定なしは入力の暦日を使う。欠損や解釈できない日付、時差指定の有無が混在する場合は点検結果に表示する。分割用の列は抽出CSVに保存し、特徴量からは除く。
+
+観測がある日のうち、最新の2割（日数を切り上げ）を保留する。同じ日付の行は一緒に扱うため、保留行の割合はデータによって変わる。学習側の観測日を6区間に分け、最初の区間から学習を始める。次の区間で検証し、その区間を学習側に加える操作を5回行う。各クラスが最初の学習区間、各検証区間、保留期間に必要で、最初の学習区間には5行以上必要。日付の境界はラベルの分布に合わせて動かさない。
+
+予測時点で使える値を特徴量に選び、各評価期間の開始時点までにそれ以前の正解ラベルが得られていることを確認する。ラベルの確定が遅れる場合の待機期間や、顧客を分けながら日付順も守る分割は今後の対応。日付順では保留期間の性能値と5回の検証結果を保存し、時間依存を考慮した評価区間は未算出と表示する。`uncertainty` の行単位再標本化は使えない。
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -m diy_automl select --csv bike-calendar.csv --target target --time-column observed --output runs/bike-by-date
+.\.venv\Scripts\python.exe -X utf8 scripts/validate_selection_run.py runs/bike-by-date
+```
+
+動作確認にはUCI Bike Sharingの `hour.csv` から8・12・16・20時の記録を抽出し、`dteday` を `observed`、`hr` を `hour`、`mnth` を `month` とした。特徴量は `hour`、`month`、`workingday`。`target` は `cnt` が200件以上なら `busy`、それ以外は `regular` とした。入力順に依存しないことを確かめるため、CSVの行は `random.Random(42).shuffle` でシャッフルした。 [Fanaee-TのBike Sharingデータ](https://archive.ics.uci.edu/dataset/275/bike%2Bsharing%2Bdataset)
+
+2,913行のうち2012年8月7日〜12月31日の582行を保留し、すべての分割で学習側の日付が検証・保留側より前であることを確かめた。ランダムフォレストは410件正解、macro F1は0.638。学習側の最多クラス `busy` だけで答える場合は473件正解、macro F1は0.448だった。ランダムフォレストは `regular` 109件のうち80件を拾った。カレンダー上の特徴量の組が学習側と同じ行も、異なる観測日の記録として評価に含まれる。
+
+#### 月別の成績と単純ルール
+
+日付順の評価では、選んだモデル、曜日・時間帯の多数決、学習期間全体の多数決を同じ保留行で比べる。曜日・時間帯の多数決は、観測時刻の曜日と時（例 `08:00`〜`08:59`）が合う学習行の最多ラベルを返す。該当する学習行がなければ曜日だけで集計し、曜日もなければ全体の多数決を使う。時刻がない行は曜日から始める。時差付きの入力はUTCの曜日・時を用いる。同数の場合は保存済みのクラス順の先頭を選ぶ。モデル選定は学習側の5区間の比較で行う。
+
+BPの評価Excelでは「単純ルール比較」「月別」「月別・ラベル別」を参照する。各月に含まれる観測日と件数を表示するので、保留期間が月の途中から始まる場合も確認できる。月別のmacro F1は全クラスを同じ重みで平均し、F1が定義できないクラスを0とする。月別・ラベル別の検出率は、そのラベルの行がない月では空欄にする。通常の評価Excelでは `SL_Test_Comparison`、`SL_Test_By_Month`、`SL_Test_By_Month_Class` に保存する。クラス番号は `manifest.json` の `classes` の順で0から始まる。
+
+上記の自転車貸出データで `observed` に `hour` から時刻を加え（例 `2012-08-07T08:00:00`）、同じ2,913行で比較し直した。保留日とモデルの予測は前回と一致した。曜日・時間帯の多数決は430件正解、macro F1は0.656。ランダムフォレストは8・9月、単純ルールは10〜12月でmacro F1が高かった。`regular` 109件の検出ではランダムフォレストが80件、単純ルールが72件だった。数値はこの保留期間についての点推定。
+
 ## ParquetとDuckDBへの変換
 
 元CSVを原本として保管し、大きいデータを繰り返し処理するときはZstandard圧縮のParquetを作業用に優先する。点検に続けて中継ファイルを作るには、任意依存の `storage` を導入する。DuckDBはParquetを直接読み、クエリで使う列と絞り込み条件を読み出しに反映できる。テーブルをDBファイルに保存する必要がある場合は `--convert duckdb` を指定する。 [Apache Parquetの概要](https://parquet.apache.org/docs/overview/) · [DuckDBによるParquetの直接読み出し](https://duckdb.org/docs/1.5/data/parquet/overview#partial-reading)
@@ -57,7 +129,11 @@ with duckdb.connect(config={"threads": "1"}) as db:
 
 ## 学習用CSVを抽出する
 
-`extract-data` の入力はParquetファイル、またはDuckDBファイル内の `main.data` テーブル。指定した列と行を `data.csv` に出力する。列順は `--columns` の順。分類に使う場合は正解ラベルの列も含める。変換と同じ `storage` 環境で実行できる。
+`extract-data` はCSV、Parquet、DuckDBファイル内の `main.data` テーブルから、指定した列を `data.csv` に出力する。列順は `--columns` の順。分類に使う場合は正解ラベルの列も含める。列を絞るだけなら標準のCSV処理で実行できる。行条件を使う場合は `storage` 環境でParquetかDuckDBを入力する。
+
+~~~powershell
+.\.venv\Scripts\python.exe -X utf8 -m diy_automl extract-data --source data/reference/raisin.csv --columns Area Perimeter target --output runs/raisin-selected-columns
+~~~
 
 ```powershell
 .\.venv\Scripts\python.exe -X utf8 -m diy_automl extract-data --source runs/raisin-parquet-work/converted/data.parquet --columns Area Perimeter target --where Area ge 60000 --limit 250 --output runs/raisin-extracted
@@ -68,6 +144,7 @@ with duckdb.connect(config={"threads": "1"}) as db:
 - `--where 列 演算子 値` は繰り返せる。複数指定時はすべての条件を満たす行を使う。比較は `eq`（等しい）、`ne`（異なる）、`lt`・`le`（未満・以下）、`gt`・`ge`（より大きい・以上）。条件だけに使う列も指定できる。
 - 文字列と真偽値は `eq`・`ne` を使う。数値の範囲条件には数値型の列を使う。整数・固定小数点のしきい値が列の型に収まることを確認し、条件値が丸められる場合は抽出前に知らせる。実ファイルの列名・型を確認し、条件値はSQLにパラメータとして渡す。 [DuckDBのパラメータの扱い](https://duckdb.org/docs/1.5/clients/python/dbapi#prepared-statements)
 - `--limit` は条件に合う行を元の順序で先頭から指定件数まで取る。省略すると該当する全行を出す。入力がクラスなどで並んでいると件数制限後の分布も変わるため、抽出後に `audit-data` でクラス件数を確認してから学習に進む。 [DuckDBの行順序](https://duckdb.org/docs/1.4/sql/dialect/order_preservation)
+- 元CSVから直接抽出する場合は、セルの文字列表記を保つ。件数上限を指定した場合も、末尾まで行の形を確認してからファイルを保存する。
 
 `manifest.json` に抽出条件、入力ファイルと出力CSVのSHA-256、入力の列型、出力の件数を保存する。点検で作った中継ファイルを変換manifestと一緒に使うと、元CSVのSHA-256もたどれる。Pythonからは `diy_automl.extract_data` を呼べる。
 

@@ -189,6 +189,10 @@ def evaluate_uncertainty(source, output, bootstrap_repeats=1000, confidence=.95,
     if output.resolve().is_relative_to(source.resolve()):
         raise ValueError('Output must be separate from the source run')
     manifest = validate(source)
+    if manifest.get("split", {}).get("mode") in ("group_column", "identical_inputs"):
+        raise ValueError("Grouped selection uses group bootstrap. See SL_Test_Intervals in its report.xlsx.")
+    if manifest.get("split", {}).get("mode") == "chronological":
+        raise ValueError("Row bootstrap is unavailable for chronological selection. See SL_Test for point estimates.")
     source_digests = {name:digest(source/name) for name in ('manifest.json','report.xlsx','arrays.npz')}
     with np.load(source/'arrays.npz',allow_pickle=False) as stored:
         source_arrays = {key:stored[key] for key in stored.files}

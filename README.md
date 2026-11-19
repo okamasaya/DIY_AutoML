@@ -10,7 +10,7 @@ DIYの主目的は、MLの結果に誤差評価を含め、データ量・品質
 
 定量化した指標を用途に合うモデル選定へつなぎ、DS以外にも拾えた件数・見逃し・誤案内と限界を説明できる構成を目指します。費用・確率校正・閾値の最適化と、一般利用者への伝わり方の検証は未実施です。
 
-学習前に `audit-data` で欠損・重複・クラス件数と評価条件を点検できます。次は顧客や時間を考慮した分割、学習曲線、学習・選定からの変動へ進む構成です。 [点検手順](docs/DATA_AUDIT.md) · [ロードマップ](docs/ROADMAP.md)
+学習前に `audit-data` で欠損・重複・クラス件数と評価条件を点検できます。`select` とBP画面では、顧客などのグループで分ける評価と、過去で学習して後の期間で評価する日付順の分割を選べます。 [点検と評価の手順](docs/DATA_AUDIT.md) · [ロードマップ](docs/ROADMAP.md)
 
 開発作業の再開・引継ぎは、[最新の状態と引継ぎ方針](docs/HANDOFF.md)を入口にしてください。
 
@@ -39,6 +39,8 @@ python3.12 -m venv .venv
 元CSVを保管し、繰り返し使う中継データには `--convert parquet` で作る圧縮Parquetを優先します。DBファイルが必要なときは `--convert duckdb` を指定できます。 [変換と直接読み出しの手順](docs/DATA_AUDIT.md#parquetとduckdbへの変換)
 
 `extract-data` で中継ファイルから列・条件・件数を指定し、学習用CSVを作れます。ビジネス向けの点検・圧縮には、日本語の要約を出す `prepare-bp --compress` を使えます。 [抽出の手順](docs/DATA_AUDIT.md#学習用csvを抽出する) · [ビジネス向けの手順](docs/DATA_AUDIT.md#ビジネス向けの点検と圧縮)
+
+Windowsでは `bp-preview` でCSVの点検、使う列の抽出と再点検、主要5モデルのCPU比較まで実行できます。保留テストの正解・誤分類とラベル別の見逃し・誤検知を画面で確認し、モデル比較表と評価区間をExcelで開けます。 [画面の起動と使い方](docs/DATA_AUDIT.md#データ点検の画面を使う)
 
 ```sh
 .venv/bin/python -m diy_automl run --csv data/reference/wine.csv --target target --output runs/wine
@@ -104,7 +106,7 @@ Gitからの再開手順と、ローカルコミット・pushの確認方法は 
 
 `report.xlsx`のMetric_UncertaintyにAccuracy・macro Precision/Recall/F1の点推定、bootstrap標準誤差、95%区間を、Class_Uncertaintyにクラス別結果を出します。Intervalsに図を埋め込み、全反復と再標本化indexも保存します。標準誤差はbootstrap指標の標本SDで、反復数の平方根では割りません。既定はクラス別件数固定の1,000反復・seed 43です。`--resampling ordinary`でクラス件数も動かせます。
 
-`run`のSL/DL、`select`、`tune`、`repeat-dl`に対応し、モデルやseedの順序を保ちます。ULには既存の安定性評価を使用します。行の独立性・代表性は別途確認が必要です。詳細は[ガイド](docs/METRIC_UNCERTAINTY_GUIDE.md)、検証結果は[0.4.0a6の記録](docs/VALIDATION_METRIC_UNCERTAINTY.md)にまとめています。
+`run`のSL/DL、行単位分割の`select`、`tune`、`repeat-dl`に対応し、モデルやseedの順序を保ちます。ULには既存の安定性評価を使用します。行の独立性・代表性は別途確認が必要です。詳細は[ガイド](docs/METRIC_UNCERTAINTY_GUIDE.md)、検証結果は[0.4.0a6の記録](docs/VALIDATION_METRIC_UNCERTAINTY.md)にまとめています。
 
 ## DLの学習seed反復（0.4.0a2）
 

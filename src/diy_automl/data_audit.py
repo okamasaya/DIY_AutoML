@@ -254,9 +254,10 @@ def audit_data_csv(csv, output, target=None, id_column=None, time_column=None, p
         raise
 
 
-def prepare_bp_csv(csv, output, target=None, compress=False):
+def prepare_bp_csv(csv, output, target=None, compress=False, *, id_column=None, time_column=None):
     """Write a Japanese data audit and optionally archive a compressed working copy."""
     if not isinstance(compress, bool):
         raise ValueError("compress must be True or False")
     formats = ("parquet",) if compress else ()
-    return audit_data_csv(csv, output, target=target, convert=formats, bp_summary=True)
+    return audit_data_csv(csv, output, target=target, id_column=id_column, time_column=time_column,
+                          convert=formats, bp_summary=True)
