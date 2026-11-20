@@ -1,0 +1,202 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[top=18mm,bottom=18mm,left=19mm,right=19mm]{geometry}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\definecolor{linkblue}{HTML}{175178}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=linkblue,
+  citecolor=linkblue,
+  urlcolor=linkblue,
+  pdftitle={DIY AutoML for Classifier Selection and Conditional Uncertainty Evaluation},
+  pdfsubject={English technical letter on DIY AutoML 0.4.0a7},
+  pdfkeywords={AutoML, classification, grouped evaluation, chronological evaluation, bootstrap}
+}
+\newcommand{\record}[2]{\href{https://github.com/okamasaya/DIY_AutoML/blob/80b25cc/#1}{#2}}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\setlength{\intextsep}{5pt}
+\setlength{\abovecaptionskip}{2pt}
+\setlength{\belowcaptionskip}{3pt}
+\setlength{\emergencystretch}{1.25em}
+\titlespacing*{\section}{0pt}{10pt}{4pt}
+\titlespacing*{\subsection}{0pt}{7pt}{3pt}
+\renewcommand{\arraystretch}{1.10}
+\pagestyle{plain}
+
+\begin{document}
+
+{\small\bfseries TECHNICAL LETTER\par}
+\vspace{5pt}
+{\LARGE\bfseries DIY AutoML for Classifier Selection\\
+and Conditional Uncertainty Evaluation\par}
+\vspace{4pt}
+{\small English edition of the 19 November 2026 revision\\
+Development version 0.4.0a7, repository snapshot \texttt{80b25cc}\par}
+\vspace{7pt}
+
+\textbf{Abstract.}
+DIY AutoML connects data auditing, classifier selection on training data, held-out evaluation, conditional uncertainty estimation for a fixed fitted model, and storage of artifacts for verification. In a telecom churn example, grouping identical inputs reduced the number of held-out rows with inputs also present in training from 107 to zero. In a chronological bike-sharing evaluation, a random forest and a weekday-and-hour majority rule achieved macro F1 scores of 0.638 and 0.656, respectively. They identified 80 and 72 of the 109 regular-demand observations, respectively, and their relative scores varied by month. Reporting the split, reference rule, and class-specific errors helps establish the scope of each evaluation.
+
+{\small\textbf{Keywords.} AutoML, grouped splitting, chronological evaluation, bootstrap, baseline rules}
+
+\section{Background and objective}
+
+Accuracy and F1 depend on the test population, class mix, and information available at prediction time. Grouped and chronological splits evaluate performance on separate groups and later dates, respectively. Missed cases, false alarms, and differences from simple rules are useful for deciding how to act on a score. We illustrate the DIY AutoML workflow with two public datasets. \cite{audit}
+
+\section{Evaluation method and implementation}
+
+\subsection{Classifier selection on the training partition}
+
+The candidates are a decision tree, random forest, logistic regression, support vector machine, and \(k\)-nearest neighbors. They share validation splits, and each scaler is fitted on the training portion of its split. By default, mean macro F1 over five validation splits selects the candidate that is refitted on the entire training partition and applied to the holdout. The reference rules are also defined using training data and evaluated on the same held-out rows.
+
+For each class, F1 is \(2\mathrm{TP}/(2\mathrm{TP}+\mathrm{FP}+\mathrm{FN})\), where TP, FP, and FN are true positives, false positives, and false negatives. Macro F1 gives every class equal weight, with zero assigned when a class has a zero denominator. The workflow saves the total correct count and class-specific missed cases and false alarms.
+
+\subsection{Splitting and units of uncertainty}
+
+The stratified row split holds out approximately 20\% of rows. For a fixed fitted model, each bootstrap replicate draws paired labels and predictions with replacement within each observed class, preserving class counts. Grouped splitting keeps a customer ID or an exact numerical feature vector together in both the holdout split and training-side validation. The grouped bootstrap draws whole held-out groups with replacement. Both procedures report 95\% percentile intervals based on 1,000 draws, conditional on the fitted model and evaluation design. Retraining and selection variability require a separate analysis. \cite{audit,efron}
+
+Chronological splitting keeps each observation date intact and holds out the most recent fifth of observed dates, rounded up. The earlier dates form six blocks. The first block is used to train, the next to validate, and the validation block is then added to training. This is repeated across five validation blocks. Date and ID columns used for splitting are excluded from the features. The report contains point estimates and monthly and class-specific results. Intervals that account for time dependence remain future work.
+
+\subsection{Data auditing and run records}
+
+The audit records missing values, duplicates, conflicting labels for identical inputs, and class counts. The original CSV is retained, with optional Parquet or DuckDB working files. After column extraction, a second audit verifies the training data. The workflow records the input, splits, predictions, settings, and hashes. A Python API, a CLI, and a Windows preview provide entry points. The preview supports inspection, extraction, training, and Japanese-language Excel summaries. \cite{audit}
+
+\clearpage
+\section{Earlier business examples and grouped splitting}
+
+\subsection{Comparison with simple rules}
+
+Earlier exploratory trials compared models and prespecified rules on the same held-out rows for hotel cancellations, stated acceptance of cafe coupons, and repeat retail purchases. The rules used booking lead time, cafe habits and context, and the number of past purchases, respectively. \cite{business}
+
+\begin{table}[H]
+\centering
+\caption{Held-out macro F1 in three exploratory trials. The interval is for the selected model.}
+\small
+\begin{tabular}{lrrc}
+\toprule
+Task & Model & Rule & Model 95\% interval \\
+\midrule
+Hotel cancellations & 0.527 & 0.571 & [0.477, 0.576] \\
+Cafe coupon acceptance & 0.692 & 0.652 & [0.647, 0.739] \\
+Repeat retail purchases & 0.624 & 0.613 & [0.573, 0.672] \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The intervals in Table~1 use a row bootstrap for the fixed model. Dependence among hotel bookings from the same customer or party, dependence among responses from the same survey participant, and uncertainty in the model-minus-rule difference require their own evaluation.
+
+\subsection{Input overlap in Iranian Churn}
+
+We examined 3,150 rows with seven features from Iranian Churn. With the row split, 107 of the 630 held-out rows shared their feature vector with a training row. Grouping identical feature vectors reduced this count to zero among 628 held-out rows in 564 groups. The grouped run produced 590 correct classifications and a macro F1 of 0.869 with a group-bootstrap 95\% interval of [0.823, 0.908]. \cite{churn,milestone}
+
+Identical values define these groups, so distinct customers can belong to the same group. Rows with conflicting labels within a group are retained. The row-split macro F1 was 0.839. The two scores describe holdouts with different rows and evaluation units.
+
+\section{Chronological evaluation of bike-sharing demand}
+
+\subsection{Data and baselines}
+
+We extracted 2,913 observations at 08:00, 12:00, 16:00, and 20:00 from the hourly UCI Bike Sharing dataset. An hour with at least 200 rentals was labeled \emph{busy} and the remainder \emph{regular}. The features were hour, month, and working-day status. The holdout comprised 582 rows across 146 observed dates from 7 August to 31 December 2012. Busy hours accounted for 60.8\% of training rows and 81.3\% of held-out rows. \cite{milestone,bike}
+
+The weekday-and-hour rule predicts the most frequent training label for the corresponding weekday and hour. Its fallbacks are the weekday majority and then the overall training majority. Every held-out row had a matching weekday-hour pair in training. The overall training majority also serves as a separate baseline. \cite{audit,milestone}
+
+\subsection{Overall and monthly results}
+
+The selected random forest had lower overall macro F1 than the weekday-and-hour rule. For the regular class, it reduced missed cases from 37 to 29 and increased false alarms from 115 to 143.
+
+\begin{table}[H]
+\centering
+\caption{Held-out predictions on 582 rows, including 109 regular observations.}
+\small
+\begin{tabular}{lrrr}
+\toprule
+Method & Correct & Macro F1 & Regular detected \\
+\midrule
+Random forest & 410 & 0.638 & 80 \\
+Weekday-and-hour majority & 430 & 0.656 & 72 \\
+Overall training majority & 473 & 0.448 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Monthly macro F1 for the same fitted model and weekday-and-hour rule.}
+\small
+\begin{tabular}{lrrr}
+\toprule
+2012 holdout month & Rows & Model & Rule \\
+\midrule
+August (from the 7th) & 100 & 0.814 & 0.594 \\
+September & 120 & 0.638 & 0.618 \\
+October & 118 & 0.500 & 0.619 \\
+November & 120 & 0.608 & 0.709 \\
+December & 124 & 0.624 & 0.676 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The forest led in August and September. The rule led from October through December.
+
+\clearpage
+\section{Supplementary checks}
+
+\subsection{Cross-library checks and numerical sensitivity}
+
+The AutoGluon comparison reused the DIY AutoML splits for Iris and Wine. The workflows produced the same held-out macro F1 on Wine. In CPU runs, TensorFlow and PyTorch shared the multilayer perceptron architecture, initial weights, and minibatch order. After separate training, their predicted labels and macro F1 matched on both datasets for each of three seeds. The largest absolute probability differences were 3.05 percentage points on Iris and 0.21 percentage points on Wine. \cite{crosschecks}
+
+Additional diagnostics compare exact rational and floating-point metric calculations, measure sensitivity to rounding the inputs, and test a hypothetical input offset. An offset experiment gives sensitivity to the specified perturbation. Estimating systematic bias in the measurements requires independent measurement evidence or original records. \cite{crosschecks}
+
+\subsection{Feature subset search and processing cost}
+
+The optional CPU annealing check compares simulated annealing with random search under the same subset budget and includes a model fitted to all features. Iris was checked against all 15 nonempty subsets. On Wine, each search scored 32 subsets, requiring 320 cross-validation fits. Across ten search seeds per dataset, every 95\% interval for the held-out macro F1 difference between annealing and random search included zero. \cite{annealing}
+
+On a Windows PC with 16 GB of RAM, auditing and converting a synthetic CSV with one million rows and seven features to Parquet took 91.1 s. Extracting 10,000 rows from the existing Parquet file took 2.3 s. Comparing five models, evaluating the selected model, and writing the workbook on those extracted rows took 10.4 s. Each time is the median of three runs for its stage. The largest training input measured had 10,000 rows. \cite{benchmark}
+
+\section{Limitations and future work}
+
+The results apply to the recorded inputs, splits, and model settings. For chronological evaluation, the next methodological questions are intervals for paired model and rule differences under time dependence and evaluation designs that account for delayed outcome labels. Further tests will examine how performance and processing cost vary with training size, how results vary across repeated training and selection, and how first-time users interpret the error counts.
+
+The framework reports performance, class-specific errors, and the scope of uncertainty alongside the evaluation split and reference rules. The validation record for the reported snapshot documents 246 passing tests on Windows with Python 3.13.17 and checks of row-based, grouped, chronological, and illustrated workbook outputs. \cite{milestone}
+
+{\small\raggedright
+\begin{thebibliography}{9}
+\setlength{\itemsep}{2pt}
+\bibitem{audit}
+DIY AutoML. Data auditing, extraction, and classifier evaluation. 2026.
+\record{docs/DATA_AUDIT.md}{Implementation and reproduction notes}.
+\bibitem{efron}
+Efron, B. Bootstrap methods: another look at the jackknife.
+\emph{Annals of Statistics}, 7(1), 1--26, 1979.
+\href{https://doi.org/10.1214/aos/1176344552}{doi:10.1214/aos/1176344552}.
+\bibitem{business}
+DIY AutoML. Exploratory evaluation of three business datasets. 2026.
+\record{docs/BUSINESS_QUICK_RESULTS.md}{Experiments and dataset sources} and
+\record{docs/VALIDATION_METRIC_UNCERTAINTY.md}{interval validation}.
+\bibitem{churn}
+\emph{Iranian Churn} [dataset]. UCI Machine Learning Repository, 2020.
+\href{https://doi.org/10.24432/C5JW3Z}{doi:10.24432/C5JW3Z}.
+\bibitem{milestone}
+DIY AutoML. Classification evaluation milestone for the Windows preview. 2026.
+\record{docs/BP_CLASSIFICATION_MILESTONE_20261119.md}{Results and verification record}.
+\bibitem{bike}
+Fanaee-T, H. \emph{Bike Sharing} [dataset]. UCI Machine Learning Repository, 2013.
+\href{https://doi.org/10.24432/C5W894}{doi:10.24432/C5W894}.
+\bibitem{crosschecks}
+DIY AutoML. Classification ranking, uncertainty checks, and library comparisons. 2026.
+\record{docs/THREAD_SUMMARY_20261118.md}{Settings, results, and reproduction notes}.
+\bibitem{annealing}
+DIY AutoML. Annealing check for feature subsets. 2026.
+\record{docs/ANNEALING_CHECK.md}{Method and verification}.
+\bibitem{benchmark}
+DIY AutoML. Benchmark of tabular data preparation and training on Windows. 2026.
+\record{experiments/tabular_scale_benchmark/README.md}{Setup and measured results}.
+\end{thebibliography}
+}
+
+\end{document}
