@@ -1,8 +1,10 @@
 # 引継ぎと再開の入口
 
-更新日：2026-11-19（日本時間）
+更新日：2026-11-20（日本時間）
 
-**最新の区切りは、Full Paperの処理フロー図とBP画面の結果グラフ。** 確認済みの改訂稿・BPグラフ・詳細グラフのTo Doを今回の統合対象にまとめた。評価基盤は日付順の性能差の区間から再開する。 [11月19日の作業ログと再開手順](THREAD_SUMMARY_20261119.md) · [BP版の分類評価マイルストーン](BP_CLASSIFICATION_MILESTONE_20261119.md)
+**最新の区切りは、Zenn開発メモ全5回の原稿とH2O AutoMLとの照合。** 投稿前の確認記録は編集メモにある。評価基盤は日付順の性能差の区間から、BP向けアプリは既存の試作画面での初回利用の確認から再開できる。 [編集メモ](ZENN_EDITORIAL_NOTES.md) · [ロードマップ](ROADMAP.md)
+
+Full Paperの処理フロー図、BP画面の結果グラフ、詳細グラフのTo Doは11月19日の作業ログにある。 [11月19日の作業ログと再開手順](THREAD_SUMMARY_20261119.md) · [BP版の分類評価マイルストーン](BP_CLASSIFICATION_MILESTONE_20261119.md)
 
 分類の順位付け、不確かさ、混同行列、AutoGluonとDLバックエンドの比較は11月18日の作業ログ、3記事の改稿と実物出力の統合は11月12日の作業ログにある。 [11月18日の作業ログ](THREAD_SUMMARY_20261118.md) · [11月12日の作業ログ](THREAD_SUMMARY_20261112.md)
 
@@ -40,14 +42,19 @@
 
 ## 現在の引継ぎ
 
+### 2026年11月20日
+
+- Zenn開発メモ全5回を `published: false` で用意した。全体の処理フロー、他ライブラリとの照合、Parquet・DuckDB、焼きなまし法、BP向け試作画面を扱う。最終回には無料のBI・作図ツールと、PyGWalker・Streamlitを使う詳細グラフの構想を載せた。旧原稿5本は `articles/backup/` に保管した。 [編集メモ](ZENN_EDITORIAL_NOTES.md)
+- H2O AutoMLのIris・Wine照合に使った実験コードと、実行条件・結果・再実行手順を保存した。 [検証記録](../experiments/h2o_sl_crosscheck/README.md)
+
 ### 2026年11月19日
 
 - Full Paper初稿・TeXバックアップをPR #4で統合した。続く改訂稿にDS・BPに分かれる運用フロー図を追加し、BP画面に候補比較の棒グラフと日付順の月別推移を実装した。PyGWalker＋Streamlitによる詳細グラフをTo Doに記録した。区切りの収録対象と再開コマンドは作業ログにある。 [11月19日の作業ログ](THREAD_SUMMARY_20261119.md)
 
-- Raisinで、元の900行、面積条件のみの665行、先頭250行の品種別件数を照合した。抽出後に内訳を点検するBP向けの未公開原稿を追加した。 [BP向け原稿](../articles/diy-automl-bp-filtered-rows.md) · [再実行手順](DATA_AUDIT.md#学習用csvを抽出する)
-- TensorFlowとPyTorchの予測確率を比べるDS向けの未公開原稿を追加した。保存済みlogitからlog lossとBrier scoreを再計算し、Wineで再標本化を1,000回から20,000回に増やすと、95%区間がわずかにゼロをまたぐことを確認した。 [DS向け原稿](../articles/diy-automl-ds-backend-probabilities.md) · [比較実験の手順](../experiments/dl_backend_crosscheck/README.md)
-- 16 GBのPCで、模擬CSVを最大100万行まで点検・圧縮し、抽出した最大1万行で5モデルを比較した。各条件3回の計測と出力検証を行い、全体向けの「開発メモ (2)」を下書きした。 [原稿](../articles/diy-automl-development-note-02.md) · [測定コードと実測値](../experiments/tabular_scale_benchmark/README.md)
-- Iranian Churnの公開CSV 3,150行を使い、点検・圧縮・抽出・学習の負荷を実測した。学習用の7特徴量で解約ラベルが異なる組を点検し、今回の実験用に2,754行に整理した。モデル比較の保留テストでは解約80件のうち54件を拾い、26件を見逃した。 [計測と検証](../experiments/bp_churn_pilot/README.md) · [BP向け原稿](../articles/diy-automl-bp-churn-pilot.md)
+- Raisinで、元の900行、面積条件のみの665行、先頭250行の品種別件数を照合した。抽出後に内訳を点検するBP向けの未公開原稿を追加した。 [BP向け原稿](../articles/backup/diy-automl-bp-filtered-rows.md) · [再実行手順](DATA_AUDIT.md#学習用csvを抽出する)
+- TensorFlowとPyTorchの予測確率を比べるDS向けの未公開原稿を追加した。保存済みlogitからlog lossとBrier scoreを再計算し、Wineで再標本化を1,000回から20,000回に増やすと、95%区間がわずかにゼロをまたぐことを確認した。 [DS向け原稿](../articles/backup/diy-automl-ds-backend-probabilities.md) · [比較実験の手順](../experiments/dl_backend_crosscheck/README.md)
+- 16 GBのPCで、模擬CSVを最大100万行まで点検・圧縮し、抽出した最大1万行で5モデルを比較した。各条件3回の計測と出力検証を行い、全体向けの「開発メモ (2)」を下書きした。 [原稿](../articles/backup/diy-automl-development-note-02.md) · [測定コードと実測値](../experiments/tabular_scale_benchmark/README.md)
+- Iranian Churnの公開CSV 3,150行を使い、点検・圧縮・抽出・学習の負荷を実測した。学習用の7特徴量で解約ラベルが異なる組を点検し、今回の実験用に2,754行に整理した。モデル比較の保留テストでは解約80件のうち54件を拾い、26件を見逃した。 [計測と検証](../experiments/bp_churn_pilot/README.md) · [BP向け原稿](../articles/backup/diy-automl-bp-churn-pilot.md)
 - 区切りの検証では、WindowsのPython 3.13.17でTensorFlow・DuckDB・PyArrowを使い、pytest全229件が通過した。変更したZenn原稿7本はHTML変換と未公開設定を確認した。
 - Annealing check、サンプルCSV、データ点検・圧縮・抽出、Windowsでの実測とZenn下書きをPR #1で `main` に統合した。Zennの原稿は未公開。 [統合したPR](https://github.com/okamasaya/DIY_AutoML/pull/1)
 - Windows向けのBP画面 `bp-preview` を `codex/bp-audit-preview` に追加した。CSVと正解列を選び、既存の `prepare_bp_csv` を呼んで点検結果を画面とExcelで確認する。 [画面の起動と使い方](DATA_AUDIT.md#データ点検の画面を使う)
@@ -69,7 +76,7 @@
 - `audit-data --convert` でParquetとDuckDBを任意出力できるようにした。既定ではCSVの値を文字列として保持し、`numeric` 指定時は型を付けても精度を保てる特徴量を変換する。中継ファイルの元CSVと行数・列型はmanifestで照合する。 [変換手順](DATA_AUDIT.md#parquetとduckdbへの変換)
 - 元CSVを原本として保管し、大きいデータの反復処理には圧縮Parquetを優先する。DuckDBでParquetを直接読み、絞った行と列を後工程に渡す。 [Parquetでの作業手順](DATA_AUDIT.md#parquetとduckdbへの変換)
 - `extract-data` を追加した。Parquet・DuckDBから列・AND条件・件数を指定してCSVを生成できる。抽出条件と元ファイルのハッシュを保存し、Raisinで抽出から再点検・学習まで照合した。 [抽出手順](DATA_AUDIT.md#学習用csvを抽出する)
-- BP向けに `prepare-bp` を追加し、日本語要約と任意の作業用Parquet圧縮を検証した。全体向け開発メモ (1) の下書きと、全体・DS・BPそれぞれの次の投稿候補を保存した。 [BP向けの手順](DATA_AUDIT.md#ビジネス向けの点検と圧縮) · [開発メモ (1)](../articles/diy-automl-development-note-01.md) · [投稿候補](ZENN_EDITORIAL_NOTES.md)
+- BP向けに `prepare-bp` を追加し、日本語要約と任意の作業用Parquet圧縮を検証した。全体向け開発メモ (1) の下書きと、全体・DS・BPそれぞれの次の投稿候補を保存した。 [BP向けの手順](DATA_AUDIT.md#ビジネス向けの点検と圧縮) · [開発メモ (1)](../articles/backup/diy-automl-development-note-01.md) · [投稿候補](ZENN_EDITORIAL_NOTES.md)
 
 ### 2026年11月12日
 
