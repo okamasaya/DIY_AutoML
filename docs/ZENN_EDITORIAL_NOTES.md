@@ -1,30 +1,54 @@
 # Zenn原稿の一次稿と確認する観点
 
+## 2026年11月20日：開発メモ (5) のBP向け試作画面
+
+最終回は、IrisでCSVの点検から5モデル比較、日本語の評価Excelまでをたどり、Bike Sharingを例に日付順評価の月別グラフを読む。BP画面が使う関数で両データを再実行し、評価件数とmacro F1を予測配列に照合した。月別図は時刻付きBike Sharingの再実行結果から同じ作図処理で生成した。PyGWalkerで確認済みのHTML出力と、Streamlit連携・初回のバッチ起動・画面からの呼び出しの予定を記した。 [開発メモ (5)](../articles/diy-automl-development-note-05-bp-preview.md)
+
+関連テスト44件と両実行の評価検証器が通過した。Zennのローカルプレビューを390pxと1280pxで確認し、月別図の読み込みと横方向の収まりを確認した。
+
+無料で使えるBI・作図ツールの一覧を追記した。各製品の公式情報で、Tableauの2つの無料版、Power BIサービスでの共有、Google Data Studioの名称とクラウド利用、RAWGraphsのブラウザー内処理を確認した。Tableauでの作図例には、Irisの実際の評価Excelにある `SL_CV_Mean` の列名を使った。
+
+## 2026年11月20日：開発メモ (4) の焼きなまし法
+
+候補ごとに学習が必要な特徴量選択を題材に、CPUでの焼きなまし法とランダム探索を同じ候補数で比較した。Iris・Wineの探索シード44を再実行して検証器を通し、保存済みの各10回について予測のmacro F1と探索結果を照合した。Wineは5列と全13列で保留予測が一致した例を取り上げ、出現回数と両探索の差の95%区間も添えた。 [開発メモ (4)](../articles/diy-automl-development-note-04-annealing.md)
+
+## 2026年11月20日：開発メモ (3) のParquet・DuckDB
+
+旧開発メモ2本の内容を、元CSVを保管する実装と16 GB端末での計測に組み直した。Raisin全900行をParquetとDuckDBに変換し、同じ3列を抽出して、元CSVと値・行順・品種別件数を照合した。100万行の点検・変換と、抽出後1万行のモデル比較は工程ごとの実測として掲載する。 [開発メモ (3)](../articles/diy-automl-development-note-03-parquet-duckdb.md)
+
+## 2026年11月20日：開発メモ (2) のクロスチェック
+
+TensorFlow・PyTorchで構成を揃えたモデルの照合と、AutoGluon・H2O AutoML・DIY AutoMLで保留行を揃えた比較を紹介する。保存結果から予測確率の最大差、Wineのlog loss差の区間、AutoGluonとのF1差と誤分類行を再計算した。H2OはWindowsで最大5候補を比較し、共通の保留テストで差と区間を求めた。記事とLetterではTensorFlowとPyTorchを正式名で表記する。 [新しい開発メモ (2)](../articles/diy-automl-development-note-02-cross-check.md) · [H2Oとの照合](../experiments/h2o_sl_crosscheck/README.md)
+
+## 2026年11月20日：新しい連載の開発メモ (1)
+
+Windowsでの開発環境と、点検からDS・BP向け出力に分かれる処理フローを紹介する。Irisを再実行し、学習側120行での候補比較と保留30行の評価を確認した。旧開発メモと個別の下書きは `articles/backup/` に保管した。次の開発メモ (2) はTensorFlow・PyTorchとAutoGluonでの照合を扱う。 [新しい開発メモ (1)](../articles/diy-automl-development-note-01-overview.md)
+
 ## 2026年11月19日：通信の解約データを使ったBP版の利用例
 
-公開CSVを使い、学習前の点検で判定対象が3,150行から2,754行に変わる過程と、見逃し・誤検知を多数派ルールと比べる例を下書きした。元表と学習用データの違いから、BPアプリの初回利用で表示する項目を整理した。 [BP向けZenn原稿](../articles/diy-automl-bp-churn-pilot.md) · [計測と検証](../experiments/bp_churn_pilot/README.md)
+公開CSVを使い、学習前の点検で判定対象が3,150行から2,754行に変わる過程と、見逃し・誤検知を多数派ルールと比べる例を下書きした。元表と学習用データの違いから、BPアプリの初回利用で表示する項目を整理した。 [BP向けZenn原稿](../articles/backup/diy-automl-bp-churn-pilot.md) · [計測と検証](../experiments/bp_churn_pilot/README.md)
 
 ## 2026年11月19日：16 GBのPCで前処理と学習を測る開発メモ (2)
 
-模擬数値CSVの1万、10万、100万行を点検・圧縮し、抽出した最大1万行で5モデル比較を行った。行数と特徴量の数を変え、各条件3回の時間の中央値、Pythonプロセスのピークワーキングセットの最大値、実行条件を記録した。100万行の点検とParquet変換は91.1秒、用意済みParquetからの1万行抽出は2.3秒、抽出した1万行での比較は10.4秒。 [開発メモ (2)](../articles/diy-automl-development-note-02.md) · [計測方法と結果](../experiments/tabular_scale_benchmark/README.md)
+模擬数値CSVの1万、10万、100万行を点検・圧縮し、抽出した最大1万行で5モデル比較を行った。行数と特徴量の数を変え、各条件3回の時間の中央値、Pythonプロセスのピークワーキングセットの最大値、実行条件を記録した。100万行の点検とParquet変換は91.1秒、用意済みParquetからの1万行抽出は2.3秒、抽出した1万行での比較は10.4秒。 [開発メモ (2)](../articles/backup/diy-automl-development-note-02.md) · [計測方法と結果](../experiments/tabular_scale_benchmark/README.md)
 
 ## 2026年11月19日：同じ分類結果で予測確率を比べるDS記事
 
-IrisとWineの比較を題材に、同じ重みで推論した場合の差、別々に学習した場合の差と、固定3 seedの平均log loss差を扱う未公開原稿を追加した。元CSV・保存済みlogit・Excelを照合した。Wineの95%区間の上端は、同じ乱数列を1,000回から20,000回へ延ばすと−3.0 × 10⁻⁷から+1.8 × 10⁻⁷へ動いた。学習を回さず両区間を再計算するPythonコードを本文に載せた。 [DS向け原稿](../articles/diy-automl-ds-backend-probabilities.md) · [比較実験の手順](../experiments/dl_backend_crosscheck/README.md)
+IrisとWineの比較を題材に、同じ重みで推論した場合の差、別々に学習した場合の差と、固定3 seedの平均log loss差を扱う未公開原稿を追加した。元CSV・保存済みlogit・Excelを照合した。Wineの95%区間の上端は、同じ乱数列を1,000回から20,000回へ延ばすと−3.0 × 10⁻⁷から+1.8 × 10⁻⁷へ動いた。学習を回さず両区間を再計算するPythonコードを本文に載せた。 [DS向け原稿](../articles/backup/diy-automl-ds-backend-probabilities.md) · [比較実験の手順](../experiments/dl_backend_crosscheck/README.md)
 
 ## 2026年11月19日：行を絞った後の内訳を読むBP記事
 
-先頭250行の例を、元の900行、面積条件だけの665行、上限を付けた250行の3段階で比較する未公開原稿を追加した。条件だけではBesniが428行残り、元順で250行に切ると13行になる。元CSVの並び、抽出結果、Excelの品種別件数を照合した。全件をKecimenと答える94.8%は、少数側の13件をすべて外すことを示す説明用の計算。 [BP向け原稿](../articles/diy-automl-bp-filtered-rows.md) · [再実行手順](DATA_AUDIT.md#学習用csvを抽出する)
+先頭250行の例を、元の900行、面積条件だけの665行、上限を付けた250行の3段階で比較する未公開原稿を追加した。条件だけではBesniが428行残り、元順で250行に切ると13行になる。元CSVの並び、抽出結果、Excelの品種別件数を照合した。全件をKecimenと答える94.8%は、少数側の13件をすべて外すことを示す説明用の計算。 [BP向け原稿](../articles/backup/diy-automl-bp-filtered-rows.md) · [再実行手順](DATA_AUDIT.md#学習用csvを抽出する)
 
 ## 2026年11月18日：開発メモ (1) と次の投稿候補
 
-全体向けに、元CSVの保管から点検、作業用データの圧縮、抽出後の再点検までを短い開発メモにした。Parquetの形式説明は短くし、10万行の実測とBP向けの日本語要約を題材にした。 [開発メモ (1) の原稿](../articles/diy-automl-development-note-01.md)
+全体向けに、元CSVの保管から点検、作業用データの圧縮、抽出後の再点検までを短い開発メモにした。Parquetの形式説明は短くし、10万行の実測とBP向けの日本語要約を題材にした。 [開発メモ (1) の原稿](../articles/backup/diy-automl-development-note-01.md)
 
 | 読者 | 次の投稿候補 | 使う実測や公開の目安 |
 | --- | --- | --- |
-| 全体 | 開発メモ (2) 16 GBのPCで100万行を点検し、1万行で学習する | 11月19日に模擬CSVで計測し、一次稿を作成。 [開発メモ (2)](../articles/diy-automl-development-note-02.md) |
-| DS | TensorFlowとPyTorchで分類結果が一致しても、予測確率はどう違うか | 11月19日に一次稿を作成。 [DS向け原稿](../articles/diy-automl-ds-backend-probabilities.md) |
-| BP | 条件に合う250件に絞ったら、品種の内訳が変わった | 11月19日に一次稿を作成。 [BP向け原稿](../articles/diy-automl-bp-filtered-rows.md) |
+| 全体 | 開発メモ (2) 16 GBのPCで100万行を点検し、1万行で学習する | 11月19日に模擬CSVで計測し、一次稿を作成。 [開発メモ (2)](../articles/backup/diy-automl-development-note-02.md) |
+| DS | TensorFlowとPyTorchで分類結果が一致しても、予測確率はどう違うか | 11月19日に一次稿を作成。 [DS向け原稿](../articles/backup/diy-automl-ds-backend-probabilities.md) |
+| BP | 条件に合う250件に絞ったら、品種の内訳が変わった | 11月19日に一次稿を作成。 [BP向け原稿](../articles/backup/diy-automl-bp-filtered-rows.md) |
 
 ## 2026年11月12日：BP記事と、入力から受け取るExcelの実物
 

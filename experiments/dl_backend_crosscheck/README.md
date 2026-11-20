@@ -45,4 +45,4 @@ DIY AutoMLの共通データ準備と MLP 32-16-8 を使って、2つのフレ�
 
 保存済みlogitから、3学習seedで平均したlog loss差（PyTorch − TensorFlow）を計算しました。Irisでは−0.002212（95%区間 [−0.005877, +0.000602]）、Wineでは−0.00006439（[−0.00013799, −0.00000030]）でした。モデルとクラス別のテスト件数を固定し、共通の再標本化行を使った1,000回のpercentile区間です。
 
-同じ乱数列のままWineを20,000回まで延ばすと、95%区間は [−0.00013953, +0.00000018] でした。最初の1,000回のindexは `arrays.npz` と一致し、テスト行や学習済みモデルは同一です。再計算用のPythonコードは [DS向けの解説原稿](../../articles/diy-automl-ds-backend-probabilities.md) にあります。
+同じ乱数列のままWineを20,000回まで延ばすと、95%区間は [−0.00013953, +0.00000018] でした。最初の1,000回のindexは `arrays.npz` と一致し、テスト行や学習済みモデルは同一です。再計算用のPythonコードは [DS向けの解説原稿](../../articles/backup/diy-automl-ds-backend-probabilities.md) にあります。

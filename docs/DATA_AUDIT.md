@@ -151,7 +151,7 @@ with duckdb.connect(config={"threads": "1"}) as db:
 
 `manifest.json` に抽出条件、入力ファイルと出力CSVのSHA-256、入力の列型、出力の件数を保存する。点検で作った中継ファイルを変換manifestと一緒に使うと、元CSVのSHA-256もたどれる。Pythonからは `diy_automl.extract_data` を呼べる。
 
-このRaisinの例は、元CSVでは各450行。面積が60,000画素以上の行を件数上限なしで抽出すると、Besni 428行、Kecimen 237行の665行だった。元順で先頭250行を取ると、Besni 13行、Kecimen 237行になる。条件のみの結果は `--limit 250` を省いて再現できる。3段階のExcelは `prepare-bp` で出力し、「まず読む」の対象行数と「Class_Counts」の品種別件数を確認した。250行の再点検と既存の `select` まで実行し、抽出CSVのハッシュが学習記録の入力と一致することも確認した。 [BP向けの解説原稿](../articles/diy-automl-bp-filtered-rows.md)
+このRaisinの例は、元CSVでは各450行。面積が60,000画素以上の行を件数上限なしで抽出すると、Besni 428行、Kecimen 237行の665行だった。元順で先頭250行を取ると、Besni 13行、Kecimen 237行になる。条件のみの結果は `--limit 250` を省いて再現できる。3段階のExcelは `prepare-bp` で出力し、「まず読む」の対象行数と「Class_Counts」の品種別件数を確認した。250行の再点検と既存の `select` まで実行し、抽出CSVのハッシュが学習記録の入力と一致することも確認した。 [BP向けの解説原稿](../articles/backup/diy-automl-bp-filtered-rows.md)
 
 ## 確認する順序
 

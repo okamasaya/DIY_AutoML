@@ -1,6 +1,6 @@
 # Windowsで表形式データの処理負荷を測る
 
-DIY AutoMLのCLIを使い、学習前のCSV点検・作業用Parquetへの変換・条件抽出と、抽出したデータでの5モデル比較を測る。CSVの行数と特徴量の列数は別々に変えた。 [開発メモ (2) の下書き](../../articles/diy-automl-development-note-02.md)
+DIY AutoMLのCLIを使い、学習前のCSV点検・作業用Parquetへの変換・条件抽出と、抽出したデータでの5モデル比較を測る。CSVの行数と特徴量の列数は別々に変えた。 [開発メモ (2) の下書き](../../articles/backup/diy-automl-development-note-02.md)
 
 ## 同じ条件で再実行する
 
