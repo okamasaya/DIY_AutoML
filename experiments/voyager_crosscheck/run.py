@@ -133,23 +133,23 @@ def score_ekf_uncertainty(score, forecast, covariance):
     return rows, {"nominal_coverage": level, "squared_mahalanobis_limit": float(limit), "groups": groups}
 
 
-def autogluon(run, train, tune, score):
+def autogluon(run, train, tune, score, *, features=FEATURES, targets=TARGETS):
     from importlib.metadata import version
     from autogluon.tabular import TabularPredictor
 
     forecasts, selected = [], {}
-    for target in TARGETS:
+    for target in targets:
         predictor = TabularPredictor(label=target, problem_type="regression", eval_metric="root_mean_squared_error",
                                      path=str(run / "ag_models" / target), verbosity=1)
-        predictor.fit(train[FEATURES + [target]], tuning_data=tune[FEATURES + [target]], num_cpus=1, num_gpus=0,
+        predictor.fit(train[features + [target]], tuning_data=tune[features + [target]], num_cpus=1, num_gpus=0,
                       num_bag_folds=0, num_stack_levels=0,
                       hyperparameters={"LR": {}, "RF": {"n_estimators": 64}, "XT": {"n_estimators": 64}})
         selected[target] = predictor.model_best
-        forecasts.append(predictor.predict(score[FEATURES]).to_numpy())
+        forecasts.append(predictor.predict(score[features]).to_numpy())
     return {"AutoGluon Tabular": np.column_stack(forecasts)}, {"version": version("autogluon.tabular"), "selected": selected}
 
 
-def h2o_automl(train, tune, score):
+def h2o_automl(train, tune, score, *, features=FEATURES, targets=TARGETS):
     import h2o
     from h2o.automl import H2OAutoML
     from h2o.backend import H2OLocalServer
@@ -165,13 +165,13 @@ def h2o_automl(train, tune, score):
             h2o.connect(server=server, verbose=False, telemetry=False)
             h2o.no_progress()
             forecasts, selected = [], {}
-            features_only = h2o.H2OFrame(score[FEATURES])
-            for target in TARGETS:
-                training = h2o.H2OFrame(train[FEATURES + [target]])
-                validation = h2o.H2OFrame(tune[FEATURES + [target]])
+            features_only = h2o.H2OFrame(score[features])
+            for target in targets:
+                training = h2o.H2OFrame(train[features + [target]])
+                validation = h2o.H2OFrame(tune[features + [target]])
                 automl = H2OAutoML(include_algos=["GLM", "DRF", "GBM"], max_models=4, nfolds=0,
                                    sort_metric="RMSE", seed=SEED)
-                automl.train(x=FEATURES, y=target, training_frame=training,
+                automl.train(x=features, y=target, training_frame=training,
                              validation_frame=validation, leaderboard_frame=validation)
                 leader = automl.leader
                 selected[target] = leader.algo
