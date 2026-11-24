@@ -2,6 +2,8 @@
 
 更新日：2026-11-24（日本時間）
 
+**再開用の入口**。DS・BPの合意、時系列とGNNの実装状況、環境と資料の復元手順を保存した。次は4媒体の原稿整理から進める。 [再開用セーブポイント](RECOVERY_CHECKPOINT_20261124.md) · [Full Paper・Letter・Zenn・DEV Communityの資料一覧](PUBLICATION_HANDOFF_20261124.md)
+
 **直近は、ボイジャー・NYC Taxi・Iris・UCI Pedal Meで、GCNが辺を使う効果を比較した。** ボイジャーの過去観測混入では辺なしより誤差が下がり、他のデータや通常条件では基準が上回った。 [4データの比較](../experiments/gnn_application_checks/README.md) · [Coraの結果と手順](GRAPH_CLASSIFICATION.md) · [ロードマップ](ROADMAP.md)
 
 Zenn開発メモの投稿前の確認記録は編集メモにある。BP向けアプリの初回利用の確認と、日付順の分類での性能差の区間はロードマップから再開できる。 [Zenn編集メモ](ZENN_EDITORIAL_NOTES.md) · [ロードマップ](ROADMAP.md)
