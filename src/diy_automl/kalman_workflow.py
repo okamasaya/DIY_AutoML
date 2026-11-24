@@ -7,7 +7,7 @@ from statistics import NormalDist
 import numpy as np
 import pandas as pd
 
-from .kalman import filter_series
+from .kalman import assess_pilot, filter_series
 from .reporting import fail, file_sha256, prepare, save, summary
 
 
@@ -51,7 +51,9 @@ def read_series(path, columns):
 
 def tracking_arrays(inputs, settings):
     model = {name: settings[name] for name in ("observation_sd", "process_noise", "initial_rate", "initial_rate_sd")}
-    return {**inputs, **filter_series(inputs["time"], inputs["observation"], inputs["acceleration"], **model)}
+    trace = filter_series(inputs["time"], inputs["observation"], inputs["acceleration"], **model,
+                          pilot_rows=settings.get("pilot_rows"), min_rmse_gain=settings.get("min_rmse_gain"))
+    return {**inputs, **trace}
 
 
 def interval(center, variance):
@@ -80,37 +82,57 @@ def tracking_tables(arrays, settings):
     forecast_state_interval = interval(one_step, prior_variance)
     forecast_observation_interval = interval(one_step, prior_variance + settings["observation_sd"] ** 2)
     estimate_interval = interval(estimate, posterior_variance)
-    has_forecast = np.isfinite(one_step)
+    pilot_rows = settings.get("pilot_rows")
+    decision = None
+    evaluation = np.ones(len(time), dtype=bool)
+    selected_method = "Kalman"
+    if pilot_rows is not None:
+        decision = assess_pilot(observation[:pilot_rows], one_step[:pilot_rows], persistence[:pilot_rows],
+                                settings["min_rmse_gain"])
+        selected_method = decision["Selected method"]
+        evaluation[:pilot_rows] = False
+    uses_kalman = selected_method == "Kalman"
+    selected_forecast = one_step if uses_kalman else persistence
+    has_forecast = np.isfinite(selected_forecast)
     rows = []
     targets = [("Observation", observation, forecast_observation_interval)]
     if settings["reference_column"] is not None:
         targets.append(("Reference state", reference, forecast_state_interval))
     for target, truth, bounds in targets:
-        eligible = has_forecast & np.isfinite(truth)
-        rows.extend([
-            measure("Forecast", target, "Kalman", truth, one_step, eligible, bounds),
-            measure("Forecast", target, "Dynamics only", truth, dynamics, eligible),
-            measure("Forecast", target, "Last observation", truth, persistence, eligible),
-        ])
-    if settings["reference_column"] is not None:
-        eligible = has_forecast & np.isfinite(reference) & np.isfinite(observation)
+        eligible = evaluation & has_forecast & np.isfinite(truth)
+        if uses_kalman:
+            rows.extend([
+                measure("Forecast", target, "Kalman", truth, one_step, eligible, bounds),
+                measure("Forecast", target, "Dynamics only", truth, dynamics, eligible),
+            ])
+        rows.append(measure("Forecast", target, "Last observation", truth, persistence, eligible))
+    if uses_kalman and settings["reference_column"] is not None:
+        eligible = evaluation & has_forecast & np.isfinite(reference) & np.isfinite(observation)
         rows.extend([
             measure("Filtered", "Reference state", "Kalman", reference, estimate, eligible, estimate_interval),
             measure("Filtered", "Reference state", "Raw observation", reference, observation, eligible),
         ])
-    forecast_origin = np.full_like(time, np.nan)
-    forecast_origin[1:] = np.where(has_forecast[1:], time[:-1], np.nan)
-    track = pd.DataFrame({
-        "Time": time, "Forecast origin": forecast_origin, "Observation": observation, "Reference state": reference,
-        "Acceleration to next time": acceleration, "Dynamics only": dynamics, "Last observation": persistence,
-        "Forecast value": one_step, "Forecast rate": arrays["forecast"][:, 1],
-        "Forecast state lower": forecast_state_interval[0], "Forecast state upper": forecast_state_interval[1],
-        "Forecast observation lower": forecast_observation_interval[0],
-        "Forecast observation upper": forecast_observation_interval[1],
-        "Filtered value": estimate, "Filtered rate": arrays["filtered"][:, 1],
-        "Filtered state lower": estimate_interval[0], "Filtered state upper": estimate_interval[1],
-    })
-    return {"Metrics": pd.DataFrame(rows, columns=METRIC_COLUMNS), "Track": track, "Summary": summary([
+    sheets = {"Metrics": pd.DataFrame(rows, columns=METRIC_COLUMNS)}
+    if not settings.get("compact_report", False):
+        forecast_origin = np.full_like(time, np.nan)
+        forecast_origin[1:] = np.where(np.isfinite(persistence[1:]), time[:-1], np.nan)
+        track = pd.DataFrame({
+            "Time": time, "Forecast origin": forecast_origin, "Observation": observation, "Reference state": reference,
+            "Acceleration to next time": acceleration, "Dynamics only": dynamics, "Last observation": persistence,
+            "Forecast value": one_step, "Forecast rate": arrays["forecast"][:, 1],
+            "Forecast state lower": forecast_state_interval[0], "Forecast state upper": forecast_state_interval[1],
+            "Forecast observation lower": forecast_observation_interval[0],
+            "Forecast observation upper": forecast_observation_interval[1],
+            "Filtered value": estimate, "Filtered rate": arrays["filtered"][:, 1],
+            "Filtered state lower": estimate_interval[0], "Filtered state upper": estimate_interval[1],
+        })
+        if decision is not None:
+            scored = evaluation & has_forecast
+            track["Period"] = np.where(evaluation, "Evaluation", "Pilot")
+            track["Selected method"] = pd.Series(selected_method, index=track.index).where(scored)
+            track["Selected forecast"] = np.where(scored, selected_forecast, np.nan)
+        sheets["Track"] = track
+    sheets["Summary"] = summary([
         ("Model", "Scalar level and rate with white acceleration noise"),
         ("Forecast", "One scheduled step using observations through the previous row"),
         ("Intervals", "Pointwise 95% Gaussian intervals conditional on the model and stated noise"),
@@ -118,11 +140,18 @@ def tracking_tables(arrays, settings):
         ("Rows", len(time)), ("Missing observations", int(np.count_nonzero(np.isnan(observation)))),
         ("Observation SD", settings["observation_sd"]), ("Process noise intensity", settings["process_noise"]),
         ("Initial rate", settings["initial_rate"]), ("Initial rate SD", settings["initial_rate_sd"]),
-    ])}
+    ])
+    if decision is not None:
+        sheets["Decision"] = pd.DataFrame([{
+            "Pilot rows": pilot_rows, "Evaluation starts at": time[pilot_rows],
+            **decision, "Kalman forecast steps": int(np.count_nonzero(np.isfinite(one_step))),
+        }])
+    return sheets
 
 
 def kalman_track_csv(csv, output, *, time_column, observation_column, observation_sd, process_noise,
-                     acceleration_column=None, reference_column=None, initial_rate=0.0, initial_rate_sd=1.0):
+                     acceleration_column=None, reference_column=None, initial_rate=0.0, initial_rate_sd=1.0,
+                     pilot_rows=None, min_rmse_gain=None, compact_report=False):
     """Evaluate causal one-step forecasts and filtered state estimates from a numeric CSV."""
     path = Path(csv)
     columns = (time_column, observation_column, acceleration_column, reference_column)
@@ -132,6 +161,10 @@ def kalman_track_csv(csv, output, *, time_column, observation_column, observatio
                 "acceleration_column": acceleration_column, "reference_column": reference_column,
                 "observation_sd": float(observation_sd), "process_noise": float(process_noise),
                 "initial_rate": float(initial_rate), "initial_rate_sd": float(initial_rate_sd)}
+    if pilot_rows is not None or min_rmse_gain is not None:
+        settings.update(pilot_rows=pilot_rows, min_rmse_gain=None if min_rmse_gain is None else float(min_rmse_gain))
+    if compact_report:
+        settings["compact_report"] = True
     digest = file_sha256(path)
     inputs = read_series(path, columns)
     if file_sha256(path) != digest:

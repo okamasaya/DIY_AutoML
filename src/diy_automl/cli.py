@@ -146,6 +146,9 @@ def main():
     p.add_argument("--initial-rate-sd", type=float, default=1.0)
     p.add_argument("--acceleration-column", help="Known acceleration from this time to the next time")
     p.add_argument("--reference-column", help="Optional state reference used only for evaluation")
+    p.add_argument("--pilot-rows", type=int, help="Number of initial scheduled rows used to choose a forecast method")
+    p.add_argument("--min-rmse-gain", type=float, help="Required relative RMSE improvement over the last observation (0 to 1)")
+    p.add_argument("--compact-report", action="store_true", help="Keep summary worksheets and save the full trace only in NPZ")
     p.add_argument("--output", default=None)
     args=vars(parser.parse_args()); command=args.pop("command")
     if command=="bp-preview":
