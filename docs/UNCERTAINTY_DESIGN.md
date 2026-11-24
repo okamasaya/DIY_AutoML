@@ -145,6 +145,33 @@ WindowsのPython 3.13.17で、乱数seed 42の標準正規乱数を累積した5
 | 全行、集計Excel | 49,999 | 0.90秒 | 1.04秒 |
 | 先頭区間で判定、集計Excel | 999 | 0.02秒 | 0.11秒 |
 
+### 拡張カルマンフィルタの理論ベンチマーク
+
+`diy_automl.extended_kalman_filter` は、加法ガウス雑音を持つ離散時間モデルの一次EKF。状態遷移と観測関数、および解析的なヤコビアンを渡す。遷移のヤコビアンは前時刻の推定平均、観測のヤコビアンは今時刻の予測平均で評価する。ゲインは線形方程式で求め、更新後の共分散にはJoseph形式を使う。 [SärkkäとSvenssonのEKF導出](https://users.aalto.fi/~ssarkka/pub/bfs_book_2023_online.pdf) · [Joseph形式](https://sites.utexas.edu/renato/files/2017/04/CUKF_ver06.pdf)
+
+- 初期状態は時刻0の平均と共分散で指定する。`observations` は時刻1以降の `(時刻数, 観測次元)` の配列。各関数は `(状態ベクトル, 1始まりの時刻番号)` を受け取り、元の状態を変更せずに結果を返す。
+- 過程共分散 `Q` と観測共分散 `R` は固定行列または時刻ごとの行列。欠測は観測成分の `NaN` で表す。一部が欠測なら利用できる成分だけで更新し、全成分の欠測時は予測を引き継ぐ。
+- 返り値は状態の事前予測、観測値の事前予測、観測後の状態推定と、各々の共分散。時刻やノイズ条件を既知として与える。線形の状態遷移と観測を与えると既存の線形カルマンと一致することを、不等間隔と欠測を含む例で検証した。
+
+理論ベンチマークでは、真値とノイズの条件を明示できる2つの合成モデルを使う。`monotone` は滑らかな非線形遷移と、単調増加の観測 `h(x) = x + 0.1x³` を持つ。`gordon` はGordon・Salmond・Smithの第4.1節の1次元モデルで、観測 `h(x) = x²/20` は正負の状態に同じ値を返す。各モデルの過程・観測分散は固定し、真値は採点に使う。 [Gordonらの原論文](https://people.bordeaux.inria.fr/pierre.delmoral/gordon-salmond-smith-1993.pdf)
+
+```powershell
+$python = '.\.venv\Scripts\python.exe'
+& $python -X utf8 -m diy_automl ekf-benchmark --seed 42 --steps 50 --trajectories 32 --output runs/ekf-theory
+& $python -X utf8 scripts/validate_ekf_benchmark.py runs/ekf-theory
+```
+
+各条件32系列×50ステップを評価した。表は観測後の状態推定の値。被覆率は、EKFのガウス近似から作った点ごとの95%区間にシミュレーションの真値が入った割合。
+
+| モデル | seed 42のRMSE | seed 42の被覆率 | seed 2026のRMSE | seed 2026の被覆率 |
+| --- | ---: | ---: | ---: | ---: |
+| 単調な観測 | 0.137 | 93.9% | 0.129 | 96.1% |
+| Gordonの二乗観測 | 18.199 | 50.8% | 17.047 | 48.0% |
+
+Gordonの例では、観測を取り込んだ後も、単一のガウス分布と局所的な線形化では正負に分かれた候補を表しきれず、真値を外す時刻が多かった。予測・推定を区別した誤差と区間幅は `report.xlsx` の `Metrics`、系列ごとの値は `By_Trajectory` にある。`arrays.npz` に真値、観測値、予測、推定、共分散を保存し、検証器が記録した条件から再計算する。
+
+次は同じ真値と観測列を固定してUKFを比較し、その後に粒子フィルタの分位点・区間幅・計算量を比較する。理論例で差と限界を把握してからsimulation_AMBACとの照合に移る。 [UKFの原論文](https://doi.org/10.1109/jproc.2003.823141) · [粒子フィルタの原論文](https://people.bordeaux.inria.fr/pierre.delmoral/gordon-salmond-smith-1993.pdf)
+
 ## 次の優先順（未実装）
 
 0.4.0a6時点の完了・一部完了・保留を含む全体一覧は[ROADMAP.md](ROADMAP.md)です。既存の業務例で回答者依存・時期の制約が判明しているため、今回の整理ではグループ/時間の評価を学習曲線より先に置きます。この節は推奨順であり、次機能を実装した記録ではありません。

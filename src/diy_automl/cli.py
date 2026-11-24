@@ -16,6 +16,7 @@ from .data_audit import audit_data_csv, prepare_bp_csv
 from .data_conversion import FORMATS, TYPE_MODES
 from .data_extract import extract_data
 from .kalman_workflow import kalman_track_csv
+from .ekf_benchmark import run_ekf_benchmark
 from .supervised import METRICS, candidates
 
 def main():
@@ -150,6 +151,11 @@ def main():
     p.add_argument("--min-rmse-gain", type=float, help="Required relative RMSE improvement over the last observation (0 to 1)")
     p.add_argument("--compact-report", action="store_true", help="Keep summary worksheets and save the full trace only in NPZ")
     p.add_argument("--output", default=None)
+    p = sub.add_parser("ekf-benchmark", help="Evaluate the extended Kalman filter on two simulated nonlinear models")
+    p.add_argument("--seed", type=int, default=42)
+    p.add_argument("--steps", type=int, default=50)
+    p.add_argument("--trajectories", type=int, default=32, help="Independent trajectories per model")
+    p.add_argument("--output", default=None)
     args=vars(parser.parse_args()); command=args.pop("command")
     if command=="bp-preview":
         from .bp_preview import launch_preview
@@ -166,7 +172,7 @@ def main():
         "tune":tune_csv,"rank-sl":rank_sl_csv,"report":render_excel_report,
         "uncertainty":evaluate_uncertainty,"audit-uncertainty":audit_sl_uncertainty,
         "annealing-check":annealing_check_csv,"audit-data":audit_data_csv,"extract-data":extract_data,
-        "prepare-bp":prepare_bp_csv,"kalman-track":kalman_track_csv,
+        "prepare-bp":prepare_bp_csv,"kalman-track":kalman_track_csv,"ekf-benchmark":run_ekf_benchmark,
     }
     result = handlers[command](**args)
     print(result, flush=True)

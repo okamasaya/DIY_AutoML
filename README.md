@@ -105,6 +105,8 @@ Gitからの再開手順と、ローカルコミット・pushの確認方法は 
 
 `--pilot-rows` と `--min-rmse-gain` を指定すると、先頭区間で直近観測より改善した場合だけカルマンフィルタを続けます。`--compact-report` はExcelを集計表に絞り、行別の結果はNPZに保存します。 [判定の条件と処理時間](docs/UNCERTAINTY_DESIGN.md#先頭区間でフィルタを続けるか決める)
 
+`ekf-benchmark` は、拡張カルマンフィルタを2つの小規模な非線形モデルで検証します。真値からの誤差、95%区間の被覆率、区間幅を保存するので、UKFや粒子フィルタを同じ系列で比較する際の基準にできます。 [理論例と実行手順](docs/UNCERTAINTY_DESIGN.md#拡張カルマンフィルタの理論ベンチマーク)
+
 ## Annealing check
 
 `annealing-check` は固定した分類器で、CPUのSimulated Annealingと同予算のランダム探索を比較する任意の特徴量選択です。選定は学習側の共通層化5分割で行い、各手法で選んだ列と全列モデルを保留テストで比較します。Pythonからは `diy_automl.annealing_check_csv` を呼べます。
