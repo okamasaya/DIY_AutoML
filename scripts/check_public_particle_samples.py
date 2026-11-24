@@ -33,16 +33,17 @@ def nile_sample(data):
     return [str(year) for year in range(1871, 1971)], values
 
 
-def mauna_loa_sample(data):
+def mauna_loa_sample(data, *, start_year=1980):
     monthly = pd.read_csv(
         BytesIO(data), comment="#", skipinitialspace=True, usecols=["year", "month", "average"],
     )
-    monthly = monthly[monthly["year"].between(1980, 1989)].sort_values(["year", "month"])
+    end_year = start_year + 9
+    monthly = monthly[monthly["year"].between(start_year, end_year)].sort_values(["year", "month"])
     dates = pd.to_datetime(monthly[["year", "month"]].assign(day=1)).dt.to_period("M")
-    expected = pd.period_range("1980-01", "1989-12", freq="M")
+    expected = pd.period_range(f"{start_year}-01", f"{end_year}-12", freq="M")
     values = monthly["average"].to_numpy(dtype=float)
-    if not pd.PeriodIndex(dates).equals(expected) or not (values > 0).all():
-        raise ValueError("Expected complete monthly CO2 averages for 1980–1989")
+    if not pd.PeriodIndex(dates).equals(expected) or not (np.isfinite(values) & (values > 0)).all():
+        raise ValueError(f"Expected complete monthly CO2 averages for {start_year}–{end_year}")
     return dates.astype(str).tolist(), values
 
 
