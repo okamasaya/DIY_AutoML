@@ -96,6 +96,8 @@ def validate(directory,schema=None,allow_failed=False):
         from .dl_repeat_validation import validate_dl_repeat
         return validate_dl_repeat(root,allow_failed=allow_failed)
     if m["status"]!="completed": raise ValueError("Run did not complete")
+    if version == 18 and set(m["artifacts"]) != {"report.xlsx", "arrays.npz"}:
+        raise ValueError("Unexpected tracking artifacts")
     for name,digest in m["artifacts"].items():
         if hashlib.sha256((root/name).read_bytes()).hexdigest()!=digest:
             raise ValueError(f"Artifact checksum mismatch: {name}")
@@ -161,5 +163,9 @@ def validate(directory,schema=None,allow_failed=False):
             if m['sheets']!=expected: raise ValueError("Invalid repeat dimensions")
             if not (sheets['UL_By_Seed'].Status=='completed').all(): raise ValueError("Incomplete seeds")
             if sheets['UL_By_Seed'].duplicated(['Seed','Model','Cluster']).any(): raise ValueError("Duplicate seeds")
+        elif version == 18:
+            from .kalman_validation import validate_tracking
+
+            validate_tracking(m, arrays, sheets)
         else: raise ValueError("Unknown schema")
     return m

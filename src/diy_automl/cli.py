@@ -15,6 +15,7 @@ from .annealing_workflow import annealing_check_csv
 from .data_audit import audit_data_csv, prepare_bp_csv
 from .data_conversion import FORMATS, TYPE_MODES
 from .data_extract import extract_data
+from .kalman_workflow import kalman_track_csv
 from .supervised import METRICS, candidates
 
 def main():
@@ -135,6 +136,17 @@ def main():
     p.add_argument("--output",default=None)
     p.add_argument("--shift",action="append",default=[],metavar="FEATURE=OFFSET",
                    help="Hypothetical constant test input offset, repeatable")
+    p = sub.add_parser("kalman-track", help="Track one numeric series and evaluate one-step forecasts")
+    p.add_argument("--csv", required=True)
+    p.add_argument("--time-column", required=True, help="Strictly increasing numeric schedule")
+    p.add_argument("--observation-column", required=True, help="Observed scalar value, blank if missing")
+    p.add_argument("--observation-sd", required=True, type=float, help="Measurement standard deviation")
+    p.add_argument("--process-noise", required=True, type=float, help="White acceleration noise spectral density")
+    p.add_argument("--initial-rate", type=float, default=0.0)
+    p.add_argument("--initial-rate-sd", type=float, default=1.0)
+    p.add_argument("--acceleration-column", help="Known acceleration from this time to the next time")
+    p.add_argument("--reference-column", help="Optional state reference used only for evaluation")
+    p.add_argument("--output", default=None)
     args=vars(parser.parse_args()); command=args.pop("command")
     if command=="bp-preview":
         from .bp_preview import launch_preview
@@ -151,7 +163,7 @@ def main():
         "tune":tune_csv,"rank-sl":rank_sl_csv,"report":render_excel_report,
         "uncertainty":evaluate_uncertainty,"audit-uncertainty":audit_sl_uncertainty,
         "annealing-check":annealing_check_csv,"audit-data":audit_data_csv,"extract-data":extract_data,
-        "prepare-bp":prepare_bp_csv,
+        "prepare-bp":prepare_bp_csv,"kalman-track":kalman_track_csv,
     }
     result = handlers[command](**args)
     print(result, flush=True)
