@@ -23,19 +23,21 @@ if _TYPE_CHECKING:
     from .extended_kalman import extended_kalman_filter as extended_kalman_filter
     from .unscented_kalman import unscented_kalman_filter as unscented_kalman_filter
     from .particle_filter import bootstrap_particle_filter as bootstrap_particle_filter
+    from .graph_classification import classify_graph_nodes as classify_graph_nodes
 
-# Explicit use of a state estimator loads its implementation on demand.
-_FILTER_EXPORTS = {
+# Optional workflows load their implementation on first use.
+_ON_DEMAND_EXPORTS = {
     "kalman_track_csv": ".kalman_workflow",
     "extended_kalman_filter": ".extended_kalman",
     "unscented_kalman_filter": ".unscented_kalman",
     "bootstrap_particle_filter": ".particle_filter",
+    "classify_graph_nodes": ".graph_classification",
 }
-__all__ = [name for name in globals() if not name.startswith("_")] + list(_FILTER_EXPORTS)
+__all__ = [name for name in globals() if not name.startswith("_")] + list(_ON_DEMAND_EXPORTS)
 
 
 def __getattr__(name):
-    module = _FILTER_EXPORTS.get(name)
+    module = _ON_DEMAND_EXPORTS.get(name)
     if module is None:
         raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
     function = getattr(_import_module(module, __name__), name)
@@ -44,4 +46,4 @@ def __getattr__(name):
 
 
 def __dir__():
-    return sorted(set(globals()) | _FILTER_EXPORTS.keys())
+    return sorted(set(globals()) | _ON_DEMAND_EXPORTS.keys())

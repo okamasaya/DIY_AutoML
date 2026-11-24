@@ -18,11 +18,12 @@ from .data_conversion import FORMATS, TYPE_MODES
 from .data_extract import extract_data
 from .supervised import METRICS, candidates
 
-_STATE_SPACE_HANDLERS = {
+_ON_DEMAND_HANDLERS = {
     "kalman-track": (".kalman_workflow", "kalman_track_csv"),
     "ekf-benchmark": (".ekf_benchmark", "run_ekf_benchmark"),
     "ukf-benchmark": (".ekf_benchmark", "run_ukf_benchmark"),
     "particle-benchmark": (".ekf_benchmark", "run_particle_benchmark"),
+    "gnn-compare": (".graph_classification", "classify_graph_nodes"),
 }
 
 def main():
@@ -169,6 +170,15 @@ def main():
         if name == "particle-benchmark":
             p.add_argument("--particles", type=int, default=256)
         p.add_argument("--output", default=None)
+    p = sub.add_parser("gnn-compare", help="Compare GCN and logistic regression on labeled nodes of a known graph")
+    p.add_argument("--nodes", required=True, help="Headerless TSV: node ID, numeric features, class label")
+    p.add_argument("--edges", required=True, help="Headerless TSV of pairs of known node IDs")
+    p.add_argument("--seed", type=int, default=42)
+    p.add_argument("--train-per-class", type=int, default=20)
+    p.add_argument("--validation-fraction", type=float, default=0.2)
+    p.add_argument("--hidden-size", type=int, default=16)
+    p.add_argument("--epochs", type=int, default=120)
+    p.add_argument("--output", default=None)
     args=vars(parser.parse_args()); command=args.pop("command")
     if command=="bp-preview":
         from .bp_preview import launch_preview
@@ -187,8 +197,8 @@ def main():
         "annealing-check":annealing_check_csv,"audit-data":audit_data_csv,"extract-data":extract_data,
         "prepare-bp":prepare_bp_csv,
     }
-    if command in _STATE_SPACE_HANDLERS:
-        module, function = _STATE_SPACE_HANDLERS[command]
+    if command in _ON_DEMAND_HANDLERS:
+        module, function = _ON_DEMAND_HANDLERS[command]
         handler = getattr(import_module(module, __package__), function)
     else:
         handler = handlers[command]

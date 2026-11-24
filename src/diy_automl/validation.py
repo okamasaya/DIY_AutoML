@@ -96,12 +96,15 @@ def validate(directory,schema=None,allow_failed=False):
         from .dl_repeat_validation import validate_dl_repeat
         return validate_dl_repeat(root,allow_failed=allow_failed)
     if m["status"]!="completed": raise ValueError("Run did not complete")
-    if version in (18, 19, 20, 21) and set(m["artifacts"]) != {"report.xlsx", "arrays.npz"}:
-        raise ValueError("Unexpected tracking artifacts")
+    if version in (18, 19, 20, 21, 22) and set(m["artifacts"]) != {"report.xlsx", "arrays.npz"}:
+        kind = "graph" if version == 22 else "tracking"
+        raise ValueError(f"Unexpected {kind} artifacts")
     for name,digest in m["artifacts"].items():
         if hashlib.sha256((root/name).read_bytes()).hexdigest()!=digest:
             raise ValueError(f"Artifact checksum mismatch: {name}")
-    sheets=pd.read_excel(root/"report.xlsx",sheet_name=None)
+    graph_types = {"Node ID": str, "Label": str, "Logistic regression": str, "GCN": str}
+    read_options = {"dtype": graph_types, "keep_default_na": False} if version == 22 else {}
+    sheets=pd.read_excel(root/"report.xlsx",sheet_name=None,**read_options)
     if {k:len(v) for k,v in sheets.items()}!=m["sheets"]: raise ValueError("Sheet row counts differ")
     if version in SHEETS:
         expected = SHEETS[version]
@@ -171,5 +174,9 @@ def validate(directory,schema=None,allow_failed=False):
             from .ekf_benchmark import validate_filter_benchmark
 
             validate_filter_benchmark(m, arrays, sheets)
+        elif version == 22:
+            from .graph_classification import validate_graph_classification
+
+            validate_graph_classification(m, arrays, sheets)
         else: raise ValueError("Unknown schema")
     return m

@@ -2,7 +2,7 @@
 
 更新日：2026-11-24（日本時間）
 
-**直近は、AirPassengersとNYC TaxiでDIY AutoML・AutoGluon・H2Oを比較した。** 航空ではDIYの季節候補がAutoGluonと近いRMSEで、タクシーではAutoGluonとH2OがDIYの選んだ直近値を上回った。 [結果と再現手順](../experiments/seasonal_forecast_crosscheck/README.md) · [ボイジャーの予測楕円](../experiments/voyager_crosscheck/README.md#ekf自身が見積もった誤差の評価) · [ロードマップ](ROADMAP.md)
+**直近は、既知グラフでGCNを比較する `gnn-compare` を実装した。** Coraの3分割でGCNがロジスティック回帰を上回り、同じGCNから引用エッジを外した場合も比較した。 [GNNの結果と再現手順](GRAPH_CLASSIFICATION.md) · [公開時系列の比較](../experiments/seasonal_forecast_crosscheck/README.md) · [ロードマップ](ROADMAP.md)
 
 Zenn開発メモの投稿前の確認記録は編集メモにある。BP向けアプリの初回利用の確認と、日付順の分類での性能差の区間はロードマップから再開できる。 [Zenn編集メモ](ZENN_EDITORIAL_NOTES.md) · [ロードマップ](ROADMAP.md)
 
@@ -46,6 +46,7 @@ Full Paperの処理フロー図、BP画面の結果グラフ、詳細グラフ�
 
 ### 2026年11月24日
 
+- 開発ブランチ `codex/gnn-node-classification` で、既知グラフ用の2層GCNとロジスティック回帰の比較を追加した。Coraのseed 42・43・44で保留macro F1はGCNが0.7527・0.8068・0.7771。seed 42の引用エッジを外すと0.5102だった。分割と予測の再現、勾配、保留ラベルの分離、保存結果を照合した。 [実行手順と検証結果](GRAPH_CLASSIFICATION.md)
 - ボイジャー合成軌道と公開時系列の比較を、投稿用の技術下書きにまとめた。タクシーの保留区間は、同じ時刻の絶対誤差でDIYの直近値がH2Oより小さい時点が2,056/6,288だった。ChatGPTで記事化するときの日本語の骨子、英語版の構成、出典と実測表を残した。 [投稿用の技術下書き](development-notes/time-series-crosscheck-draft.md)
 - AirPassengers・NYC Taxiの既存分割を保ち、AutoGluon TabularとH2O AutoMLを実行した。保留RMSEは航空でAutoGluon 27.49千人、DIYの季節候補27.89千人、H2O 42.34千人。タクシーではAutoGluon 1,115.22人、H2O 1,171.83人、DIYの直近値1,708.36人。ラグ、時刻、指標を照合し、保存済み予測からの集計とフィルタ関連32テストを確認した。出力は `runs/seasonal-forecast-crosscheck-20261124`。 [比較条件と結果](../experiments/seasonal_forecast_crosscheck/README.md)
 - `scripts/check_kalman_selection.py` で、Rの `AirPassengers` とNABの `nyc_taxi.csv` を既存の `kalman-track` で評価した。両方で直近観測を選び、保留区間のRMSEは航空で65.69から48.04千人、タクシーで1,962.19から1,708.36人になった。航空の追加比較で選ばれた前年同月×成長倍率のRMSEは27.89千人。両レポート、集計の再現、フィルタ関連32テストを確認した。結果は `runs/seasonal-selection-20261124/evaluation`。 [比較表と再現手順](UNCERTAINTY_DESIGN.md#公開時系列でカルマンを選ばない条件を確かめる)
@@ -59,7 +60,7 @@ Full Paperの処理フロー図、BP画面の結果グラフ、詳細グラフ�
 - `bootstrap_particle_filter` と `particle-benchmark` を追加した。seed 42のGordonは、128粒子でRMSE 5.306・被覆率90.2%・処理0.26秒、512粒子で4.833・93.6%・0.34秒。第1系列の21ステップ目に正負の山を確認した。seed 2026でも512粒子で再計算した。出力先は `runs/particle-theory-20261124-n128`、`runs/particle-theory-20261124-n512`、`runs/particle-theory-seed2026-n512`。 [比較結果と粒子の記録](UNCERTAINTY_DESIGN.md#粒子フィルタの理論比較とuci再現)
 - UCI Bike Sharingの既存ZIPを使い、先頭60日で設定を決め、後続90日で1日先の観測値を評価した。線形カルマンと256粒子のRMSEは705.6台と703.0台、被覆率は76.7%と73.3%。実行結果は `runs/particle-bike-uci-20261124/result.json`。 [UCIの再実行手順](UNCERTAINTY_DESIGN.md#粒子フィルタの理論比較とuci再現)
 - 全278テストが通過した。線形ガウスモデルでの理論値、二乗観測での正負の重み、欠測、先行予測の独立性、保存済み結果の再現を確認した。UCIのJSONは同じ設定で再実行し、ファイル内容が一致した。
-- 利用者の指定で、GNNはロードマップのTo Doに記録した。CoraでのGCNとロジスティック回帰の比較、既知グラフと新規ノードの分割設計が再開点。 [GNNのTo Do](ROADMAP.md#グラフニューラルネットワークto-do)
+- 利用者の指定で、GNNはロードマップのTo Doに記録した。CoraでのGCNとロジスティック回帰の比較、既知グラフと新規ノードの分割設計が再開点。 [GNNのロードマップ](ROADMAP.md#グラフニューラルネットワーク)
 - `unscented_kalman_filter` と `ukf-benchmark` を追加した。seed 42と2026で真値、観測、EKFの出力が前回と一致した。GordonのUKFはRMSEが8.021と7.512、95%被覆率が97.6%と98.9%で、平均区間幅は約51。フィルタ処理は今回の計測でEKFの約1.8〜2.1倍。出力は `runs/ukf-theory-20261124-seed42` と `runs/ukf-theory-20261124-seed2026` にある。 [実測条件と結果](UNCERTAINTY_DESIGN.md#アンセンテッドカルマンフィルタの理論比較)
 - 全274テストが通過した。UKFは線形モデルとの一致、不等間隔、部分欠測、階数の不足した共分散と二乗観測の理論モーメントを確認した。既存の線形カルマンとEKFの保存結果も検証した。
 - 利用者の指定で実用データとの接続を後に置き、`extended_kalman_filter` と `ekf-benchmark` を追加した。既存の線形カルマンと同じ条件での一致を照合し、2モデル×32系列×50ステップをseed 42と2026で別々に再生成・検証した。観測後の95%区間の被覆率は、単調モデルで93.9%・96.1%、Gordonの二乗観測で50.8%・48.0%。結果は `runs/ekf-theory-20261124` と `runs/ekf-theory-seed2026` にある。 [手順と比較結果](UNCERTAINTY_DESIGN.md#拡張カルマンフィルタの理論ベンチマーク)

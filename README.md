@@ -113,6 +113,10 @@ Gitからの再開手順と、ローカルコミット・pushの確認方法は 
 
 Pythonでは `diy_automl.kalman_track_csv` を使えます。力学モデルと観測モデルを指定する多変量の状態推定には、`extended_kalman_filter`、`unscented_kalman_filter`、`bootstrap_particle_filter` を同じパッケージから呼び出せます。 [ボイジャーを題材にした状態推定例](docs/UNCERTAINTY_DESIGN.md#ボイジャーを題材にした合成追跡データ)
 
+## グラフニューラルネットワークによるノード分類
+
+`gnn-compare` は、Cora形式の既知グラフで2層GCNとロジスティック回帰を比較します。学習・選定・保留のノードを共通にし、macro F1、学習時間、ノード別の予測を保存します。Pythonでは `diy_automl.classify_graph_nodes` を使えます。 [Coraの実行手順と比較結果](docs/GRAPH_CLASSIFICATION.md)
+
 ## Annealing check
 
 `annealing-check` は固定した分類器で、CPUのSimulated Annealingと同予算のランダム探索を比較する任意の特徴量選択です。選定は学習側の共通層化5分割で行い、各手法で選んだ列と全列モデルを保留テストで比較します。Pythonからは `diy_automl.annealing_check_csv` を呼べます。
