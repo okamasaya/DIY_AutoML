@@ -1,8 +1,10 @@
 # 引継ぎと再開の入口
 
-更新日：2026-11-20（日本時間）
+更新日：2026-11-24（日本時間）
 
-**最新の区切りは、Zenn開発メモ全5回の原稿とH2O AutoMLとの照合。** 投稿前の確認記録は編集メモにある。評価基盤は日付順の性能差の区間から、BP向けアプリは既存の試作画面での初回利用の確認から再開できる。 [編集メモ](ZENN_EDITORIAL_NOTES.md) · [ロードマップ](ROADMAP.md)
+**直近は、AirPassengersとNYC TaxiでDIY AutoML・AutoGluon・H2Oを比較した。** 航空ではDIYの季節候補がAutoGluonと近いRMSEで、タクシーではAutoGluonとH2OがDIYの選んだ直近値を上回った。 [結果と再現手順](../experiments/seasonal_forecast_crosscheck/README.md) · [ボイジャーの予測楕円](../experiments/voyager_crosscheck/README.md#ekf自身が見積もった誤差の評価) · [ロードマップ](ROADMAP.md)
+
+Zenn開発メモの投稿前の確認記録は編集メモにある。BP向けアプリの初回利用の確認と、日付順の分類での性能差の区間はロードマップから再開できる。 [Zenn編集メモ](ZENN_EDITORIAL_NOTES.md) · [ロードマップ](ROADMAP.md)
 
 Full Paperの処理フロー図、BP画面の結果グラフ、詳細グラフのTo Doは11月19日の作業ログにある。 [11月19日の作業ログと再開手順](THREAD_SUMMARY_20261119.md) · [BP版の分類評価マイルストーン](BP_CLASSIFICATION_MILESTONE_20261119.md)
 
@@ -41,6 +43,33 @@ Full Paperの処理フロー図、BP画面の結果グラフ、詳細グラフ�
 実装を伴う作業では、再開に必要な依存版・実行コマンド・入力や保存先も関連する手順へ残す。
 
 ## 現在の引継ぎ
+
+### 2026年11月24日
+
+- ボイジャー合成軌道と公開時系列の比較を、投稿用の技術下書きにまとめた。タクシーの保留区間は、同じ時刻の絶対誤差でDIYの直近値がH2Oより小さい時点が2,056/6,288だった。ChatGPTで記事化するときの日本語の骨子、英語版の構成、出典と実測表を残した。 [投稿用の技術下書き](development-notes/time-series-crosscheck-draft.md)
+- AirPassengers・NYC Taxiの既存分割を保ち、AutoGluon TabularとH2O AutoMLを実行した。保留RMSEは航空でAutoGluon 27.49千人、DIYの季節候補27.89千人、H2O 42.34千人。タクシーではAutoGluon 1,115.22人、H2O 1,171.83人、DIYの直近値1,708.36人。ラグ、時刻、指標を照合し、保存済み予測からの集計とフィルタ関連32テストを確認した。出力は `runs/seasonal-forecast-crosscheck-20261124`。 [比較条件と結果](../experiments/seasonal_forecast_crosscheck/README.md)
+- `scripts/check_kalman_selection.py` で、Rの `AirPassengers` とNABの `nyc_taxi.csv` を既存の `kalman-track` で評価した。両方で直近観測を選び、保留区間のRMSEは航空で65.69から48.04千人、タクシーで1,962.19から1,708.36人になった。航空の追加比較で選ばれた前年同月×成長倍率のRMSEは27.89千人。両レポート、集計の再現、フィルタ関連32テストを確認した。結果は `runs/seasonal-selection-20261124/evaluation`。 [比較表と再現手順](UNCERTAINTY_DESIGN.md#公開時系列でカルマンを選ばない条件を確かめる)
+- ボイジャー比較の `diy` に、EKFの7日先位置の95%予測楕円を採点する出力を追加した。被覆率は通常100%、系統バイアス2.3%、過去観測混入0%。入力と既存の点予測が一致し、共分散による楕円内判定と先行予測時点を照合した。フィルタ関連32テストが通過した。結果は `runs/voyager-crosscheck-uncertainty-20261124`。 [評価条件と再実行](../experiments/voyager_crosscheck/README.md#ekf自身が見積もった誤差の評価)
+- ボイジャー合成軌道の7日先位置を、DIY AutoMLのEKF、AutoGluon Tabular、H2O AutoML、力学のみ、時刻の線形外挿で比較した。保留44時点を通常・系統バイアス・過去観測の混入で採点した。入力の整合性点検で通常2/44、混入42/44が閾値を超えた。分割・集計・先行予測を照合し、フィルタ関連32テストが通過した。出力は `runs/voyager-crosscheck-20261124`。 [条件・結果・再実行](../experiments/voyager_crosscheck/README.md)
+- `scripts/check_voyager_bias.py` で、バイアスを0に固定するEKFと、距離・距離変化率の片方または両方を推定するEKFを比較した。10 seedで、両方を推定したときの位置RMSEはバイアスありで520,214 kmから279,016 km、通常で125,048 kmから136,131 km。結果は `runs/voyager-bias-20261124/result.json` に保存した。従来のEKFとの一致、バイアス注入前の一致、JSONの再現を確認し、フィルタ関連32テストが通過した。 [検証条件と結果](UNCERTAINTY_DESIGN.md#合成追跡データでセンサーのバイアスを推定する)
+- 利用者の方針に沿って、状態推定のコマンドとPython APIを遅延読み込みにした。フィルタ関連モジュールの読み込みを拒否したプロセスで通常の分類CLIを実行できた。フィルタ関連32テストが通過し、専用CLIの4出力を検証した。線形カルマンの予測配列は以前の出力と一致した。全体テストで残った8件は、この環境にTensorFlowがないためで、変更前のソースでも同じ8件を再現した。 [実行方法](../README.md#カルマンフィルタによる時系列の予測と推定)
+- `scripts/make_voyager_demo.py` を追加した。`runs/voyager-synthetic-20261124` に真値105行、4条件の観測計416行、誤差集計と図を保存した。seed 42のEKF位置RMSEは通常138,474 km、欠測141,296 km、外れ値199,007 km、系統バイアス355,344 km。seed 2026でも系統バイアスのRMSEが最大だった。真値の保存量と観測式を照合し、フィルタ関連31テストが通過した。 [データ仕様と比較](UNCERTAINTY_DESIGN.md#ボイジャーを題材にした合成追跡データ)
+- NOAAのマウナロアCO₂を、1985〜1989年と1995〜1999年で評価した。季節・傾向を入れた線形カルマンのRMSEは0.282、0.404 ppm、256粒子の中央値は0.284、0.452 ppm。2048粒子でも確認した。結果は `runs/co2-seasonal-trend-20261124/particles-256.json` と `particles-2048.json`。256粒子の再実行と前回の公開時系列のJSONは一致した。回帰とカルマンの計算を別の式で照合し、フィルタ関連31テストが通過した。 [比較条件・区間の結果・再実行手順](UNCERTAINTY_DESIGN.md#マウナロアco₂の季節性と傾向を両フィルタに入れる)
+- Rの `Nile` とNOAAのMauna Loa CO₂で、直前値、線形カルマン、粒子フィルタの1ステップ先予測を比較した。入力と結果は `runs/public-series-20261124` にある。2系列のJSONが再実行で一致し、共通化したUCIのスクリプトも以前のJSONと一致した。線形カルマンのRMSEと被覆率は独立した再帰式で照合し、フィルタ関連31テストが通過した。 [出典・実行手順・結果](UNCERTAINTY_DESIGN.md#uci以外の公開時系列で比較する)
+- `bootstrap_particle_filter` と `particle-benchmark` を追加した。seed 42のGordonは、128粒子でRMSE 5.306・被覆率90.2%・処理0.26秒、512粒子で4.833・93.6%・0.34秒。第1系列の21ステップ目に正負の山を確認した。seed 2026でも512粒子で再計算した。出力先は `runs/particle-theory-20261124-n128`、`runs/particle-theory-20261124-n512`、`runs/particle-theory-seed2026-n512`。 [比較結果と粒子の記録](UNCERTAINTY_DESIGN.md#粒子フィルタの理論比較とuci再現)
+- UCI Bike Sharingの既存ZIPを使い、先頭60日で設定を決め、後続90日で1日先の観測値を評価した。線形カルマンと256粒子のRMSEは705.6台と703.0台、被覆率は76.7%と73.3%。実行結果は `runs/particle-bike-uci-20261124/result.json`。 [UCIの再実行手順](UNCERTAINTY_DESIGN.md#粒子フィルタの理論比較とuci再現)
+- 全278テストが通過した。線形ガウスモデルでの理論値、二乗観測での正負の重み、欠測、先行予測の独立性、保存済み結果の再現を確認した。UCIのJSONは同じ設定で再実行し、ファイル内容が一致した。
+- 利用者の指定で、GNNはロードマップのTo Doに記録した。CoraでのGCNとロジスティック回帰の比較、既知グラフと新規ノードの分割設計が再開点。 [GNNのTo Do](ROADMAP.md#グラフニューラルネットワークto-do)
+- `unscented_kalman_filter` と `ukf-benchmark` を追加した。seed 42と2026で真値、観測、EKFの出力が前回と一致した。GordonのUKFはRMSEが8.021と7.512、95%被覆率が97.6%と98.9%で、平均区間幅は約51。フィルタ処理は今回の計測でEKFの約1.8〜2.1倍。出力は `runs/ukf-theory-20261124-seed42` と `runs/ukf-theory-20261124-seed2026` にある。 [実測条件と結果](UNCERTAINTY_DESIGN.md#アンセンテッドカルマンフィルタの理論比較)
+- 全274テストが通過した。UKFは線形モデルとの一致、不等間隔、部分欠測、階数の不足した共分散と二乗観測の理論モーメントを確認した。既存の線形カルマンとEKFの保存結果も検証した。
+- 利用者の指定で実用データとの接続を後に置き、`extended_kalman_filter` と `ekf-benchmark` を追加した。既存の線形カルマンと同じ条件での一致を照合し、2モデル×32系列×50ステップをseed 42と2026で別々に再生成・検証した。観測後の95%区間の被覆率は、単調モデルで93.9%・96.1%、Gordonの二乗観測で50.8%・48.0%。結果は `runs/ekf-theory-20261124` と `runs/ekf-theory-seed2026` にある。 [手順と比較結果](UNCERTAINTY_DESIGN.md#拡張カルマンフィルタの理論ベンチマーク)
+- 全269テストが通過した。ヤコビアンの別計算、線形カルマンとの一致、部分欠測、保存結果の再計算を確認した。以前の線形カルマンの判定付き出力も現行の検証器で照合した。
+- 利用者の依頼を受け、`kalman-track` に `--pilot-rows`、`--min-rmse-gain`、`--compact-report` を追加した。先頭での観測値予測の改善に応じて、後続区間のフィルタを継続するか決める。模擬軌道では39.0%改善して継続し、5万行のランダムウォークでは直近観測を選んだ。後者での保存込みの時間は、全行と詳細Excelで8.74秒、判定と集計Excelで0.11秒だった。ローカル出力は `runs/kalman-axis-20261124/pilot-compact` と `runs/kalman-cost-20261124` にある。 [判定と処理時間](UNCERTAINTY_DESIGN.md#先頭区間でフィルタを続けるか決める)
+- 全260テストが通過した。判定後のフィルタ継続と打ち切り、集計Excel、以前の保存形式の再検証をWindowsで確認した。
+- 利用者の指示により、アニーリングの追加検証を保留し、カルマンフィルタを優先した。作業ブランチ `codex/kalman-time-series` の起点は `main` の `41cbbb1`。`kalman-track` と `diy_automl.kalman_track_csv` から、1ステップ先予測、観測後の状態推定、95%区間を実行できる。 [時系列の設計と実行例](UNCERTAINTY_DESIGN.md#カルマンフィルタで数値の時系列を点検する)
+- WindowsのPython 3.13.17で模擬軌道10本を確認した。全6,000点の真値への1ステップ先のRMSEは、直近観測0.181度、カルマンフィルタ0.050度。95%状態予測区間の被覆率は軌道ごとに92.0〜98.3%。seed 42のレポートと検証結果は `runs/kalman-axis-20261124/evaluation`、10本の結果は同じ親フォルダーの `ten-trajectories.json` にある。
+- 全254テストが通過した。実行ガイドのコマンド、日本語列名で欠測を含む模擬需要CSV、保存結果の検証器もWindowsで確認した。
+- DEV Community用の初回原稿は `codex/dev-community-iris` のローカルコミット `3ce4f7a` に保存済み。投稿の準備は利用者がChat側で進める。
 
 ### 2026年11月20日
 

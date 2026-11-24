@@ -97,6 +97,22 @@ Gitからの再開手順と、ローカルコミット・pushの確認方法は 
 
 順位付け時に、選定モデルの統計区間と浮動小数点の丸めの点検も同じExcelに出力します。`--shift "FEATURE=OFFSET"` を指定すると、運用時の校正ずれを仮定した予測感度も計算します。保存済みの順位で別のずれを試す手順は[不確かさの点検手順](docs/SL_UNCERTAINTY_AUDIT.md)にあります。
 
+## カルマンフィルタによる時系列の予測と推定
+
+状態推定には専用の `kalman-track` を指定します。数値の時刻順に並ぶ1系列から、1ステップ先の予測と観測後の状態推定を計算します。観測誤差と過程ノイズを指定でき、観測が欠けた時刻も予測を続けます。フィルタの実装は、専用コマンドや対応するPython APIを指定したときに読み込みます。
+
+レポートには、力学モデルのみ・直近観測・カルマンフィルタの比較と、予測区間に値が入った割合を記録します。真値を渡せる模擬データでは、観測ノイズを含む次の測定値と、背後にある状態を別々に採点できます。 [模擬軌道での実行手順と結果](docs/UNCERTAINTY_DESIGN.md#カルマンフィルタで数値の時系列を点検する)
+
+`--pilot-rows` と `--min-rmse-gain` を指定すると、先頭区間で直近観測より改善した場合だけカルマンフィルタを続けます。`--compact-report` はExcelを集計表に絞り、行別の結果はNPZに保存します。 [判定の条件と処理時間](docs/UNCERTAINTY_DESIGN.md#先頭区間でフィルタを続けるか決める)
+
+`ekf-benchmark` は、拡張カルマンフィルタを2つの小規模な非線形モデルで検証します。真値からの誤差、95%区間の被覆率、区間幅を保存するので、UKFや粒子フィルタを同じ系列で比較する際の基準にできます。 [理論例と実行手順](docs/UNCERTAINTY_DESIGN.md#拡張カルマンフィルタの理論ベンチマーク)
+
+`ukf-benchmark` は、同じ系列でEKFとアンセンテッドカルマンフィルタ（UKF）を比較します。`Metrics` と `Timing` に誤差・被覆率・区間幅とフィルタの処理時間を保存します。 [EKFとUKFの比較手順](docs/UNCERTAINTY_DESIGN.md#アンセンテッドカルマンフィルタの理論比較)
+
+`particle-benchmark` は、同じ系列にブートストラップ粒子フィルタを加えます。粒子数を変えて、予測誤差・分位点の区間・処理時間を比較できます。UCI Bike Sharingの日次データで次の日の観測値を予測する再現例もあります。 [粒子フィルタの検証手順](docs/UNCERTAINTY_DESIGN.md#粒子フィルタの理論比較とuci再現)
+
+Pythonでは `diy_automl.kalman_track_csv` を使えます。力学モデルと観測モデルを指定する多変量の状態推定には、`extended_kalman_filter`、`unscented_kalman_filter`、`bootstrap_particle_filter` を同じパッケージから呼び出せます。 [ボイジャーを題材にした状態推定例](docs/UNCERTAINTY_DESIGN.md#ボイジャーを題材にした合成追跡データ)
+
 ## Annealing check
 
 `annealing-check` は固定した分類器で、CPUのSimulated Annealingと同予算のランダム探索を比較する任意の特徴量選択です。選定は学習側の共通層化5分割で行い、各手法で選んだ列と全列モデルを保留テストで比較します。Pythonからは `diy_automl.annealing_check_csv` を呼べます。

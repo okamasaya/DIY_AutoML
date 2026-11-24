@@ -1,5 +1,6 @@
 import argparse
 from datetime import datetime,timezone
+from importlib import import_module
 import json
 from .workflow import run_csv
 from .selection_workflow import select_csv
@@ -16,6 +17,13 @@ from .data_audit import audit_data_csv, prepare_bp_csv
 from .data_conversion import FORMATS, TYPE_MODES
 from .data_extract import extract_data
 from .supervised import METRICS, candidates
+
+_STATE_SPACE_HANDLERS = {
+    "kalman-track": (".kalman_workflow", "kalman_track_csv"),
+    "ekf-benchmark": (".ekf_benchmark", "run_ekf_benchmark"),
+    "ukf-benchmark": (".ekf_benchmark", "run_ukf_benchmark"),
+    "particle-benchmark": (".ekf_benchmark", "run_particle_benchmark"),
+}
 
 def main():
     parser=argparse.ArgumentParser(description="Reimplemented DIY AutoML evaluation")
@@ -135,6 +143,32 @@ def main():
     p.add_argument("--output",default=None)
     p.add_argument("--shift",action="append",default=[],metavar="FEATURE=OFFSET",
                    help="Hypothetical constant test input offset, repeatable")
+    p = sub.add_parser("kalman-track", help="Track one numeric series and evaluate one-step forecasts")
+    p.add_argument("--csv", required=True)
+    p.add_argument("--time-column", required=True, help="Strictly increasing numeric schedule")
+    p.add_argument("--observation-column", required=True, help="Observed scalar value, blank if missing")
+    p.add_argument("--observation-sd", required=True, type=float, help="Measurement standard deviation")
+    p.add_argument("--process-noise", required=True, type=float, help="White acceleration noise spectral density")
+    p.add_argument("--initial-rate", type=float, default=0.0)
+    p.add_argument("--initial-rate-sd", type=float, default=1.0)
+    p.add_argument("--acceleration-column", help="Known acceleration from this time to the next time")
+    p.add_argument("--reference-column", help="Optional state reference used only for evaluation")
+    p.add_argument("--pilot-rows", type=int, help="Number of initial scheduled rows used to choose a forecast method")
+    p.add_argument("--min-rmse-gain", type=float, help="Required relative RMSE improvement over the last observation (0 to 1)")
+    p.add_argument("--compact-report", action="store_true", help="Keep summary worksheets and save the full trace only in NPZ")
+    p.add_argument("--output", default=None)
+    for name, help_text in (
+        ("ekf-benchmark", "Evaluate the extended Kalman filter on two simulated nonlinear models"),
+        ("ukf-benchmark", "Compare EKF and UKF on the same simulated nonlinear trajectories"),
+        ("particle-benchmark", "Compare a bootstrap particle filter with EKF and UKF on shared trajectories"),
+    ):
+        p = sub.add_parser(name, help=help_text)
+        p.add_argument("--seed", type=int, default=42)
+        p.add_argument("--steps", type=int, default=50)
+        p.add_argument("--trajectories", type=int, default=32, help="Independent trajectories per model")
+        if name == "particle-benchmark":
+            p.add_argument("--particles", type=int, default=256)
+        p.add_argument("--output", default=None)
     args=vars(parser.parse_args()); command=args.pop("command")
     if command=="bp-preview":
         from .bp_preview import launch_preview
@@ -153,7 +187,12 @@ def main():
         "annealing-check":annealing_check_csv,"audit-data":audit_data_csv,"extract-data":extract_data,
         "prepare-bp":prepare_bp_csv,
     }
-    result = handlers[command](**args)
+    if command in _STATE_SPACE_HANDLERS:
+        module, function = _STATE_SPACE_HANDLERS[command]
+        handler = getattr(import_module(module, __package__), function)
+    else:
+        handler = handlers[command]
+    result = handler(**args)
     print(result, flush=True)
     if (command == "audit-data" and args["convert"]) or (command == "prepare-bp" and args["compress"]):
         conversion = json.loads((result / "manifest.json").read_text(encoding="utf-8"))["conversion"]
