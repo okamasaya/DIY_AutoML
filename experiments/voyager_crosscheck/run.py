@@ -77,6 +77,7 @@ def diy(data, train, score):
     from diy_automl import __version__, extended_kalman_filter
 
     forecasts = pd.DataFrame(index=data.index, columns=TARGETS, dtype=float)
+    position_covariance = np.full((len(data), 2, 2), np.nan)
     for _, scenario in data.groupby("scenario", sort=False):
         earth = scenario[OBSERVER].to_numpy()
         result = extended_kalman_filter(
@@ -88,6 +89,7 @@ def diy(data, train, score):
         )
         # Row i's forecast is stored at step i+1, before that step's observations are incorporated.
         forecasts.loc[scenario.index[:-1], TARGETS] = result["forecast"][1:, :2]
+        position_covariance[scenario.index[:-1]] = result["forecast_covariance"][1:, :2, :2]
     state = PRIOR_MEAN
     orbit = {}
     for step, day in enumerate(range(7, 729, 7), 1):
@@ -96,9 +98,39 @@ def diy(data, train, score):
     open_loop = np.stack([orbit[day] for day in score["target_day"]])
     trend = np.column_stack([np.polyval(np.polyfit(train["target_day"], train[name], 1), score["target_day"])
                             for name in TARGETS])
-    return {"DIY EKF": forecasts.loc[score.index].to_numpy(), "Physics only": open_loop, "Time trend": trend}, {
+    estimates = {"DIY EKF": forecasts.loc[score.index].to_numpy(), "Physics only": open_loop, "Time trend": trend}
+    details = {
         "version": __version__, "prior_state": PRIOR_MEAN.tolist(),
     }
+    return estimates, details, position_covariance[score.index]
+
+
+def score_ekf_uncertainty(score, forecast, covariance):
+    """Compare the true position with each pointwise bivariate Gaussian forecast."""
+    from scipy.stats import chi2
+
+    level = 0.95
+    limit = chi2.ppf(level, df=2)
+    error = score[TARGETS].to_numpy() - forecast
+    standardized = np.linalg.solve(np.linalg.cholesky(covariance), error[..., None])[..., 0]
+    distance_sq = np.sum(standardized**2, axis=1)
+    semi_axes_km = AU_KM * np.sqrt(limit * np.linalg.eigvalsh(covariance))
+    rows = score[KEY + TARGETS].assign(
+        pred_x_au=forecast[:, 0], pred_y_au=forecast[:, 1],
+        var_x_au2=covariance[:, 0, 0], cov_xy_au2=covariance[:, 0, 1], var_y_au2=covariance[:, 1, 1],
+        position_error_km=AU_KM * np.linalg.norm(error, axis=1),
+        squared_mahalanobis=distance_sq, within_ellipse=distance_sq <= limit,
+        semi_minor_axis_km=semi_axes_km[:, 0], semi_major_axis_km=semi_axes_km[:, 1],
+    )
+    groups = []
+    for (scenario, split), group in rows.groupby(["scenario", "split"], sort=False):
+        groups.append({
+            "scenario": scenario, "split": split, "points": len(group),
+            "inside": int(group["within_ellipse"].sum()), "coverage": float(group["within_ellipse"].mean()),
+            "mean_semi_minor_axis_km": float(group["semi_minor_axis_km"].mean()),
+            "mean_semi_major_axis_km": float(group["semi_major_axis_km"].mean()),
+        })
+    return rows, {"nominal_coverage": level, "squared_mahalanobis_limit": float(limit), "groups": groups}
 
 
 def autogluon(run, train, tune, score):
@@ -152,7 +184,8 @@ def h2o_automl(train, tune, score):
 def run_engine(engine, run, data):
     train, tune, score = splits(data)
     if engine == "diy":
-        estimates, details = diy(data, train, score)
+        estimates, details, covariance = diy(data, train, score)
+        uncertainty, summary = score_ekf_uncertainty(score, estimates["DIY EKF"], covariance)
     elif engine == "autogluon":
         estimates, details = autogluon(run, train, tune, score)
     else:
@@ -166,6 +199,9 @@ def run_engine(engine, run, data):
         rows.append(frame)
     pd.concat(rows).to_csv(run / f"{engine}.csv", index=False, mode="x")
     write_json(run / f"{engine}.json", details)
+    if engine == "diy":
+        uncertainty.to_csv(run / "ekf_uncertainty.csv", index=False, mode="x")
+        write_json(run / "ekf_uncertainty_summary.json", summary)
 
 
 def write_json(path, value):
