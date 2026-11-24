@@ -1,5 +1,6 @@
 import argparse
 from datetime import datetime,timezone
+from importlib import import_module
 import json
 from .workflow import run_csv
 from .selection_workflow import select_csv
@@ -15,9 +16,14 @@ from .annealing_workflow import annealing_check_csv
 from .data_audit import audit_data_csv, prepare_bp_csv
 from .data_conversion import FORMATS, TYPE_MODES
 from .data_extract import extract_data
-from .kalman_workflow import kalman_track_csv
-from .ekf_benchmark import run_ekf_benchmark, run_ukf_benchmark, run_particle_benchmark
 from .supervised import METRICS, candidates
+
+_STATE_SPACE_HANDLERS = {
+    "kalman-track": (".kalman_workflow", "kalman_track_csv"),
+    "ekf-benchmark": (".ekf_benchmark", "run_ekf_benchmark"),
+    "ukf-benchmark": (".ekf_benchmark", "run_ukf_benchmark"),
+    "particle-benchmark": (".ekf_benchmark", "run_particle_benchmark"),
+}
 
 def main():
     parser=argparse.ArgumentParser(description="Reimplemented DIY AutoML evaluation")
@@ -179,10 +185,14 @@ def main():
         "tune":tune_csv,"rank-sl":rank_sl_csv,"report":render_excel_report,
         "uncertainty":evaluate_uncertainty,"audit-uncertainty":audit_sl_uncertainty,
         "annealing-check":annealing_check_csv,"audit-data":audit_data_csv,"extract-data":extract_data,
-        "prepare-bp":prepare_bp_csv,"kalman-track":kalman_track_csv,"ekf-benchmark":run_ekf_benchmark,
-        "ukf-benchmark":run_ukf_benchmark,"particle-benchmark":run_particle_benchmark,
+        "prepare-bp":prepare_bp_csv,
     }
-    result = handlers[command](**args)
+    if command in _STATE_SPACE_HANDLERS:
+        module, function = _STATE_SPACE_HANDLERS[command]
+        handler = getattr(import_module(module, __package__), function)
+    else:
+        handler = handlers[command]
+    result = handler(**args)
     print(result, flush=True)
     if (command == "audit-data" and args["convert"]) or (command == "prepare-bp" and args["compress"]):
         conversion = json.loads((result / "manifest.json").read_text(encoding="utf-8"))["conversion"]

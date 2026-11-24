@@ -1,4 +1,7 @@
 import json
+from pathlib import Path
+import subprocess
+import sys
 
 import numpy as np
 import pandas as pd
@@ -8,6 +11,47 @@ from diy_automl import kalman_track_csv
 from diy_automl.kalman import filter_series
 from diy_automl.reporting import file_sha256, write_json
 from diy_automl.validation import validate
+
+
+def test_classification_cli_loads_filters_only_when_requested(tmp_path):
+    code = """
+import importlib.abc
+import sys
+
+class BlockFilters(importlib.abc.MetaPathFinder):
+    def find_spec(self, fullname, *_):
+        filters = {'kalman', 'kalman_workflow', 'extended_kalman', 'unscented_kalman',
+                   'particle_filter', 'state_space', 'ekf_benchmark'}
+        package, _, module = fullname.rpartition('.')
+        if package == 'diy_automl' and module in filters:
+            raise AssertionError('Unexpected filter import: ' + fullname)
+
+guard = BlockFilters()
+sys.meta_path.insert(0, guard)
+import diy_automl
+from diy_automl.cli import main
+
+exports = {'kalman_track_csv', 'extended_kalman_filter', 'unscented_kalman_filter', 'bootstrap_particle_filter'}
+assert exports <= set(dir(diy_automl))
+main()
+sys.meta_path.remove(guard)
+
+from diy_automl import kalman_track_csv
+from diy_automl.kalman_workflow import kalman_track_csv as implementation
+assert kalman_track_csv is implementation
+assert 'diy_automl.ekf_benchmark' not in sys.modules
+assert 'diy_automl.particle_filter' not in sys.modules
+assert exports <= set(diy_automl.__all__)
+"""
+    iris = Path(__file__).resolve().parents[1] / "data/reference/iris.csv"
+    output = tmp_path / "classification"
+    result = subprocess.run(
+        [sys.executable, "-X", "utf8", "-c", code, "run", "--csv", str(iris), "--target", "target",
+         "--methods", "sl", "--output", str(output)],
+        capture_output=True, encoding="utf-8",
+    )
+    assert result.returncode == 0, result.stderr
+    assert (output / "report.xlsx").is_file()
 
 
 def test_irregular_steps_skip_missing_update_and_use_previous_input():
