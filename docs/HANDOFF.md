@@ -46,6 +46,7 @@ Full Paperの処理フロー図、BP画面の結果グラフ、詳細グラフ�
 
 ### 2026年11月24日
 
+- ボイジャー合成軌道と公開時系列の比較を、投稿用の技術下書きにまとめた。タクシーの保留区間は、同じ時刻の絶対誤差でDIYの直近値がH2Oより小さい時点が2,056/6,288だった。ChatGPTで記事化するときの日本語の骨子、英語版の構成、出典と実測表を残した。 [投稿用の技術下書き](development-notes/time-series-crosscheck-draft.md)
 - AirPassengers・NYC Taxiの既存分割を保ち、AutoGluon TabularとH2O AutoMLを実行した。保留RMSEは航空でAutoGluon 27.49千人、DIYの季節候補27.89千人、H2O 42.34千人。タクシーではAutoGluon 1,115.22人、H2O 1,171.83人、DIYの直近値1,708.36人。ラグ、時刻、指標を照合し、保存済み予測からの集計とフィルタ関連32テストを確認した。出力は `runs/seasonal-forecast-crosscheck-20261124`。 [比較条件と結果](../experiments/seasonal_forecast_crosscheck/README.md)
 - `scripts/check_kalman_selection.py` で、Rの `AirPassengers` とNABの `nyc_taxi.csv` を既存の `kalman-track` で評価した。両方で直近観測を選び、保留区間のRMSEは航空で65.69から48.04千人、タクシーで1,962.19から1,708.36人になった。航空の追加比較で選ばれた前年同月×成長倍率のRMSEは27.89千人。両レポート、集計の再現、フィルタ関連32テストを確認した。結果は `runs/seasonal-selection-20261124/evaluation`。 [比較表と再現手順](UNCERTAINTY_DESIGN.md#公開時系列でカルマンを選ばない条件を確かめる)
 - ボイジャー比較の `diy` に、EKFの7日先位置の95%予測楕円を採点する出力を追加した。被覆率は通常100%、系統バイアス2.3%、過去観測混入0%。入力と既存の点予測が一致し、共分散による楕円内判定と先行予測時点を照合した。フィルタ関連32テストが通過した。結果は `runs/voyager-crosscheck-uncertainty-20261124`。 [評価条件と再実行](../experiments/voyager_crosscheck/README.md#ekf自身が見積もった誤差の評価)
