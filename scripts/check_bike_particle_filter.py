@@ -10,8 +10,7 @@ from zipfile import ZipFile
 import numpy as np
 import pandas as pd
 
-from diy_automl import bootstrap_particle_filter, extended_kalman_filter
-from diy_automl.kalman_workflow import interval
+from diy_automl.local_level_check import compare_local_level
 
 
 def check_bike_sample(archive, particles):
@@ -24,41 +23,16 @@ def check_bike_sample(archive, particles):
     if len(daily) != 150 or not dates.diff().iloc[1:].eq(pd.Timedelta(days=1)).all() or not np.isfinite(counts).all():
         raise ValueError("The sample needs 150 consecutive days with finite rental counts")
 
-    # Specify a local-level model from the calibration prefix only.
     calibration_days = 60
-    change_variance = float(np.mean(np.diff(counts[:calibration_days])**2))
-    process_variance, observation_variance = 0.1 * change_variance, 0.45 * change_variance
-    readings = counts[1:, None]
-    settings = dict(initial_mean=[counts[0]], initial_covariance=[[observation_variance]],
-                    transition=lambda x, k: x, measurement=lambda x, k: x,
-                    process_covariance=[[process_variance]], observation_covariance=[[observation_variance]])
-    kalman = extended_kalman_filter(readings, **settings, transition_jacobian=lambda x, k: [[1]],
-                                    measurement_jacobian=lambda x, k: [[1]])
-    particle = bootstrap_particle_filter(readings, **settings, particles=particles, seed=42)
-
-    held = slice(calibration_days - 1, None)
-    truth = readings[held, 0]
-    kalman_bounds = interval(kalman["predicted_observation"][held, 0],
-                             kalman["predicted_observation_covariance"][held, 0, 0])
-    particle_bounds = (particle["predicted_observation_lower"][held, 0], particle["predicted_observation_upper"][held, 0])
-    metrics = []
-    for name, forecast, bounds in (
-        ("Last observation", counts[:-1][held], None),
-        ("Linear Kalman", kalman["predicted_observation"][held, 0], kalman_bounds),
-        ("Particle filter", particle["predicted_observation"][held, 0], particle_bounds),
-    ):
-        row = dict(method=name, rmse=float(np.sqrt(np.mean((forecast - truth)**2))))
-        if bounds is not None:
-            lower, upper = bounds
-            row.update(coverage=float(np.mean((lower <= truth) & (truth <= upper))),
-                       mean_interval_width=float(np.mean(upper - lower)))
-        metrics.append(row)
+    comparison = compare_local_level(counts, calibration_days, particles)
+    particle = comparison["particle_runs"][0].copy()
+    particle_seed = particle.pop("seed")
     return {
-        "day_csv_sha256": hashlib.sha256(data).hexdigest(), "particles": particles, "particle_seed": 42,
-        "calibration_days": calibration_days, "evaluation_days": len(truth),
+        "day_csv_sha256": hashlib.sha256(data).hexdigest(), "particles": particles, "particle_seed": particle_seed,
+        "calibration_days": calibration_days, "evaluation_days": len(counts) - calibration_days,
         "start_date": dates.iloc[0].date().isoformat(), "evaluation_start": dates.iloc[calibration_days].date().isoformat(),
-        "evaluation_end": dates.iloc[-1].date().isoformat(), "process_variance": process_variance,
-        "observation_variance": observation_variance, "metrics": metrics,
+        "evaluation_end": dates.iloc[-1].date().isoformat(), "process_variance": comparison["process_variance"],
+        "observation_variance": comparison["observation_variance"], "metrics": [*comparison["metrics"], particle],
     }
 
 

@@ -225,6 +225,28 @@ seed 2026では、512粒子のGordonのRMSEは4.719、被覆率94.8%、平均区
 
 UCIのZIPを `runs/bike-sharing.zip` として用意するか、取得済みZIPのパスを渡す。貸出台数の予測RMSEは前日値884.5台、線形カルマン705.6台、256粒子703.0台。95%区間の被覆率は線形カルマン76.7%、粒子73.3%だった。この例は観測される貸出台数への予測を採点しており、真の潜在状態の採点には合成モデルを使う。
 
+### UCI以外の公開時系列で比較する
+
+Rの `Nile` はアスワンでのナイル川年流量100件を収録する。1871〜1930年の60件で設定を決め、1931〜1970年の40件を評価した。 [Rのデータ説明](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/Nile.html) · [Nile.R](https://svn.r-project.org/R/trunk/src/library/datasets/data/Nile.R)
+
+NOAAのMauna Loa CO₂は月平均の `average` 列を使った。1980年1月〜1984年12月の60件で設定を決め、1985年1月〜1989年12月の60件を評価した。観測データの参照クレジットはXin Lan（NOAA/GML）、Ralph Keeling（Scripps Institution of Oceanography）。 [NOAA GMLのデータ説明](https://www.gml.noaa.gov/ccgg/trends/data.html) · [月次CSV](https://www.gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.csv)
+
+UCIの例と同じローカルレベルモデルを使い、先頭60件の差の二乗平均を `V` として `Q=0.1V`、`R=0.45V` を固定した。各時点の観測値を取り込む前の1ステップ先予測を採点した。粒子フィルタは256粒子でseed 42〜46を使用した。CO₂では前年同月と、前年同月に先頭60件で求めた前年比の平均を足す方法も比較した。
+
+| 系列とRMSEの単位 | 直前値 | 線形カルマン | 粒子フィルタの中央値（最小〜最大） | 前年同月 | 前年同月＋上昇分 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Nile（1億m³） | 136.38 | 116.45 | 116.14（115.43〜116.71） | — | — |
+| Mauna Loa CO₂（ppm） | 1.208 | 1.999 | 2.032（1.982〜2.048） | 1.742 | 0.524 |
+
+公称95%の予測区間には、Nileでは両フィルタとも40件すべてが入った。CO₂では線形カルマンが58.3%、粒子フィルタが56.7〜60.0%だった。今回のCO₂の結果では、季節性と上昇傾向を予測式に入れたとき、フィルタを切り替えたときよりRMSEが大きく改善した。
+
+上記の入力を保存し、リポジトリのルートで実行する。`--output` には新しいファイル名を指定する。JSONには入力のSHA-256、評価期間、各seedのRMSE・被覆率・平均区間幅を記録する。NOAAの公開データは更新されるため、再実行時に入力のSHA-256を照合できる。
+
+```powershell
+$python = '.\.venv\Scripts\python.exe'
+& $python -X utf8 scripts/check_public_particle_samples.py --nile runs/public-series-20261124/Nile.R --co2 runs/public-series-20261124/co2_mm_mlo.csv --output runs/public-series-recheck/result.json
+```
+
 ## 次の優先順（未実装）
 
 0.4.0a6時点の完了・一部完了・保留を含む全体一覧は[ROADMAP.md](ROADMAP.md)です。既存の業務例で回答者依存・時期の制約が判明しているため、今回の整理ではグループ/時間の評価を学習曲線より先に置きます。この節は推奨順であり、次機能を実装した記録ではありません。

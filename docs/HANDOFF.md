@@ -2,7 +2,7 @@
 
 更新日：2026-11-24（日本時間）
 
-**最新の開発は、ブートストラップ粒子フィルタの実装とEKF・UKFとの理論比較。** 128粒子・512粒子で誤差、分布、被覆率、計算時間を比べ、UCIの貸出台数でも次の日の予測を確認した。理論比較の次はsimulation_AMBACとの照合条件を決める。 [理論比較とUCI再現](UNCERTAINTY_DESIGN.md#粒子フィルタの理論比較とuci再現) · [ロードマップ](ROADMAP.md)
+**直近は、粒子フィルタの実データ比較をナイル川の年流量とマウナロアの月次CO₂へ拡張した。** CO₂では前年同月に上昇分を足す予測のRMSEが最も低かった。粒子数の比較とUCI Bike Sharingでの再現も参照できる。 [公開時系列での比較](UNCERTAINTY_DESIGN.md#uci以外の公開時系列で比較する) · [理論比較とUCI再現](UNCERTAINTY_DESIGN.md#粒子フィルタの理論比較とuci再現) · [ロードマップ](ROADMAP.md)
 
 Zenn開発メモの投稿前の確認記録は編集メモにある。BP向けアプリの初回利用の確認と、日付順の分類での性能差の区間はロードマップから再開できる。 [Zenn編集メモ](ZENN_EDITORIAL_NOTES.md) · [ロードマップ](ROADMAP.md)
 
@@ -46,6 +46,7 @@ Full Paperの処理フロー図、BP画面の結果グラフ、詳細グラフ�
 
 ### 2026年11月24日
 
+- Rの `Nile` とNOAAのMauna Loa CO₂で、直前値、線形カルマン、粒子フィルタの1ステップ先予測を比較した。入力と結果は `runs/public-series-20261124` にある。2系列のJSONが再実行で一致し、共通化したUCIのスクリプトも以前のJSONと一致した。線形カルマンのRMSEと被覆率は独立した再帰式で照合し、フィルタ関連31テストが通過した。 [出典・実行手順・結果](UNCERTAINTY_DESIGN.md#uci以外の公開時系列で比較する)
 - `bootstrap_particle_filter` と `particle-benchmark` を追加した。seed 42のGordonは、128粒子でRMSE 5.306・被覆率90.2%・処理0.26秒、512粒子で4.833・93.6%・0.34秒。第1系列の21ステップ目に正負の山を確認した。seed 2026でも512粒子で再計算した。出力先は `runs/particle-theory-20261124-n128`、`runs/particle-theory-20261124-n512`、`runs/particle-theory-seed2026-n512`。 [比較結果と粒子の記録](UNCERTAINTY_DESIGN.md#粒子フィルタの理論比較とuci再現)
 - UCI Bike Sharingの既存ZIPを使い、先頭60日で設定を決め、後続90日で1日先の観測値を評価した。線形カルマンと256粒子のRMSEは705.6台と703.0台、被覆率は76.7%と73.3%。実行結果は `runs/particle-bike-uci-20261124/result.json`。 [UCIの再実行手順](UNCERTAINTY_DESIGN.md#粒子フィルタの理論比較とuci再現)
 - 全278テストが通過した。線形ガウスモデルでの理論値、二乗観測での正負の重み、欠測、先行予測の独立性、保存済み結果の再現を確認した。UCIのJSONは同じ設定で再実行し、ファイル内容が一致した。
