@@ -17,3 +17,4 @@ from .data_extract import extract_data
 from .kalman_workflow import kalman_track_csv
 from .extended_kalman import extended_kalman_filter
 from .unscented_kalman import unscented_kalman_filter
+from .particle_filter import bootstrap_particle_filter

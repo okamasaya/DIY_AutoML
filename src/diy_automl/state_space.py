@@ -19,6 +19,17 @@ def eigenvalue_tolerance(eigenvalues):
     return dimension * np.finfo(float).eps * np.max(np.abs(eigenvalues), axis=-1)
 
 
+def covariance_factor(covariance):
+    """Return a factor L of a covariance matrix with L L.T equal to the covariance."""
+    try:
+        return np.linalg.cholesky(covariance)
+    except np.linalg.LinAlgError as error:
+        eigenvalues, eigenvectors = np.linalg.eigh(covariance)
+        if eigenvalues[0] < -eigenvalue_tolerance(eigenvalues):
+            raise ValueError("State covariance is not positive semidefinite") from error
+        return eigenvectors * np.sqrt(np.maximum(eigenvalues, 0))
+
+
 def check_covariance(value, dimension, name, *, steps=None, positive=False):
     value = np.asarray(value, dtype=float)
     shape = (dimension, dimension)

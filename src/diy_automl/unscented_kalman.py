@@ -2,18 +2,11 @@
 
 import numpy as np
 
-from .state_space import eigenvalue_tolerance, finite_array, gaussian_filter_inputs, symmetric
+from .state_space import covariance_factor, finite_array, gaussian_filter_inputs, symmetric
 
 
 def sigma_points(mean, covariance):
-    try:
-        factor = np.linalg.cholesky(covariance)
-    except np.linalg.LinAlgError as error:
-        eigenvalues, eigenvectors = np.linalg.eigh(covariance)
-        if eigenvalues[0] < -eigenvalue_tolerance(eigenvalues):
-            raise ValueError("UKF state covariance is not positive semidefinite") from error
-        factor = eigenvectors * np.sqrt(np.maximum(eigenvalues, 0))
-    offsets = np.sqrt(len(mean)) * factor.T
+    offsets = np.sqrt(len(mean)) * covariance_factor(covariance).T
     return np.concatenate([mean[None, :], mean + offsets, mean - offsets])
 
 

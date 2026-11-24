@@ -109,6 +109,8 @@ Gitからの再開手順と、ローカルコミット・pushの確認方法は 
 
 `ukf-benchmark` は、同じ系列でEKFとアンセンテッドカルマンフィルタ（UKF）を比較します。`Metrics` と `Timing` に誤差・被覆率・区間幅とフィルタの処理時間を保存します。 [EKFとUKFの比較手順](docs/UNCERTAINTY_DESIGN.md#アンセンテッドカルマンフィルタの理論比較)
 
+`particle-benchmark` は、同じ系列にブートストラップ粒子フィルタを加えます。粒子数を変えて、予測誤差・分位点の区間・処理時間を比較できます。UCI Bike Sharingの日次データで次の日の観測値を予測する再現例もあります。 [粒子フィルタの検証手順](docs/UNCERTAINTY_DESIGN.md#粒子フィルタの理論比較とuci再現)
+
 ## Annealing check
 
 `annealing-check` は固定した分類器で、CPUのSimulated Annealingと同予算のランダム探索を比較する任意の特徴量選択です。選定は学習側の共通層化5分割で行い、各手法で選んだ列と全列モデルを保留テストで比較します。Pythonからは `diy_automl.annealing_check_csv` を呼べます。

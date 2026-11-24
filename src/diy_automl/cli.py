@@ -16,7 +16,7 @@ from .data_audit import audit_data_csv, prepare_bp_csv
 from .data_conversion import FORMATS, TYPE_MODES
 from .data_extract import extract_data
 from .kalman_workflow import kalman_track_csv
-from .ekf_benchmark import run_ekf_benchmark, run_ukf_benchmark
+from .ekf_benchmark import run_ekf_benchmark, run_ukf_benchmark, run_particle_benchmark
 from .supervised import METRICS, candidates
 
 def main():
@@ -154,11 +154,14 @@ def main():
     for name, help_text in (
         ("ekf-benchmark", "Evaluate the extended Kalman filter on two simulated nonlinear models"),
         ("ukf-benchmark", "Compare EKF and UKF on the same simulated nonlinear trajectories"),
+        ("particle-benchmark", "Compare a bootstrap particle filter with EKF and UKF on shared trajectories"),
     ):
         p = sub.add_parser(name, help=help_text)
         p.add_argument("--seed", type=int, default=42)
         p.add_argument("--steps", type=int, default=50)
         p.add_argument("--trajectories", type=int, default=32, help="Independent trajectories per model")
+        if name == "particle-benchmark":
+            p.add_argument("--particles", type=int, default=256)
         p.add_argument("--output", default=None)
     args=vars(parser.parse_args()); command=args.pop("command")
     if command=="bp-preview":
@@ -177,7 +180,7 @@ def main():
         "uncertainty":evaluate_uncertainty,"audit-uncertainty":audit_sl_uncertainty,
         "annealing-check":annealing_check_csv,"audit-data":audit_data_csv,"extract-data":extract_data,
         "prepare-bp":prepare_bp_csv,"kalman-track":kalman_track_csv,"ekf-benchmark":run_ekf_benchmark,
-        "ukf-benchmark":run_ukf_benchmark,
+        "ukf-benchmark":run_ukf_benchmark,"particle-benchmark":run_particle_benchmark,
     }
     result = handlers[command](**args)
     print(result, flush=True)

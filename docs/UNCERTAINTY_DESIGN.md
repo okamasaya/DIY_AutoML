@@ -193,7 +193,37 @@ $python = '.\.venv\Scripts\python.exe'
 
 Gordonの例ではUKFで点推定の誤差が下がり、95%区間が大きく広がった。被覆率と区間幅を併せて読み、正負に分かれ得る状態を一つの平均と共分散で表した場合の限界を確認する。`Timing` に記録した今回の計測では、各実行のUKFのフィルタ処理はEKFの約1.8〜2.1倍だった。シミュレーション・採点・ファイル保存の時間は計測から除いた。
 
-次は同じ真値と観測列で粒子フィルタを比較し、分位点、区間幅、正負の候補を表す分布、粒子数に対する計算量を確認する。理論例で差と限界を把握してからsimulation_AMBACとの照合に移る。 [粒子フィルタの原論文](https://people.bordeaux.inria.fr/pierre.delmoral/gordon-salmond-smith-1993.pdf)
+### 粒子フィルタの理論比較とUCI再現
+
+`diy_automl.bootstrap_particle_filter` は、遷移モデルで粒子を進め、観測尤度を掛けて重みを更新するブートストラップ粒子フィルタ。初期状態と加法雑音にはガウス分布を使う。遷移と観測は非線形でよく、各関数に `(粒子数, 状態次元)` の配列と時刻番号を渡す。重みは対数で更新し、有効サンプルサイズ `ESS = 1 / Σ wᵢ²` が粒子数の半分未満になると系統リサンプリングを行う。 [Gordonらの原論文](https://people.bordeaux.inria.fr/pierre.delmoral/gordon-salmond-smith-1993.pdf) · [リサンプリング方式の比較](https://arxiv.org/abs/cs/0507025)
+
+各時刻の予測・推定は重み付き平均、95%区間は重み付き2.5・97.5パーセンタイル。観測値の予測区間には観測ノイズの独立な乱数を加える。`record_steps` に指定した時刻はリサンプリング前の粒子と重みを保存し、それ以外の時刻は平均・分位点・共分散・ESS・負側の確率などの集計を保存する。負側と非負側にそれぞれ10%以上の重みがあった時刻数は `Particle_Diagnostics` にある。山の形は保存した粒子の分布で確認する。
+
+```powershell
+$python = '.\.venv\Scripts\python.exe'
+& $python -X utf8 -m diy_automl particle-benchmark --seed 42 --steps 50 --trajectories 32 --particles 128 --output runs/particle-theory-n128
+& $python -X utf8 -m diy_automl particle-benchmark --seed 42 --steps 50 --trajectories 32 --particles 512 --output runs/particle-theory-n512
+& $python -X utf8 scripts/validate_particle_benchmark.py runs/particle-theory-n512
+```
+
+Gordonの二乗観測を、同じ32系列×50ステップで比較した。表はseed 42の観測後の状態推定。処理時間はWindowsのPython 3.13.17で各手法を実測し、生成・採点・保存にかかった時間を除いた。
+
+| 手法 | RMSE | 95%区間の被覆率 | 平均区間幅 | フィルタ処理時間 |
+| --- | ---: | ---: | ---: | ---: |
+| EKF | 18.199 | 50.8% | 6.87 | 約0.07〜0.08秒 |
+| UKF | 8.021 | 97.6% | 50.82 | 約0.12〜0.16秒 |
+| 粒子フィルタ・128個 | 5.306 | 90.2% | 10.72 | 0.26秒 |
+| 粒子フィルタ・512個 | 4.833 | 93.6% | 11.31 | 0.34秒 |
+
+seed 2026では、512粒子のGordonのRMSEは4.719、被覆率94.8%、平均区間幅11.18。単調な観測ではEKF・UKF・粒子フィルタのRMSEは近かった。seed 42のGordonの第1系列・21ステップ目では、512粒子の重みが負側51.0%、正側49.0%に分かれた。区間幅の縮小と、どちらの符号にも候補が残ることを併せて確認できる。全体の性能と必要な粒子数はモデルや観測ノイズに依存する。
+
+実データでの再現にはHadi Fanaee-TのUCI Bike Sharing `day.csv` を使う。日付の先頭60日で日次の差の二乗平均を `V` とし、ローカルレベルモデルの `Q=0.1V`、`R=0.45V` を設定した。続く90日（2011年3月2日〜5月30日）は、当日までの観測を使って翌日の貸出台数を予測し、次の観測が来たら状態を更新する。データセットはCC BY 4.0。 [UCI Bike Sharing](https://archive.ics.uci.edu/dataset/275/bike%2Bsharing%2Bdataset)
+
+```powershell
+& $python -X utf8 scripts/check_bike_particle_filter.py --archive runs/bike-sharing.zip --particles 256 --output runs/particle-bike/result.json
+```
+
+UCIのZIPを `runs/bike-sharing.zip` として用意するか、取得済みZIPのパスを渡す。貸出台数の予測RMSEは前日値884.5台、線形カルマン705.6台、256粒子703.0台。95%区間の被覆率は線形カルマン76.7%、粒子73.3%だった。この例は観測される貸出台数への予測を採点しており、真の潜在状態の採点には合成モデルを使う。
 
 ## 次の優先順（未実装）
 
