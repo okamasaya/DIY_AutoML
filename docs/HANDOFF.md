@@ -2,7 +2,7 @@
 
 更新日：2026-11-24（日本時間）
 
-**直近は、ボイジャー合成軌道でEKFの7日先位置予測の不確かさを評価した。** 公称95%予測楕円に真値が入ったのは、通常44/44、系統バイアス1/44、過去観測混入0/44だった。 [予測楕円の評価](../experiments/voyager_crosscheck/README.md#ekf自身が見積もった誤差の評価) · [AutoGluon・H2Oとの比較](../experiments/voyager_crosscheck/README.md) · [ロードマップ](ROADMAP.md)
+**直近は、公開時系列でカルマンを選ばないケースを確認した。** AirPassengersとNYC Taxiの両方で既存の `kalman-track` が直近観測を選び、AirPassengersでは季節候補を加えると予測誤差がさらに下がった。 [選定条件と再現手順](UNCERTAINTY_DESIGN.md#公開時系列でカルマンを選ばない条件を確かめる) · [ボイジャーの予測楕円](../experiments/voyager_crosscheck/README.md#ekf自身が見積もった誤差の評価) · [ロードマップ](ROADMAP.md)
 
 Zenn開発メモの投稿前の確認記録は編集メモにある。BP向けアプリの初回利用の確認と、日付順の分類での性能差の区間はロードマップから再開できる。 [Zenn編集メモ](ZENN_EDITORIAL_NOTES.md) · [ロードマップ](ROADMAP.md)
 
@@ -46,6 +46,7 @@ Full Paperの処理フロー図、BP画面の結果グラフ、詳細グラフ�
 
 ### 2026年11月24日
 
+- `scripts/check_kalman_selection.py` で、Rの `AirPassengers` とNABの `nyc_taxi.csv` を既存の `kalman-track` で評価した。両方で直近観測を選び、保留区間のRMSEは航空で65.69から48.04千人、タクシーで1,962.19から1,708.36人になった。航空の追加比較で選ばれた前年同月×成長倍率のRMSEは27.89千人。両レポート、集計の再現、フィルタ関連32テストを確認した。結果は `runs/seasonal-selection-20261124/evaluation`。 [比較表と再現手順](UNCERTAINTY_DESIGN.md#公開時系列でカルマンを選ばない条件を確かめる)
 - ボイジャー比較の `diy` に、EKFの7日先位置の95%予測楕円を採点する出力を追加した。被覆率は通常100%、系統バイアス2.3%、過去観測混入0%。入力と既存の点予測が一致し、共分散による楕円内判定と先行予測時点を照合した。フィルタ関連32テストが通過した。結果は `runs/voyager-crosscheck-uncertainty-20261124`。 [評価条件と再実行](../experiments/voyager_crosscheck/README.md#ekf自身が見積もった誤差の評価)
 - ボイジャー合成軌道の7日先位置を、DIY AutoMLのEKF、AutoGluon Tabular、H2O AutoML、力学のみ、時刻の線形外挿で比較した。保留44時点を通常・系統バイアス・過去観測の混入で採点した。入力の整合性点検で通常2/44、混入42/44が閾値を超えた。分割・集計・先行予測を照合し、フィルタ関連32テストが通過した。出力は `runs/voyager-crosscheck-20261124`。 [条件・結果・再実行](../experiments/voyager_crosscheck/README.md)
 - `scripts/check_voyager_bias.py` で、バイアスを0に固定するEKFと、距離・距離変化率の片方または両方を推定するEKFを比較した。10 seedで、両方を推定したときの位置RMSEはバイアスありで520,214 kmから279,016 km、通常で125,048 kmから136,131 km。結果は `runs/voyager-bias-20261124/result.json` に保存した。従来のEKFとの一致、バイアス注入前の一致、JSONの再現を確認し、フィルタ関連32テストが通過した。 [検証条件と結果](UNCERTAINTY_DESIGN.md#合成追跡データでセンサーのバイアスを推定する)

@@ -326,6 +326,38 @@ $python = '.\.venv\Scripts\python.exe'
 
 元の出力 `runs/voyager-bias-20261124/result.json` に各seedと全体の誤差を保存した。バイアス注入前の推定値が各手法で通常・バイアスありの間で一致し、ゼロ固定の結果が従来のEKFと一致することを確認した。同じ設定で再実行したJSONは元の出力と一致した。
 
+### 公開時系列でカルマンを選ばない条件を確かめる
+
+Rの `AirPassengers`（国際線旅客数の月次144件）と、Numenta Anomaly Benchmarkの `nyc_taxi.csv`（ニューヨークのタクシー乗客数の30分集計10,320件）を使った。両系列で直近観測を基準とし、`kalman-track` の水準・傾きモデルを選ぶ条件を、先行区間のRMSEが基準より5%以上改善することとした。 [RのAirPassengersデータ](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/AirPassengers.html) · [NABのタクシーデータ](https://github.com/numenta/NAB/blob/master/data/realKnownCause/nyc_taxi.csv)
+
+| 系列 | 設定に使う先頭区間 | 選定区間 | 最終評価区間 |
+| --- | --- | --- | --- |
+| AirPassengers | 1949〜1953年の60か月 | 1954〜1956年の36か月 | 1957〜1960年の48か月 |
+| NYC Taxi | 2014年7月1日〜8月25日の2,688時点 | 8月26日〜9月22日の1,344時点 | 9月23日〜2015年1月31日の6,288時点 |
+
+先頭区間の隣接差の二乗平均を `V` とした。時刻を観測間隔単位の整数で渡し、観測分散 `0.45V`、過程ノイズ強度 `0.1V`、初期傾きの標準偏差 `√V` を固定。先頭区間の最後の観測からフィルタを開始して、選定区間の全行で1ステップ先予測を比べた。両系列で現行の判定が `Last observation` を選び、ネイティブのNPZで選定区間以降のカルマン計算が打ち切られたことを確認した。比較用に最後までカルマンを実行した結果も別に計算した。
+
+| 系列・単位 | 候補 | 選定RMSE | 最終評価RMSE |
+| --- | --- | ---: | ---: |
+| AirPassengers（千人） | カルマンを最後まで実行 | 40.80 | 65.69 |
+| | 直近観測（現行で選定） | 30.76 | 48.04 |
+| | 前年同月 | 38.90 | 41.85 |
+| | 前年同月＋平均増加数 | 20.62 | 23.19 |
+| | 前年同月×平均成長倍率（追加比較で選定） | 16.14 | 27.89 |
+| NYC Taxi（人） | カルマンを最後まで実行 | 1,901.19 | 1,962.19 |
+| | 直近観測（現行・追加比較で選定） | 1,660.99 | 1,708.36 |
+| | 前週同時刻 | 2,316.89 | 3,117.49 |
+| | 前日同時刻 | 4,056.91 | 4,638.85 |
+
+追加比較では、季節候補も含めて選定区間のRMSEが最小の方法を採用した。AirPassengersの増加数は先頭60か月での前年比の差の平均、成長倍率は前年比の比率の幾何平均。倍率方式は直近観測より最終評価のRMSEも低かった。最終評価では増加数方式がさらに低く、時期によって季節候補同士の順位も変わった。NYC Taxiの30分先では、追加候補を含めても直近観測のRMSEが最小だった。表は今回の予測時間と設定で比較した結果。
+
+```powershell
+$python = '.\.venv\Scripts\python.exe'
+& $python -X utf8 scripts/check_kalman_selection.py --air-passengers runs/seasonal-selection-20261124/AirPassengers.R --nyc-taxi runs/seasonal-selection-20261124/nyc_taxi.csv --output runs/seasonal-selection-new
+```
+
+出力は `runs/seasonal-selection-20261124/evaluation`。`result.json` に入力のSHA-256、分割、両方の選定結果、候補のRMSEを保存した。各 `*-kalman-track/report.xlsx` の `Decision` シートで現行の選定理由を確認できる。既存の検証器で両レポートを検証し、再実行した集計と時点別予測のファイルが一致した。
+
 ## 次の優先順（未実装）
 
 0.4.0a6時点の完了・一部完了・保留を含む全体一覧は[ROADMAP.md](ROADMAP.md)です。既存の業務例で回答者依存・時期の制約が判明しているため、今回の整理ではグループ/時間の評価を学習曲線より先に置きます。この節は推奨順であり、次機能を実装した記録ではありません。
