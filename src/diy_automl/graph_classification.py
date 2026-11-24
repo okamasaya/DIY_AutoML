@@ -11,13 +11,12 @@ from scipy import sparse
 from scipy.special import logsumexp
 from sklearn.linear_model import LogisticRegression
 
+from ._graph_network import LEARNING_RATE, WEIGHT_DECAY, graph_forward, graph_gradients, train_graph_layers
 from .reporting import fail, file_sha256, prepare, save, summary
 from .supervised import metrics
 
 
 SCHEMA = 22
-WEIGHT_DECAY = 5e-4
-LEARNING_RATE = 0.01
 LOGISTIC_C = (1.0, 10.0, 100.0)
 METHODS = {"logistic": "Logistic regression", "gcn": "GCN"}
 
@@ -80,50 +79,32 @@ def normalize_graph(graph):
 
 
 def gcn_loss(messages, adjacency, weights, train, train_labels):
-    first, last = weights
-    hidden = np.maximum(messages @ first, 0)
-    neighborhood = adjacency @ hidden
-    logits = neighborhood @ last
+    logits, hidden, neighborhood = graph_forward(messages, adjacency, weights)
     labeled = logits[train]
     log_prob = labeled - logsumexp(labeled, axis=1, keepdims=True)
     row = np.arange(len(train))
-    loss = -log_prob[row, train_labels].mean() + WEIGHT_DECAY / 2 * np.sum(first**2)
+    loss = -log_prob[row, train_labels].mean() + WEIGHT_DECAY / 2 * np.sum(weights[0]**2)
     derivative = np.exp(log_prob)
     derivative[row, train_labels] -= 1
     gradients = np.zeros_like(logits)
     gradients[train] = derivative / len(train)
-    hidden_gradient = (adjacency.T @ (gradients @ last.T)) * (hidden > 0)
-    return loss, (messages.T @ hidden_gradient + WEIGHT_DECAY * first, neighborhood.T @ gradients), logits
+    return loss, graph_gradients(messages, adjacency, weights, hidden, neighborhood, gradients), logits
 
 
 def fit_gcn(features, graph, labels, partitions, *, seed, epochs, hidden_size):
     adjacency = normalize_graph(graph)
-    messages = adjacency @ features
-    rng = np.random.default_rng(seed)
     train, validation = partitions["train"], partitions["validation"]
     classes = np.unique(labels[train])
-    widths = (features.shape[1], hidden_size, len(classes))
-    weights = [rng.uniform(-np.sqrt(6 / (a + b)), np.sqrt(6 / (a + b)), size=(a, b))
-               for a, b in zip(widths[:-1], widths[1:], strict=True)]
-    first_moments = [np.zeros_like(weight) for weight in weights]
-    second_moments = [np.zeros_like(weight) for weight in weights]
-    _, gradients, _ = gcn_loss(messages, adjacency, weights, train, labels[train])
-    best_f1 = -1.0
-    history = []
-    for epoch in range(1, epochs + 1):
-        for i, gradient in enumerate(gradients):
-            first_moments[i] = 0.9 * first_moments[i] + 0.1 * gradient
-            second_moments[i] = 0.999 * second_moments[i] + 0.001 * gradient**2
-            corrected_first = first_moments[i] / (1 - 0.9**epoch)
-            corrected_second = second_moments[i] / (1 - 0.999**epoch)
-            weights[i] -= LEARNING_RATE * corrected_first / (np.sqrt(corrected_second) + 1e-8)
-        loss, gradients, logits = gcn_loss(messages, adjacency, weights, train, labels[train])
-        predictions = logits.argmax(axis=1)
-        f1 = metrics(labels[validation], predictions[validation], classes)["F1"]
-        history.append((epoch, loss, f1))
-        if f1 > best_f1:
-            best_f1, best_epoch, best_predictions = f1, epoch, predictions
-    return best_predictions, best_epoch, history
+    train_labels = labels[train]
+
+    def validation_f1(logits):
+        return metrics(labels[validation], logits[validation].argmax(axis=1), classes)["F1"]
+
+    weights, epoch, history = train_graph_layers(
+        features, adjacency, output_size=len(classes), seed=seed, epochs=epochs, hidden_size=hidden_size,
+        objective=lambda x, a, w: gcn_loss(x, a, w, train, train_labels), validation_score=validation_f1,
+    )
+    return graph_forward(adjacency @ features, adjacency, weights)[0].argmax(axis=1), epoch, history
 
 
 def fit_logistic(features, labels, partitions):

@@ -34,3 +34,5 @@ tar -xzf "$cora/cora.tgz" -C $cora cora/cora.content cora/cora.cites
 ```
 
 出力先には新しいディレクトリを指定する。エッジを外す比較では、`--edges` に空のTSVを渡し、同じseedと新しい出力先を指定する。`report.xlsx` に指標、選定の経過、保留ノード別の予測と計算時間、`arrays.npz` に分割と予測、`manifest.json` に設定・ファイルのハッシュを保存する。ローカル実測は `runs/gnn-cora-20261124` にある。
+
+ボイジャーの合成軌道、NYC Taxi、Iris、UCI Pedal Meでは、辺ありと辺なしの比較も行った。 [別データでの条件と結果](../experiments/gnn_application_checks/README.md)

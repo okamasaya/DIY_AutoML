@@ -2,7 +2,7 @@
 
 更新日：2026-11-24（日本時間）
 
-**直近は、既知グラフでGCNを比較する `gnn-compare` を実装した。** Coraの3分割でGCNがロジスティック回帰を上回り、同じGCNから引用エッジを外した場合も比較した。 [GNNの結果と再現手順](GRAPH_CLASSIFICATION.md) · [公開時系列の比較](../experiments/seasonal_forecast_crosscheck/README.md) · [ロードマップ](ROADMAP.md)
+**直近は、ボイジャー・NYC Taxi・Iris・UCI Pedal Meで、GCNが辺を使う効果を比較した。** ボイジャーの過去観測混入では辺なしより誤差が下がり、他のデータや通常条件では基準が上回った。 [4データの比較](../experiments/gnn_application_checks/README.md) · [Coraの結果と手順](GRAPH_CLASSIFICATION.md) · [ロードマップ](ROADMAP.md)
 
 Zenn開発メモの投稿前の確認記録は編集メモにある。BP向けアプリの初回利用の確認と、日付順の分類での性能差の区間はロードマップから再開できる。 [Zenn編集メモ](ZENN_EDITORIAL_NOTES.md) · [ロードマップ](ROADMAP.md)
 
@@ -46,6 +46,7 @@ Full Paperの処理フロー図、BP画面の結果グラフ、詳細グラフ�
 
 ### 2026年11月24日
 
+- `experiments/gnn_application_checks` で、ボイジャー・NYC Taxiに過去時点の有向辺、Irisに特徴量5近傍、Pedal Meに配布の地域近接重みを使った。辺なしとの比較、未来入力の変更に対する先行予測の一致、保存結果の再計算・再現を確認した。出力は `runs/gnn-crosscheck-20261124/evaluation`。共有化した学習コードでCoraの元の予測を再現し、関連35テストが通過した。 [条件と結果](../experiments/gnn_application_checks/README.md)
 - 開発ブランチ `codex/gnn-node-classification` で、既知グラフ用の2層GCNとロジスティック回帰の比較を追加した。Coraのseed 42・43・44で保留macro F1はGCNが0.7527・0.8068・0.7771。seed 42の引用エッジを外すと0.5102だった。分割と予測の再現、勾配、保留ラベルの分離、保存結果を照合した。 [実行手順と検証結果](GRAPH_CLASSIFICATION.md)
 - ボイジャー合成軌道と公開時系列の比較を、投稿用の技術下書きにまとめた。タクシーの保留区間は、同じ時刻の絶対誤差でDIYの直近値がH2Oより小さい時点が2,056/6,288だった。ChatGPTで記事化するときの日本語の骨子、英語版の構成、出典と実測表を残した。 [投稿用の技術下書き](development-notes/time-series-crosscheck-draft.md)
 - AirPassengers・NYC Taxiの既存分割を保ち、AutoGluon TabularとH2O AutoMLを実行した。保留RMSEは航空でAutoGluon 27.49千人、DIYの季節候補27.89千人、H2O 42.34千人。タクシーではAutoGluon 1,115.22人、H2O 1,171.83人、DIYの直近値1,708.36人。ラグ、時刻、指標を照合し、保存済み予測からの集計とフィルタ関連32テストを確認した。出力は `runs/seasonal-forecast-crosscheck-20261124`。 [比較条件と結果](../experiments/seasonal_forecast_crosscheck/README.md)
