@@ -96,7 +96,7 @@ def validate(directory,schema=None,allow_failed=False):
         from .dl_repeat_validation import validate_dl_repeat
         return validate_dl_repeat(root,allow_failed=allow_failed)
     if m["status"]!="completed": raise ValueError("Run did not complete")
-    if version in (18, 19) and set(m["artifacts"]) != {"report.xlsx", "arrays.npz"}:
+    if version in (18, 19, 20) and set(m["artifacts"]) != {"report.xlsx", "arrays.npz"}:
         raise ValueError("Unexpected tracking artifacts")
     for name,digest in m["artifacts"].items():
         if hashlib.sha256((root/name).read_bytes()).hexdigest()!=digest:
@@ -167,9 +167,9 @@ def validate(directory,schema=None,allow_failed=False):
             from .kalman_validation import validate_tracking
 
             validate_tracking(m, arrays, sheets)
-        elif version == 19:
-            from .ekf_benchmark import validate_ekf_benchmark
+        elif version in (19, 20):
+            from .ekf_benchmark import validate_filter_benchmark
 
-            validate_ekf_benchmark(m, arrays, sheets)
+            validate_filter_benchmark(m, arrays, sheets)
         else: raise ValueError("Unknown schema")
     return m

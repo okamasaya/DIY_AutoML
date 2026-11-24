@@ -107,6 +107,8 @@ Gitからの再開手順と、ローカルコミット・pushの確認方法は 
 
 `ekf-benchmark` は、拡張カルマンフィルタを2つの小規模な非線形モデルで検証します。真値からの誤差、95%区間の被覆率、区間幅を保存するので、UKFや粒子フィルタを同じ系列で比較する際の基準にできます。 [理論例と実行手順](docs/UNCERTAINTY_DESIGN.md#拡張カルマンフィルタの理論ベンチマーク)
 
+`ukf-benchmark` は、同じ系列でEKFとアンセンテッドカルマンフィルタ（UKF）を比較します。`Metrics` と `Timing` に誤差・被覆率・区間幅とフィルタの処理時間を保存します。 [EKFとUKFの比較手順](docs/UNCERTAINTY_DESIGN.md#アンセンテッドカルマンフィルタの理論比較)
+
 ## Annealing check
 
 `annealing-check` は固定した分類器で、CPUのSimulated Annealingと同予算のランダム探索を比較する任意の特徴量選択です。選定は学習側の共通層化5分割で行い、各手法で選んだ列と全列モデルを保留テストで比較します。Pythonからは `diy_automl.annealing_check_csv` を呼べます。

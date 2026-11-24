@@ -170,7 +170,30 @@ $python = '.\.venv\Scripts\python.exe'
 
 Gordonの例では、観測を取り込んだ後も、単一のガウス分布と局所的な線形化では正負に分かれた候補を表しきれず、真値を外す時刻が多かった。予測・推定を区別した誤差と区間幅は `report.xlsx` の `Metrics`、系列ごとの値は `By_Trajectory` にある。`arrays.npz` に真値、観測値、予測、推定、共分散を保存し、検証器が記録した条件から再計算する。
 
-次は同じ真値と観測列を固定してUKFを比較し、その後に粒子フィルタの分位点・区間幅・計算量を比較する。理論例で差と限界を把握してからsimulation_AMBACとの照合に移る。 [UKFの原論文](https://doi.org/10.1109/jproc.2003.823141) · [粒子フィルタの原論文](https://people.bordeaux.inria.fr/pierre.delmoral/gordon-salmond-smith-1993.pdf)
+### アンセンテッドカルマンフィルタの理論比較
+
+`diy_automl.unscented_kalman_filter` は、状態が `n` 次元のとき `2n+1` 個のシグマ点を遷移・観測関数に通し、重み付きの平均と共分散を計算する。状態の予測共分散に過程ノイズ `Q` を加え、その共分散から観測用の点を作り直す。更新後の共分散は、シグマ点の残差と観測ノイズから計算する。今回の重みは `α=1、β=2、κ=0` に固定した。 [JulierとUhlmannのUKF論文](https://doi.org/10.1109/jproc.2003.823141) · [非線形観測での共分散更新](https://sites.utexas.edu/renato/files/2017/04/CUKF_ver06.pdf)
+
+APIは、EKFと同じ形式の初期状態・観測・ノイズ共分散・遷移関数・観測関数を取り、ヤコビアンの入力は不要。欠測成分を除いて更新し、前の時刻までの観測から求めた予測と、現在の観測を使った推定を返す。不等間隔と欠測を含む線形モデルとの一致と、二乗観測でのガウス分布の理論モーメントをテストした。
+
+```powershell
+$python = '.\.venv\Scripts\python.exe'
+& $python -X utf8 -m diy_automl ukf-benchmark --seed 42 --steps 50 --trajectories 32 --output runs/ukf-theory
+& $python -X utf8 scripts/validate_ukf_benchmark.py runs/ukf-theory
+```
+
+2つの手法に同じ真値と観測列を使う。模擬データとEKFの全配列は、同じseedで先に保存した `ekf-benchmark` と一致した。表は観測後の状態推定の結果で、各モデル・各seedについて32系列×50ステップを集計した。
+
+| モデル・seed | EKF→UKFのRMSE | EKF→UKFの95%区間被覆率 | EKF→UKFの平均区間幅 |
+| --- | ---: | ---: | ---: |
+| 単調な観測・42 | 0.137 → 0.136 | 93.9% → 94.3% | 0.522 → 0.524 |
+| 単調な観測・2026 | 0.129 → 0.128 | 96.1% → 96.0% | 0.529 → 0.530 |
+| Gordonの二乗観測・42 | 18.199 → 8.021 | 50.8% → 97.6% | 6.87 → 50.82 |
+| Gordonの二乗観測・2026 | 17.047 → 7.512 | 48.0% → 98.9% | 6.87 → 50.48 |
+
+Gordonの例ではUKFで点推定の誤差が下がり、95%区間が大きく広がった。被覆率と区間幅を併せて読み、正負に分かれ得る状態を一つの平均と共分散で表した場合の限界を確認する。`Timing` に記録した今回の計測では、各実行のUKFのフィルタ処理はEKFの約1.8〜2.1倍だった。シミュレーション・採点・ファイル保存の時間は計測から除いた。
+
+次は同じ真値と観測列で粒子フィルタを比較し、分位点、区間幅、正負の候補を表す分布、粒子数に対する計算量を確認する。理論例で差と限界を把握してからsimulation_AMBACとの照合に移る。 [粒子フィルタの原論文](https://people.bordeaux.inria.fr/pierre.delmoral/gordon-salmond-smith-1993.pdf)
 
 ## 次の優先順（未実装）
 

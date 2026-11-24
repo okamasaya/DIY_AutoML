@@ -2,14 +2,15 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from diy_automl import extended_kalman_filter
+from diy_automl import extended_kalman_filter, unscented_kalman_filter
 from diy_automl.ekf_benchmark import CASES, run_ekf_benchmark
 from diy_automl.kalman import filter_series
 from diy_automl.reporting import file_sha256, write_json
 from diy_automl.validation import validate
 
 
-def test_ekf_matches_existing_linear_filter_with_irregular_steps_and_missing_observation():
+@pytest.mark.parametrize("algorithm", [extended_kalman_filter, unscented_kalman_filter])
+def test_nonlinear_filter_matches_existing_linear_filter_with_irregular_steps_and_missing_observation(algorithm):
     time = np.array([0, 0.5, 2.0, 4.0, 4.25])
     readings = np.array([0, 0.7, np.nan, 5.5, 6.0])
     commands = np.array([1.0, 0.2, 0.4, -0.2, 0.0])
@@ -19,28 +20,31 @@ def test_ekf_matches_existing_linear_filter_with_irregular_steps_and_missing_obs
     controls = commands[:-1, None] * np.column_stack([dt**2 / 2, dt])
     linear = filter_series(time, readings, commands, observation_sd=0.5, process_noise=0.3,
                            initial_rate=1, initial_rate_sd=2)
-    ekf = extended_kalman_filter(
+    derivatives = dict(transition_jacobian=lambda x, k: transitions[k - 1], measurement_jacobian=lambda x, k: [[1, 0]])
+    estimated = algorithm(
         readings[1:, None], initial_mean=[0, 1], initial_covariance=[[0.25, 0], [0, 4]],
         transition=lambda x, k: transitions[k - 1] @ x + controls[k - 1],
-        transition_jacobian=lambda x, k: transitions[k - 1],
-        measurement=lambda x, k: [x[0]], measurement_jacobian=lambda x, k: [[1, 0]],
+        measurement=lambda x, k: [x[0]],
         process_covariance=process, observation_covariance=[[0.25]],
+        **(derivatives if algorithm is extended_kalman_filter else {}),
     )
     for key in ("forecast", "filtered", "forecast_covariance", "filtered_covariance"):
-        np.testing.assert_allclose(ekf[key], linear[key][1:], atol=1e-12, rtol=0)
-    np.testing.assert_allclose(ekf["predicted_observation_covariance"][:, 0, 0],
-                               ekf["forecast_covariance"][:, 0, 0] + 0.25)
+        np.testing.assert_allclose(estimated[key], linear[key][1:], atol=1e-12, rtol=0)
+    np.testing.assert_allclose(estimated["predicted_observation_covariance"][:, 0, 0],
+                               estimated["forecast_covariance"][:, 0, 0] + 0.25)
 
 
-def test_multivariate_update_uses_only_available_observation_components():
+@pytest.mark.parametrize("algorithm", [extended_kalman_filter, unscented_kalman_filter])
+def test_multivariate_update_uses_only_available_observation_components(algorithm):
     matrix = np.array([[2, 1], [1, -1]])
     prior = np.array([[2, 0.5], [0.5, 1]])
     noise = np.array([[2, 0.3], [0.3, 3]])
-    result = extended_kalman_filter(
+    derivatives = dict(transition_jacobian=lambda x, k: np.eye(2), measurement_jacobian=lambda x, k: matrix)
+    result = algorithm(
         [[np.nan, 8], [np.nan, np.nan]], initial_mean=[0, 0], initial_covariance=prior,
-        transition=lambda x, k: x, transition_jacobian=lambda x, k: np.eye(2),
-        measurement=lambda x, k: matrix @ x, measurement_jacobian=lambda x, k: matrix,
+        transition=lambda x, k: x, measurement=lambda x, k: matrix @ x,
         process_covariance=np.zeros((2, 2)), observation_covariance=noise,
+        **(derivatives if algorithm is extended_kalman_filter else {}),
     )
     np.testing.assert_array_equal(result["forecast"][0], [0, 0])
     np.testing.assert_allclose(result["predicted_observation_covariance"][0], matrix @ prior @ matrix.T + noise)
