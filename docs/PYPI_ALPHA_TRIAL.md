@@ -46,4 +46,4 @@ wheelとソース配布物は `twine check --strict` を通過し、TensorFlow�
 
 ## 配布の準備
 
-配布候補はwheelとソース配布物です。開発用環境で `python -m build` を実行し、Twineで `python -m twine check --strict dist/*` を実行すると、配布物の説明の形式を確認できます。リポジトリ全体のライセンスと最終的な公開名を決めた後、TestPyPIで新規インストールを検証し、本番PyPIの公開へ進みます。 [パッケージの作成手順](https://packaging.python.org/en/latest/tutorials/packaging-projects/) · [TestPyPIの確認手順](https://packaging.python.org/en/latest/guides/using-testpypi/)
+公開候補のビルド、TestPyPIからの導入確認、本番PyPIへのアップロードは公開手順にまとめています。 [PyPIへの公開手順](PYPI_RELEASE.md)

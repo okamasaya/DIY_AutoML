@@ -4,10 +4,10 @@ DIY AutoML is a Python package for comparing machine learning models and examini
 
 ## Try the alpha
 
-Use Python 3.12 or later. With the alpha wheel in your working directory and a virtual environment active, run:
+Use Python 3.12 or later. In an active virtual environment, install the alpha version explicitly:
 
 ```sh
-python -m pip install ./diy_automl-0.4.0a8-py3-none-any.whl
+python -m pip install diy-automl==0.4.0a8
 diy-automl --version
 diy-automl --help
 ```
@@ -23,4 +23,4 @@ Open `runs/iris-select/report.xlsx` to see the comparison and held-out scores. `
 
 The base install includes tabular evaluation, Excel reports, state estimation, and graph node classification. The `storage` extra adds Parquet and DuckDB support. The `dl` extra adds TensorFlow for the neural-network workflows. The Japanese Windows preview uses Tcl/Tk and a desktop display.
 
-[English documentation](https://github.com/okamasaya/DIY_AutoML/blob/main/README.en.md) · [Iris walkthrough](https://dev.to/masaya_oka/audit-an-iris-csv-before-ranking-five-classifiers-457) · [Report an issue](https://github.com/okamasaya/DIY_AutoML/issues)
+[English documentation](https://github.com/okamasaya/DIY_AutoML/blob/main/README.en.md) · [Iris walkthrough](https://dev.to/masaya_oka/audit-an-iris-csv-before-ranking-five-classifiers-457) · [Forecasting examples](https://dev.to/masaya_oka/when-should-you-keep-a-kalman-filter-three-forecasting-checks-a64) · [Report an issue](https://github.com/okamasaya/DIY_AutoML/issues)
