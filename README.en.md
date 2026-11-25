@@ -9,6 +9,8 @@ DIY AutoML helps you compare machine learning models on tabular data and inspect
 
 The five development notes cover the workflow, library cross-checks, storage benchmarks, feature selection, and the Windows preview. [English development notes](docs/development-notes/README.md)
 
+The distribution trial for version `0.4.0a8` includes a local wheel and a CPU notebook for trying classification, state estimation, and graph classification from that wheel. [Trial instructions (Japanese)](docs/PYPI_ALPHA_TRIAL.md) · [Colab and Jupyter notebook](notebooks/Alpha_Trial.ipynb)
+
 ## What you can do
 
 | Task | What DIY AutoML provides |

@@ -4,10 +4,22 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "diy-automl"
-version = "0.4.0a7"
-description = "Reimplementation of an exploratory ML evaluation framework"
+version = "0.4.0a8"
+description = "Compare machine learning models and inspect the evidence behind their scores"
+readme = "README.pypi.md"
 requires-python = ">=3.12"
 dependencies = ["numpy>=2", "pandas>=2.2", "scipy>=1.14", "scikit-learn>=1.6", "openpyxl>=3.1", "matplotlib>=3.9"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+
+[project.urls]
+Repository = "https://github.com/okamasaya/DIY_AutoML"
+Documentation = "https://github.com/okamasaya/DIY_AutoML/blob/main/README.en.md"
+Issues = "https://github.com/okamasaya/DIY_AutoML/issues"
 
 [project.optional-dependencies]
 dl = ["tensorflow-cpu==2.20.0", "keras==3.15.1"]

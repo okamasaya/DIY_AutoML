@@ -2,6 +2,7 @@ import argparse
 from datetime import datetime,timezone
 from importlib import import_module
 import json
+from . import __version__
 from .workflow import run_csv
 from .selection_workflow import select_csv
 from .clustering_repeat_workflow import repeat_clustering_csv
@@ -28,6 +29,7 @@ _ON_DEMAND_HANDLERS = {
 
 def main():
     parser=argparse.ArgumentParser(description="Reimplemented DIY AutoML evaluation")
+    parser.add_argument("--version", action="version", version=f"DIY AutoML {__version__}")
     sub=parser.add_subparsers(dest="command",required=True)
     for command in ("run","select","repeat-ul","repeat-dl","subsample-ul","tune"):
         p=sub.add_parser(command)
