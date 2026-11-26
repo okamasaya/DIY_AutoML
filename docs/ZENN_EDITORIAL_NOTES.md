@@ -1,5 +1,24 @@
 # Zenn原稿の一次稿と確認する観点
 
+## 2026年11月26日 学習の途中経過とモデル選定
+
+仮題は「AutoMLの最終スコアを、学習の途中経過から読み直す」。分類の途中経過と評価結果を扱う独立した技術記事の一次稿にした。WineのCV平均が上がり、共通の保留では正解が1件減った例から入り、進捗、共通保留での比較、外部のログ、再現手順へ進む。Zenn用の `published: false` と実測図2点を用意した。 [記事の下書き](../articles/diy-automl-training-progress.md)
+
+当日のHANDOFFと実験記録は、開発作業ツリーの `docs/HANDOFF_20261126.md` と以下のパスにある。
+
+| 本文の材料 | 文章化するときに残す条件 | 根拠 |
+| --- | --- | --- |
+| Wine、Seeds、Breast Cancer Wisconsinの結果表 | `select` と `tune` の比較。学習側の共通5分割と保留1分割。CV平均と保留macro F1、保留正解数を併記する。Wineの正解数の減少はこの分割の観察として書く。 | `experiments/sl_report_validation/README.md` と同じ場所の `results-2026-11-26.json` |
+| Wineの進捗図 | 縦軸は完了したfoldの累計、横軸は出力先の準備後からの経過秒。CV開始から再学習までの10.714秒と、fit区間合計の2.337秒はそれぞれの計測範囲を添える。 | `experiments/sl_report_validation/progress-2026-11-26/wine-tune.jsonl` · [掲載用PNG](../images/diy-automl/wine-tune-progress.png) |
+| Seedsのヒートマップ | 学習側の5分割別macro F1。別節で扱う外部比較には保留42件の値を使う。 | `experiments/sl_report_validation/progress-2026-11-26/seeds-select.jsonl` · [掲載用PNG](../images/diy-automl/seeds-select-folds.png) |
+| Seedsの外部照合 | DIYとAutoGluonは全42保留予測が一致。H2Oは正解が2件多く、差の条件付き95%区間はゼロを含む。候補とCVの条件は方式ごとに記載する。 | `experiments/automl_progress_comparison/README.md` と同じ場所の `results-2026-11-26.json` |
+
+PyPIは準備中という一文に収め、本文の実行例は進捗と詳細図を含む開発版に対応させた。記事の編集に渡す際は、一次稿と上表の根拠をセットにする。JSON列抽出やBPの実機確認は当日のHANDOFF、合成Voyagerは時系列比較の資料から参照できる。 [時系列比較の下書き](development-notes/time-series-crosscheck-draft.md)
+
+掲載値を両実験の集計JSONと照合し、掲載用PNGは実測図とSHA-256が一致した。本文のWine手順を再実行し、135件のCV記録、Excelの `Progress` シート、図5点と元のセル値の保持を確認。再実行の出力は `runs/zenn-wine-20261126-160703-548/`。標準MarkdownをChromeの390pxと1280pxで表示し、図2点、表、コードブロックを確認した。npmレジストリの名前解決に失敗したため、Zenn CLI固有の表示確認は未実施。
+
+公開前に、本文末尾から進捗と詳細図を含む公開コードの版へたどれるようリンクを確定する。GitHub連携では原稿と図2点を同じ公開対象へ含める。Webエディタを使う場合は図2点をアップロードし、本文中の画像参照先を置き換える。 [Zenn CLIの公式ガイド](https://zenn.dev/zenn/articles/zenn-cli-guide) · [画像連携の公式ガイド](https://zenn.dev/zenn/articles/deploy-github-images)
+
 ## 2026年11月20日：開発メモ (5) のBP向け試作画面
 
 最終回は、IrisでCSVの点検から5モデル比較、日本語の評価Excelまでをたどり、Bike Sharingを例に日付順評価の月別グラフを読む。BP画面が使う関数で両データを再実行し、評価件数とmacro F1を予測配列に照合した。月別図は時刻付きBike Sharingの再実行結果から同じ作図処理で生成した。PyGWalkerで確認済みのHTML出力と、Streamlit連携・初回のバッチ起動・画面からの呼び出しの予定を記した。 [開発メモ (5)](../articles/diy-automl-development-note-05-bp-preview.md)
