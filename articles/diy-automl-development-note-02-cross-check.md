@@ -1,7 +1,7 @@
 ---
 title: "DIY AutoML 開発メモ (2) TensorFlow・PyTorch・AutoGluon・H2Oで結果を照合する"
 emoji: "🔬"
-type: "idea"
+type: "tech"
 topics: ["automl", "tensorflow", "pytorch", "h2o", "機械学習"]
 published: false
 ---
