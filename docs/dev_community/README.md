@@ -1,6 +1,22 @@
 # DEV Community 投稿原稿
 
-Zenn向けの開発メモ01〜06をもとに、DEV Communityの読者向けに整えた英語原稿です。01〜05は分類と評価の流れ、06は時系列予測への展開です。実験の出典は [GitHubのスナップショット 64b17f1](https://github.com/okamasaya/DIY_AutoML/tree/64b17f120dad1ead6256d963b779c13630457898) です。
+Zenn向けの評価記事3本と開発メモ01〜06を、DEV Communityの読者向けに英語化した原稿です。評価記事でプロジェクトの目的、計算方法、業務例を説明し、開発メモで個別の実装と検証を紹介します。実験の出典は [GitHubのスナップショット 64b17f1](https://github.com/okamasaya/DIY_AutoML/tree/64b17f120dad1ead6256d963b779c13630457898) です。
+
+## DIY AutoML Evaluation
+
+親記事から入り、関心に応じてDS向けの再現手順とBP向けの業務例に進めます。3本はDEVで同じ連載名を使います。
+
+| 記事 | 内容 |
+| --- | --- |
+| [What a machine learning score leaves out](diy-automl-evaluation-framework.md) | 親記事。点推定に誤差と学習の途中経過を添える目的、定番3データの実測図 |
+| [How to report uncertainty in a machine learning score](diy-automl-ds-uncertainty.md) | DS向け。条件付き区間、対応のある比較、Irisの再計算コード、CLIとNotebookの例 |
+| [What do you get back from a model? An Excel report and three business experiments](diy-automl-business-three-experiments.md) | BP向け。IrisのExcelと、ホテル・カフェ券・通販での誤分類と判断の違い |
+
+3本の翻訳元はGitHubの固定版にある日本語原稿です。分類の実測条件を残し、時系列の節は後続の開発メモ06の実績につなげています。11月26日の原稿確認では、掲載値と保存済みの結果、固定版の英語図、Irisの再標本化1,000回、WineのCLI・Notebook・特徴量探索の例を照合しました。
+
+## DIY AutoML Development Notes
+
+01〜05は分類と評価の流れ、06は時系列予測への展開です。
 
 | 順番 | 投稿原稿 | 内容 |
 | --- | --- | --- |
@@ -19,7 +35,7 @@ Zenn向けの開発メモ01〜06をもとに、DEV Communityの読者向けに�
 
 [DEV Editor Guide](https://dev.to/p/editor_guide)
 
-全6本の連載名は **DIY AutoML Development Notes** です。図は公開GitHub上のコミット固定URLを参照するため、手動投稿時に画像の再アップロードは不要です。本文末尾に英語原稿へのAI利用を明記しています。 [DEVのAI利用ガイドライン](https://dev.to/guidelines-for-ai-assisted-articles-on-dev/)
+図は公開GitHub上のコミット固定URLから読み込めます。本文末尾とFront Matterに英語原稿へのAI利用を明記しています。 [DEVのAI利用ガイドライン](https://dev.to/guidelines-for-ai-assisted-articles-on-dev/)
 
 ## 英語版の図
 
