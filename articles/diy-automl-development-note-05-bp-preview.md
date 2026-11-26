@@ -1,7 +1,7 @@
 ---
 title: "DIY AutoML 開発メモ (5) CSVから学習結果をExcelとグラフで見る"
 emoji: "📊"
-type: "idea"
+type: "tech"
 topics: ["automl", "python", "機械学習", "データ分析", "excel"]
 published: false
 ---
