@@ -1,7 +1,7 @@
 ---
 title: "DIY AutoML 開発メモ (1) 手元のPCでデータ点検からモデル評価まで"
 emoji: "🧪"
-type: "idea"
+type: "tech"
 topics: ["automl", "python", "機械学習", "scikitlearn"]
 published: false
 ---
