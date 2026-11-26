@@ -1,7 +1,7 @@
 ---
 title: "DIY AutoML 開発メモ (4) 焼きなまし法で特徴量を選ぶ"
 emoji: "🌡️"
-type: "idea"
+type: "tech"
 topics: ["automl", "python", "機械学習", "特徴量選択", "最適化"]
 published: false
 ---
