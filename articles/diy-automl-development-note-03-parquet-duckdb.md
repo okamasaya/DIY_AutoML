@@ -1,7 +1,7 @@
 ---
 title: "DIY AutoML 開発メモ (3) 元CSVを残し、ParquetとDuckDBで学習前のデータを整える"
 emoji: "📦"
-type: "idea"
+type: "tech"
 topics: ["automl", "python", "データ分析", "parquet", "duckdb"]
 published: false
 ---
