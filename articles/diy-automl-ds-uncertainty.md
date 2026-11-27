@@ -442,11 +442,4 @@ JAXにも関心があります。自分自身はまだ未経験なので、[公�
 Julia版やRust版も、今後の情勢や必要性を見ながら考えたい候補です。Juliaでは[MLJ](https://juliaai.github.io/MLJ.jl/stable/)のようなモデル比較の仕組みを参考にできます。Rustでは独立した版を作る案に加え、[PyO3](https://pyo3.rs/)などでPythonのAPIを保ちながら一部処理を実装する案もあります。全体の移植と一部の実装変更は、別の範囲として考えます。
 
 これらは将来展望で、対応時期や実装方式は未定です。言語やframeworkが変わっても、評価単位・前処理・指標・不確かさの意味をどうそろえるかを確認していきたいです。[現在の準備と今後の条件](https://github.com/okamasaya/DIY_AutoML/blob/main/docs/DL_BACKENDS.md)に整理しています。
-
-### 追記(26/11/27)
-
-DIY_AutoMLという名称にしていましたが、PyPIへアップロードする名前を"UC_AutoMaiL"にしました。
-ですが、こちらの開発ログにではそのままDIY_AutoMLと使い続けます。
-pipで取得出来るようになったら改めて連絡します。
-
 :::
