@@ -1,4 +1,4 @@
-# DIY AutoML 0.4.0a8 試用手順
+# UC_AutoMaiL 0.4.0a8 試用手順
 
 PyPI公開に先立ち、現在の機能を同じパッケージから試す版です。分類、時系列の状態推定、グラフ分類をCPUで実行できます。ストレージとニューラルネットワークは既存の `storage`、`dl` 追加依存で導入します。
 
@@ -8,19 +8,20 @@ PyPI公開に先立ち、現在の機能を同じパッケージから試す版�
 
 ```powershell
 $python313 = '.\runs\python-runtimes\cpython-3.13\python.exe'
-$wheel = '.\runs\pypi-alpha-0.4.0a8\dist\diy_automl-0.4.0a8-py3-none-any.whl'
+$wheel = '.\runs\pypi-uc-automail-0.4.0a8-20261127\dist\uc_automail-0.4.0a8-py3-none-any.whl'
 $trial = "runs/alpha-local-$(Get-Date -Format 'yyyyMMdd-HHmmss-fff')"
 & $python313 -m venv "$trial/.venv"
 $python = "$trial/.venv/Scripts/python.exe"
-$cli = "$trial/.venv/Scripts/diy-automl.exe"
+$cli = "$trial/.venv/Scripts/uc-automail.exe"
 & $python -m pip install $wheel
 & $python -m pip check
 & $cli --version
 & $cli audit-data --csv data/reference/iris.csv --target target --output "$trial/iris-audit"
-& $cli select --csv data/reference/iris.csv --target target --output "$trial/iris-selection"
+& $cli select --csv data/reference/iris.csv --target target --progress both --output "$trial/iris-selection"
+& $cli report --run "$trial/iris-selection" --charts detail --output "$trial/iris-report"
 ```
 
-点検は `iris-audit`、学習と保留評価は `iris-selection/report.xlsx` にあります。評価Excelでは `SL_CV_Mean`、`SL_Test`、`SL_Test_Intervals` の順で確認できます。同梱のIrisから手元のCSVに変える場合は、`--csv` と、正解ラベル列を指定する `--target` を差し替えてください。
+点検は `iris-audit` にあります。評価と詳細図は `iris-report/report_with_figures.xlsx` を開き、`SL_CV_Mean`、`SL_Test`、`SL_Test_Intervals`、`Progress` の順に確認できます。学習中に記録した `iris-selection/progress.jsonl` も保存されます。同梱のIrisから手元のCSVに変える場合は、`--csv` と、正解ラベル列を指定する `--target` を差し替えてください。
 
 Windowsの画面も試す場合は、Tcl/Tkが有効なPythonで `& $cli bp-preview --csv data/reference/iris.csv --output-dir "$trial/bp"` を実行します。日本語の画面で `target` を選び、点検、列の選択、5モデル比較へ進みます。 [画面の操作手順](DATA_AUDIT.md#データ点検の画面を使う)
 
@@ -28,7 +29,7 @@ Windowsの画面も試す場合は、Tcl/Tkが有効なPythonで `& $cli bp-prev
 
 [試用ノートブック](../notebooks/Alpha_Trial.ipynb) と同じwheelを使います。Colabのファイルメニューからノートブックをアップロードし、CPUランタイムで開きます。最初のセルを実行するとwheelを選べます。ローカルJupyterでは、起動したフォルダーにwheelを置くか、ノートブックの `wheel` へ絶対パスを指定します。 [Colabのノートブック読み込み手順](https://research.google.com/colaboratory/faq.html?hl=en)
 
-ノートブックは試用専用の仮想環境を作ります。Irisの分類と1系列のカルマンを試した後、必要に応じてEKF・UKF・粒子フィルタの比較とGCNのセルを実行できます。結果はExcel、NPZ、manifestに保存され、最後のセルで入力と結果をZIPにまとめます。
+ノートブックは試用専用の仮想環境を作ります。Irisの分類、選定の進捗ログ、詳細図付きExcelと、1系列のカルマンを確認できます。必要に応じてEKF・UKF・粒子フィルタの比較とGCNのセルを実行できます。最後のセルで入力とExcel、NPZ、manifest、ログをZIPにまとめます。
 
 時系列では `kalman/report.xlsx` の `Decision` で採用理由、`Metrics` で誤差と区間被覆を確認します。グラフでは `graph/report.xlsx` の `Comparison` に選定用と保留のスコアがあります。
 
@@ -43,6 +44,10 @@ Windows x64のPython 3.13.17で、新しい環境にwheelを導入しました�
 同じWindowsのローカルJupyterカーネルで、ノートブックの全セルを実行しました。分類、線形カルマン、EKF・UKF・粒子フィルタの比較、GCNの結果を検証し、ZIPにまとめられました。インストール後の各コマンドは保存結果の検証込みで約5〜6秒でした。Colabのホスト環境での動作は未確認です。
 
 wheelとソース配布物は `twine check --strict` を通過し、TensorFlowを含む開発環境で全282テストが通過しました。
+
+## 2026年11月27日の試用結果
+
+MITライセンス付きのUC_AutoMaiL候補を使い、wheelを入れたWindowsのPython 3.12.16と、ソース配布物を入れた3.13.17で、Irisの進捗ログと詳細図4点を含むExcelを確認しました。同じwheelでローカルJupyterの全5コードセルを実行し、分類、時系列、グラフの結果を含む31ファイルを最終ZIPで照合しました。Colabのホスト環境での動作確認は残っています。 [配布物の場所と検証結果](PYPI_RELEASE.md#2026年11月27日のuc_automail候補)
 
 ## 配布の準備
 

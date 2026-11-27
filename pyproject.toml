@@ -1,13 +1,15 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "diy-automl"
+name = "UC_AutoMaiL"
 version = "0.4.0a8"
-description = "Compare machine learning models and inspect the evidence behind their scores"
+description = "Compare machine learning models and report uncertainty in their evaluation"
 readme = "README.pypi.md"
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = ["numpy>=2", "pandas>=2.2", "scipy>=1.14", "scikit-learn>=1.6", "threadpoolctl>=3.2", "openpyxl>=3.1", "matplotlib>=3.9"]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -28,6 +30,7 @@ notebook = ["ipykernel>=6", "nbclient>=0.10", "nbformat>=5"]
 storage = ["duckdb>=1.4,<2", "pyarrow>=18"]
 
 [project.scripts]
+uc-automail = "diy_automl.cli:main"
 diy-automl = "diy_automl.cli:main"
 
 [tool.setuptools.packages.find]

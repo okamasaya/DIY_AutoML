@@ -2,7 +2,7 @@
 
 更新日：2026-11-27（日本時間）
 
-**次は、統合済みの `main` を基にPyPI候補を再ビルドする。** 木の深さ、CPU並列度、JSON列抽出、進捗ログ、Excel詳細図を含む開発差分を、記事を収録済みの版に統合した。再ビルド、投稿、後続開発の順序は11月27日の項に記録した。 [11月26日の開発記録](HANDOFF_20261126.md)
+**初回公開名はUC_AutoMaiL、PyPIの配布名は `uc-automail`。** 公開元の `okamasaya/DIY_AutoML` とMITライセンスで、バージョン `0.4.0a8` の配布候補を作成した。配布候補とGitコミットの対応は元の開発フォルダーの `runs/pypi-uc-automail-0.4.0a8-ready/release.json` にある。次はTestPyPIアカウントを用意し、この候補の登録と再取得を確認する。 [配布候補からの再開手順](PYPI_RELEASE.md#検証済みの配布候補から再開する) · [TestPyPI手順](PYPI_RELEASE.md#testpypiで導入を確認する)
 
 11月24日時点のDS・BPの合意、時系列とGNNの実装状況、環境の復元手順と4媒体向けの資料を保存してある。 [再開用セーブポイント](RECOVERY_CHECKPOINT_20261124.md) · [Full Paper・Letter・Zenn・DEV Communityの資料一覧](PUBLICATION_HANDOFF_20261124.md)
 
@@ -56,9 +56,11 @@ Full Paperの処理フロー図、BP画面の結果グラフ、詳細グラフ�
 
 | 順序 | 作業 | 現状と次の一手 |
 | --- | --- | --- |
-| 1 | PyPI候補の再ビルドと試用 | 既存の `0.4.0a8` wheel・sdistは、進捗ログと詳細図の追加前にビルド・導入を確認した。次は両機能を含むwheel・sdistを作り、クリーン環境で `--progress both`、`--charts detail`、Excelの検証まで通す。公開名・公開リポジトリ・ライセンスは要決定。TestPyPIからの取得、ローカル・Colabでの試用、本番公開が残る。 [配布手順](PYPI_RELEASE.md) |
+| 1 | PyPI候補の再ビルドと試用 | 新しい配布名 `uc-automail` とMITライセンスでローカル候補を作成した。TestPyPIアカウントの作成、登録内容と取得した配布物の照合、Colabでの試用、本番公開が残る。 [配布手順](PYPI_RELEASE.md#2026年11月27日のuc_automail候補) |
 | 並行 | Zenn・DEV Community | Zennの学習進捗記事と図は [PR #13](https://github.com/okamasaya/DIY_AutoML/pull/13)、DEVの評価記事3本と目次は [PR #14](https://github.com/okamasaya/DIY_AutoML/pull/14) で統合済み。対象4記事のGit原稿は `published: false`。Zennの再現手順は進捗と詳細図を含む開発コミットへのリンクに差し替えた。Zenn・DEVの投稿画面での表示確認が残る。 [DEV原稿一覧](https://github.com/okamasaya/DIY_AutoML/tree/main/docs/dev_community) |
 | 後続 | 評価・BP・研究資料 | 表形式ではfoldの学習側で完結する欠損補完とカテゴリ変換が次の候補。日付順評価の差の区間、モデルの保存・再利用、探索予算も検討する。BPはQt試作とMacBook Air実機検証、フィジカルAIはカルマン系・GCNの適用先ごとの検証を計画として持つ。Full PaperとLetterの改稿に使う実験資料は保存済み。 [開発ロードマップ](ROADMAP.md) · [追加検証](MODEL_VALIDATION_TODO.md) · [投稿資料](PUBLICATION_HANDOFF_20261124.md) |
+
+Qiitaの方針整理は完了。無料で使える範囲で、DIY AutoMLの概要、機能、使い方、事例を1本で紹介し、詳しい評価や実験はZennに案内する。
 
 ### 2026年11月26日
 
