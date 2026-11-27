@@ -1,4 +1,4 @@
-"""Check a clean DIY AutoML install with the Iris CLI and Python API."""
+"""Check a clean UC_AutoMaiL install with the Iris CLI and Python API."""
 
 import argparse
 from importlib.metadata import distribution
@@ -10,6 +10,7 @@ import sys
 import numpy as np
 
 import diy_automl
+from diy_automl.excel_report_validation import validate_excel_report
 from diy_automl.validation import validate
 
 
@@ -52,7 +53,7 @@ def main():
     parser.add_argument("--storage", action="store_true", help="Check Parquet and DuckDB with the storage extra installed")
     args = parser.parse_args()
 
-    installed = distribution("diy-automl")
+    installed = distribution("uc-automail")
     package_file = Path(diy_automl.__file__).resolve()
     if package_file != installed.locate_file("diy_automl/__init__.py").resolve():
         raise RuntimeError(f"Expected an installed distribution, got {package_file}")
@@ -65,9 +66,12 @@ def main():
     cli = [sys.executable, "-I", "-X", "utf8", "-m", "diy_automl"]
     subprocess.run([*cli, "--version"], cwd=output, check=True)
 
-    for command, name, schema in (("audit-data", "audit", 15), ("select", "selection", 3)):
+    for command, name, schema, options in (
+        ("audit-data", "audit", 15, []),
+        ("select", "selection", 3, ["--progress", "both"]),
+    ):
         subprocess.run(
-            [*cli, command, "--csv", str(csv), "--target", "target", "--output", name],
+            [*cli, command, "--csv", str(csv), "--target", "target", *options, "--output", name],
             cwd=output,
             check=True,
         )
@@ -78,6 +82,19 @@ def main():
     with np.load(output / "selection" / "arrays.npz", allow_pickle=False) as arrays:
         correct = np.count_nonzero(arrays["predictions"] == arrays["truth"])
         print(f"Iris holdout: {result['selected_model']}, {correct}/{len(arrays['truth'])} correct")
+    if result["settings"].get("progress") != "both":
+        raise RuntimeError("The installed selection did not enable progress recording")
+    subprocess.run(
+        [*cli, "report", "--run", "selection", "--charts", "detail", "--output", "detailed"],
+        cwd=output,
+        check=True,
+    )
+    detailed = validate_excel_report(output / "detailed")
+    figure_ids = {figure["id"] for figure in detailed["figures"]}
+    if detailed.get("charts") != "detail" or not {"sl_fold_scores", "sl_cv_progress"} <= figure_ids:
+        raise RuntimeError("The installed report did not produce the detailed CV figures")
+    print(f"Validated recorded progress and the illustrated report with {detailed['figure_count']} figures")
+
     check_extraction_and_training(cli, csv, output, result["features"], args.storage)
     print(f"Validated the audit and evaluation in {output}")
 

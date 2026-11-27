@@ -1,19 +1,19 @@
-# DIY AutoML Overview
+# UC_AutoMaiL Overview
 
 [Japanese README](README.md)
 
-DIY AutoML helps you compare machine learning models on tabular data and inspect the evidence behind the scores. It records which data you used, how you split it, how the candidates ranked, and how the selected model performed on held-out data. The saved predictions and evaluation intervals help you examine individual errors and judge how much the data supports a reported score.
+UC_AutoMaiL, originally called DIY AutoML, helps you compare machine learning models and evaluate the uncertainty of their scores. It records which data you used, how you split it, how the candidates ranked, and how the selected model performed on held-out data. The saved predictions and evaluation intervals help you examine individual errors and judge how much the data supports a reported score.
 
 - **Data scientists** can use the Python API, CLI, or notebook to run and reproduce evaluations. [Guide for data scientists](docs/DATA_SCIENCE_GUIDE.en.md) · [Notebook](notebooks/Local_Comparison.ipynb)
 - **Business users** can use the Windows preview to inspect a CSV, select columns, compare models, and review results. The preview and its Excel summary sheets currently use Japanese. They show counts such as correct classifications, missed cases, and false alarms. [Guide for business users](docs/BUSINESS_USER_GUIDE.en.md)
 
 The five development notes cover the workflow, library cross-checks, storage benchmarks, feature selection, and the Windows preview. [English development notes](docs/development-notes/README.md)
 
-The distribution trial for version `0.4.0a8` includes a local wheel and a CPU notebook for trying classification, state estimation, and graph classification from that wheel. [Trial instructions (Japanese)](docs/PYPI_ALPHA_TRIAL.md) · [Colab and Jupyter notebook](notebooks/Alpha_Trial.ipynb)
+The distribution trial for version `0.4.0a8` includes a wheel and a CPU notebook for trying classification, state estimation, and graph classification. [Trial instructions (Japanese)](PyPI/TRIAL.md) · [Colab and Jupyter notebook](PyPI/Alpha_Trial.ipynb) · [PyPI release files](PyPI/)
 
 ## What you can do
 
-| Task | What DIY AutoML provides |
+| Task | What UC_AutoMaiL provides |
 | --- | --- |
 | Inspect a dataset | Check a CSV for missing values, duplicate rows, and class counts. Optionally make a reusable Parquet or DuckDB working copy, then extract a training CSV. [Data preparation (Japanese)](docs/DATA_AUDIT.md) |
 | Compare classifiers | Use the same training folds for five scikit-learn classifiers, rank them by mean macro F1 by default, and evaluate the selected model on held-out data. The `select` workflow supports stratified row splits, group splits, and date-ordered splits. |
@@ -74,7 +74,7 @@ To open the Windows preview with the same sample, run the command below and choo
 - A bootstrap interval describes evaluation sample variability for the selected fitted model. Variation from retraining, model selection, or changes in the population requires additional evaluation. Date-ordered runs currently report point estimates for the held-out period.
 - The Windows preview runs from the Python checkout with Tcl/Tk. A packaged installer and interactive chart editing are future work. [Roadmap (Japanese)](docs/ROADMAP.md)
 
-The current checkout is an alpha version. A repository-wide license is pending. See the dataset notes for provenance and terms for bundled examples. [Dataset notes (Japanese)](data/reference/README.md)
+The current checkout is an alpha version. The project-authored Python package and its packaging files are available under the MIT License. The dataset notes document provenance and terms for the bundled examples. [License and scope](LICENSE) · [Dataset notes (Japanese)](data/reference/README.md)
 
 ## Technical letter
 

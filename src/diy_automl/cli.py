@@ -44,8 +44,8 @@ def add_supervised_options(parser):
 
 
 def main():
-    parser=argparse.ArgumentParser(description="Reimplemented DIY AutoML evaluation")
-    parser.add_argument("--version", action="version", version=f"DIY AutoML {__version__}")
+    parser=argparse.ArgumentParser(description="UC_AutoMaiL model comparison and uncertainty evaluation")
+    parser.add_argument("--version", action="version", version=f"UC_AutoMaiL {__version__}")
     sub=parser.add_subparsers(dest="command",required=True)
     for command in ("run","select","repeat-ul","repeat-dl","subsample-ul","tune"):
         p=sub.add_parser(command)
