@@ -55,3 +55,33 @@ python3.14 -X utf8 experiments/voyager_crosscheck/run.py h2o --run $run
 ```
 
 `dataset.csv` に予測時点・予測対象の日・分割を、`input.json` に元データのハッシュと混入観測の元時刻を保存する。`predictions.csv` は予測位置と真値、`metrics.csv` は精度と検証時の参照値、`quality.csv` は入力の点検結果。`comparison.json` は使用バージョンと結果の集計を含む。今回の出力は `runs/voyager-crosscheck-20261124`。分割、予測時刻、集計を照合し、最終時点の観測を変更してもその時点までを対象とするEKFの先行予測が変わらないことを確認した。
+
+## JPL Horizonsの公開軌道を参照した比較
+
+Qiitaの比較編に向けて、NASA/JPL Horizonsから取得したVoyager 1と地球の太陽中心の幾何学的状態ベクトルでも実行した。期間は1980-12-01〜1982-11-29（TDB）の7日おきで各105時点。参照座標はJ2000黄道面で受け取り、初日のVoyager 1の位置と速度が張る平面に両天体の状態を射影した。Voyager 1の参照軌道と平面の最大の距離は0.00860 AUだった。 [Horizons APIのベクトル表仕様](https://ssd-api.jpl.nasa.gov/doc/horizons.html)
+
+入力の距離と距離変化率は射影した状態から求め、標準偏差 `0.0002 AU` と `0.002 AU/年` の正規ノイズをseed 42で加えた模擬観測を使った。初期状態は参照軌道の最初の状態に `[0.002, -0.004, 0.012, -0.015]`（位置AU、速度AU/年）を加えた値とした。時系列分割、観測の混入条件、モデルの選定と採点には前節と同じ処理を使った。公開軌道は射影後の参照値として扱う。
+
+通常の模擬観測で7日先の位置RMSEはEKF 884,611 km、AutoGluon 34,519,748 km、H2O 28,085,138 km。EKFの公称95%予測楕円に入った参照位置は保留44時点中0時点だった。取得時のクエリとJSONのSHA-256、各方式の版、全条件のRMSEと楕円の被覆率を残した。 [公開軌道の実験結果](horizons-results.json)
+
+リポジトリのルートで実行する。`$python` はUC_AutoMaiL `0.4.1a0`、NumPy、pandas、scikit-learnが使える環境を指定する。AutoGluonとH2Oは前節の環境を使う。サーバー側で暦データが更新された場合は、取得ファイルのSHA-256を集計に記録した値と照合する。
+
+```powershell
+$python = '.\.venv\Scripts\python.exe'
+$root = 'runs/voyager-horizons'
+$source = "$root/input"
+$run = "$root/compare"
+$script = 'experiments/voyager_crosscheck/horizons.py'
+New-Item -ItemType Directory -Path $source -Force | Out-Null
+$urls = & $python -X utf8 $script urls
+Invoke-WebRequest -Uri $urls[0] -OutFile "$source/voyager1.json"
+Invoke-WebRequest -Uri $urls[1] -OutFile "$source/earth.json"
+& $python -X utf8 $script prepare --source $source --run $run
+& $python -X utf8 $script diy --run $run
+& .\.venv-autogluon\Scripts\python.exe -X utf8 $script autogluon --run $run
+$env:JAVA_HOME = (Resolve-Path 'runs/h2o-temurin17-runtime/jdk-17.0.21+9-jre').Path
+python3.14 -X utf8 $script h2o --run $run
+& $python -X utf8 $script report --run $run
+```
+
+出力の `horizons.json` に取得条件、`comparison.json` に集計、`predictions.csv` と `ekf_uncertainty.csv` に時点ごとの予測と楕円の詳細を保存する。

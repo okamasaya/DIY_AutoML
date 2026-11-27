@@ -1,0 +1,137 @@
+{
+  "reference": {
+    "sources": {
+      "voyager1": {
+        "query": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%4010%27&START_TIME=%271980-12-01%27&STOP_TIME=%271982-11-29%27&STEP_SIZE=%277+d%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27AU-D%27&VEC_TABLE=%272%27&CSV_FORMAT=%27YES%27&VEC_CORR=%27NONE%27&TIME_TYPE=%27TDB%27&COMMAND=%27-31%27",
+        "target": "Target body name: Voyager 1 (spacecraft) (-31)    {source: Voyager_1_ST+refit2022_m}",
+        "signature": {
+          "source": "NASA/JPL Horizons API",
+          "version": "1.2"
+        },
+        "sha256": "7247516ebd9873961a12616747bd5dcb452b4209c7d69e48f7434035a681cf53"
+      },
+      "earth": {
+        "query": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&OBJ_DATA=%27NO%27&MAKE_EPHEM=%27YES%27&EPHEM_TYPE=%27VECTORS%27&CENTER=%27500%4010%27&START_TIME=%271980-12-01%27&STOP_TIME=%271982-11-29%27&STEP_SIZE=%277+d%27&REF_PLANE=%27ECLIPTIC%27&REF_SYSTEM=%27ICRF%27&OUT_UNITS=%27AU-D%27&VEC_TABLE=%272%27&CSV_FORMAT=%27YES%27&VEC_CORR=%27NONE%27&TIME_TYPE=%27TDB%27&COMMAND=%27399%27",
+        "target": "Target body name: Earth (399)                     {source: DE441}",
+        "signature": {
+          "version": "1.2",
+          "source": "NASA/JPL Horizons API"
+        },
+        "sha256": "32f50ca2f2fb60ddf5a6b4783cdd43defbcb67344b8c701546b28eef32235fa3"
+      }
+    },
+    "first_date_tdb": "1980-12-01",
+    "last_date_tdb": "1982-11-29",
+    "rows": 105,
+    "projection": "Plane defined by the first Voyager heliocentric position and velocity",
+    "max_out_of_plane_distance_au": 0.008603110770490799,
+    "observations": "Simulated range and range rate within the projected plane",
+    "normal_noise_sd": {
+      "range_au": 0.0002,
+      "range_rate_au_per_year": 0.002
+    },
+    "observation_seed": 42,
+    "prior_mean": [
+      9.60107079155997,
+      -0.004000000000000155,
+      1.6711729266279747,
+      4.224408190055079
+    ]
+  },
+  "forecast_horizon_days": 7,
+  "splits": {
+    "train": {
+      "rows": 48,
+      "first_target_day": 21,
+      "last_target_day": 350,
+      "first_target_date_tdb": "1980-12-22",
+      "last_target_date_tdb": "1981-11-16"
+    },
+    "tune": {
+      "rows": 10,
+      "first_target_day": 357,
+      "last_target_day": 420,
+      "first_target_date_tdb": "1981-11-23",
+      "last_target_date_tdb": "1982-01-25"
+    },
+    "test": {
+      "rows": 44,
+      "first_target_day": 427,
+      "last_target_day": 728,
+      "first_target_date_tdb": "1982-02-01",
+      "last_target_date_tdb": "1982-11-29"
+    }
+  },
+  "engines": {
+    "diy": {
+      "version": "0.4.1a0",
+      "prior_state": [
+        9.60107079155997,
+        -0.004000000000000155,
+        1.6711729266279747,
+        4.224408190055079
+      ]
+    },
+    "autogluon": {
+      "version": "1.6.3",
+      "selected": {
+        "x_au": "WeightedEnsemble_L2",
+        "y_au": "WeightedEnsemble_L2"
+      }
+    },
+    "h2o": {
+      "version": "3.46.0.12",
+      "selected": {
+        "x_au": "glm",
+        "y_au": "glm"
+      }
+    }
+  },
+  "holdout_position_rmse_km": {
+    "bias": {
+      "AutoGluon Tabular": 34493237.88101734,
+      "DIY EKF": 470915.0846408074,
+      "H2O AutoML": 28082566.056105025,
+      "Physics only": 5951388.977504202,
+      "Time trend": 28046524.796825904
+    },
+    "nominal": {
+      "AutoGluon Tabular": 34519748.47433626,
+      "DIY EKF": 884611.058922242,
+      "H2O AutoML": 28085138.048541207,
+      "Physics only": 5951388.977504202,
+      "Time trend": 28046524.796825904
+    },
+    "replayed": {
+      "AutoGluon Tabular": 259246726.88808537,
+      "DIY EKF": 586329237.5492277,
+      "H2O AutoML": 248018816.30087075,
+      "Physics only": 5951388.977504202,
+      "Time trend": 28046524.796825904
+    }
+  },
+  "ekf_nominal_prediction_ellipse_probability": 0.95,
+  "ekf_holdout_ellipse_coverage": {
+    "bias": {
+      "points": 44,
+      "inside": 0,
+      "coverage": 0.0,
+      "mean_semi_minor_axis_km": 23322.17067301734,
+      "mean_semi_major_axis_km": 195795.6113709883
+    },
+    "nominal": {
+      "points": 44,
+      "inside": 0,
+      "coverage": 0.0,
+      "mean_semi_minor_axis_km": 23319.94213492875,
+      "mean_semi_major_axis_km": 195828.52645983148
+    },
+    "replayed": {
+      "points": 44,
+      "inside": 0,
+      "coverage": 0.0,
+      "mean_semi_minor_axis_km": 21885.17677137373,
+      "mean_semi_major_axis_km": 191857.65200094928
+    }
+  }
+}

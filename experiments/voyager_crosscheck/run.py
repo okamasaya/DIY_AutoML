@@ -70,19 +70,20 @@ def splits(data):
     return train, tune, score
 
 
-def diy(data, train, score, *, progress=None):
+def diy(data, train, score, *, progress=None, initial_mean=None):
     # Reuse the physical model and prior from the Voyager example.
     sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
     from make_voyager_demo import (OBSERVATION_STD, PRIOR_MEAN, PRIOR_STD, PROCESS_STD,
                                    measurement, measurement_jacobian, transition, transition_jacobian)
     from diy_automl import __version__, extended_kalman_filter
 
+    prior_mean = PRIOR_MEAN if initial_mean is None else np.asarray(initial_mean, dtype=float)
     forecasts = pd.DataFrame(index=data.index, columns=TARGETS, dtype=float)
     position_covariance = np.full((len(data), 2, 2), np.nan)
     for name, scenario in data.groupby("scenario", sort=False):
         earth = scenario[OBSERVER].to_numpy()
         result = extended_kalman_filter(
-            scenario[SENSORS].to_numpy(), initial_mean=PRIOR_MEAN, initial_covariance=np.diag(PRIOR_STD**2),
+            scenario[SENSORS].to_numpy(), initial_mean=prior_mean, initial_covariance=np.diag(PRIOR_STD**2),
             transition=transition, transition_jacobian=transition_jacobian,
             measurement=lambda x, k: measurement(x, earth[k - 1]),
             measurement_jacobian=lambda x, k: measurement_jacobian(x, earth[k - 1]),
@@ -93,7 +94,7 @@ def diy(data, train, score, *, progress=None):
         position_covariance[scenario.index[:-1]] = result["forecast_covariance"][1:, :2, :2]
         if progress is not None:
             progress(name, len(scenario), len(scenario) - 1)
-    state = PRIOR_MEAN
+    state = prior_mean
     orbit = {}
     for step, day in enumerate(range(7, 729, 7), 1):
         state = transition(state, step)
@@ -103,7 +104,7 @@ def diy(data, train, score, *, progress=None):
                             for name in TARGETS])
     estimates = {"DIY EKF": forecasts.loc[score.index].to_numpy(), "Physics only": open_loop, "Time trend": trend}
     details = {
-        "version": __version__, "prior_state": PRIOR_MEAN.tolist(),
+        "version": __version__, "prior_state": prior_mean.tolist(),
     }
     return estimates, details, position_covariance[score.index]
 
@@ -201,7 +202,7 @@ def h2o_automl(train, tune, score, *, features=FEATURES, targets=TARGETS, progre
             server.shutdown()
 
 
-def run_engine(engine, run, data, *, capture_progress=False):
+def run_engine(engine, run, data, *, capture_progress=False, initial_mean=None):
     train, tune, score = splits(data)
     if engine == "diy":
         started = perf_counter()
@@ -212,7 +213,9 @@ def run_engine(engine, run, data, *, capture_progress=False):
             with (run / "diy-progress.jsonl").open("a", encoding="utf-8") as stream:
                 stream.write(json.dumps(event, allow_nan=False) + "\n")
 
-        estimates, details, covariance = diy(data, train, score, progress=record_scenario if capture_progress else None)
+        estimates, details, covariance = diy(
+            data, train, score, progress=record_scenario if capture_progress else None, initial_mean=initial_mean,
+        )
         uncertainty, summary = score_ekf_uncertainty(score, estimates["DIY EKF"], covariance)
     elif engine == "autogluon":
         estimates, details = autogluon(run, train, tune, score, capture_progress=capture_progress)
