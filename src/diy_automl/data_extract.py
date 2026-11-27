@@ -5,6 +5,7 @@ from contextlib import closing
 import csv
 from decimal import Decimal, InvalidOperation
 from hashlib import sha256
+from importlib.metadata import version
 import json
 from math import isfinite
 from numbers import Integral
@@ -12,7 +13,10 @@ from pathlib import Path
 import re
 from tempfile import TemporaryDirectory
 
-from .data_conversion import CONVERSION_SCHEMA, DUCKDB_CONFIG, FORMATS, converted_path, sql_identifier
+from .data_conversion import (
+    CONVERSION_SCHEMA, DUCKDB_CONFIG, FORMATS, converted_path, sql_identifier,
+    verify_formats, write_formats,
+)
 from .data_profile import NUMBER, read_header
 from .reporting import fail, file_sha256, prepare, write_json
 
@@ -22,12 +26,24 @@ OPERATORS = {"eq": "=", "ne": "<>", "lt": "<", "le": "<=", "gt": ">", "ge": ">="
 INTEGER_BITS = {"TINYINT": 8, "SMALLINT": 16, "INTEGER": 32, "BIGINT": 64, "HUGEINT": 128}
 DECIMAL_TYPE = re.compile(r"DECIMAL\(([0-9]+),([0-9]+)\)")
 CSV_ARTIFACT = "data.csv"
+OUTPUT_FORMATS = ("csv", *FORMATS)
 
 
-def extraction_settings(source, columns, where=(), limit=None):
+def read_extraction_recipe(path):
+    recipe = json.loads(Path(path).read_text(encoding="utf-8-sig"))
+    if not isinstance(recipe, dict) or recipe.keys() - {"columns", "format"}:
+        raise ValueError("The recipe must be a JSON object with columns and optional format")
+    if not isinstance(recipe.get("columns"), list):
+        raise ValueError("The recipe columns must be a JSON array")
+    return {"columns": recipe["columns"], "output_format": recipe.get("format", "csv")}
+
+
+def extraction_settings(source, columns, where=(), limit=None, *, output_format="csv"):
     kind = Path(source).suffix.lower()[1:]
-    if kind not in ("csv", *FORMATS):
+    if kind not in OUTPUT_FORMATS:
         raise ValueError("Source must be a .csv, .parquet or .duckdb file")
+    if output_format not in OUTPUT_FORMATS:
+        raise ValueError("Output format must be csv, parquet or duckdb")
     selected = [columns] if isinstance(columns, str) else list(columns)
     if not selected or any(not isinstance(name, str) or not name.strip() for name in selected):
         raise ValueError("Select at least one named output column")
@@ -47,7 +63,11 @@ def extraction_settings(source, columns, where=(), limit=None):
         raise ValueError("Row filters require a Parquet or DuckDB source")
     if limit is not None and (isinstance(limit, bool) or not isinstance(limit, Integral) or not 0 <= limit < 2**63):
         raise ValueError("limit must be a nonnegative 64-bit integer")
-    return {"source": str(source), "columns": selected, "where": filters, "limit": int(limit) if limit is not None else None}
+    settings = {"source": str(source), "columns": selected, "where": filters,
+                "limit": int(limit) if limit is not None else None}
+    if output_format != "csv":
+        settings["output_format"] = output_format
+    return settings
 
 
 def exact_numeric(value, dtype, precision, scale):
@@ -141,34 +161,48 @@ def projection(relation, inputs, settings, schema):
     return query, parameters
 
 
-def export_csv(source, destination, scratch, settings, lineage):
+def export_storage_projection(source, destination, scratch, settings, lineage):
     try:
         import duckdb
     except ImportError as error:
         raise RuntimeError("Install the optional storage dependencies with pip install -e '.[storage]'") from error
 
     is_parquet = source.suffix.lower() == ".parquet"
+    output_format = settings.get("output_format", "csv")
+    writes_database = output_format == "duckdb"
+    database_path = ":memory:"
+    if writes_database:
+        database_path = str(destination)
+    elif not is_parquet:
+        database_path = str(source)
     config = {
         **DUCKDB_CONFIG, "temp_directory": (scratch / "spill").as_posix(), "preserve_insertion_order": "true",
         "autoload_known_extensions": "false", "autoinstall_known_extensions": "false",
     }
-    with closing(duckdb.connect(":memory:" if is_parquet else str(source), read_only=not is_parquet, config=config)) as db:
+    with closing(duckdb.connect(database_path, read_only=not (is_parquet or writes_database), config=config)) as db:
         paths = [destination.as_posix()]
         if is_parquet:
             paths.append(source.as_posix())
+        elif writes_database:
+            paths.extend((source.as_posix(), f"{source.as_posix()}.wal"))
         db.execute("SET allowed_paths = ?", [paths])
         db.execute("SET enable_external_access = false")
 
         if is_parquet:
             relation, inputs = "read_parquet($source, hive_partitioning=false)", {"source": source.as_posix()}
         else:
+            if writes_database:
+                database = "extraction_source"
+                source_literal = "'" + source.as_posix().replace("'", "''") + "'"
+                db.execute(f"ATTACH {source_literal} AS extraction_source (READ_ONLY)")
+            else:
+                database = db.execute("SELECT current_database()").fetchone()[0]
             table = db.execute("""
                 SELECT table_type FROM information_schema.tables
-                WHERE table_catalog = current_database() AND table_schema = 'main' AND table_name = 'data'
-            """).fetchone()
+                WHERE table_catalog = ? AND table_schema = 'main' AND table_name = 'data'
+            """, [database]).fetchone()
             if table != ("BASE TABLE",):
                 raise ValueError("DuckDB source must contain the base table main.data")
-            database = db.execute("SELECT current_database()").fetchone()[0]
             relation, inputs = f"{sql_identifier(database)}.main.data", {}
         description = db.execute(f"DESCRIBE SELECT * FROM {relation}", inputs).fetchall()
         schema = {row[0]: row[1] for row in description}
@@ -176,8 +210,18 @@ def export_csv(source, destination, scratch, settings, lineage):
         if lineage and columns != lineage["columns"]:
             raise ValueError("SQL column names or types differ from the audited conversion")
         query, parameters = projection(relation, inputs, settings, schema)
-        parameters["file_out"] = destination.as_posix()
-        rows = db.execute(f"COPY ({query}) TO $file_out (FORMAT CSV, HEADER true)", parameters).fetchone()[0]
+        if writes_database:
+            rows = db.execute(f"CREATE TABLE main.data AS {query}", parameters).fetchone()[0]
+        else:
+            options = "FORMAT PARQUET, COMPRESSION ZSTD" if output_format == "parquet" else "FORMAT CSV, HEADER true"
+            parameters["file_out"] = destination.as_posix()
+            rows = db.execute(f"COPY ({query}) TO $file_out ({options})", parameters).fetchone()[0]
+            if output_format == "parquet":
+                stored = db.execute("DESCRIBE SELECT * FROM read_parquet(?, hive_partitioning=false)",
+                                    [destination.as_posix()]).fetchall()
+                expected = [(name, schema[name]) for name in settings["columns"]]
+                if [row[:2] for row in stored] != expected:
+                    raise ValueError("Parquet would change the projected column names or types; choose DuckDB output")
     return rows, columns, duckdb.__version__
 
 
@@ -209,10 +253,10 @@ def export_csv_columns(source, destination, settings):
     return rows, [{"name": name, "type": "VARCHAR"} for name in header]
 
 
-def extract_data(source, output, columns, where=(), limit=None, *, expected_input_sha256=None):
-    """Select columns and apply AND filters in source order, writing a reproducible CSV."""
+def extract_data(source, output, columns, where=(), limit=None, *, expected_input_sha256=None, output_format="csv"):
+    """Select columns and apply AND filters, writing a CSV, Parquet or DuckDB file."""
     source = Path(source).resolve()
-    settings = extraction_settings(source, columns, where, limit)
+    settings = extraction_settings(source, columns, where, limit, output_format=output_format)
     if not source.is_file():
         raise ValueError("Choose a single existing source file")
     digest = file_sha256(source)
@@ -225,18 +269,28 @@ def extract_data(source, output, columns, where=(), limit=None, *, expected_inpu
     try:
         with TemporaryDirectory(prefix=".extract-", dir=output) as temporary:
             scratch = Path(temporary)
-            csv_path = scratch / CSV_ARTIFACT
+            destination = scratch / f"data.{output_format}"
             if kind == "csv":
+                csv_path = scratch / CSV_ARTIFACT
                 rows, columns = export_csv_columns(source, csv_path, settings)
                 duckdb_version = None
+                if output_format != "csv":
+                    files = {output_format: destination}
+                    fields = [{"name": name, "type": "VARCHAR"} for name in settings["columns"]]
+                    profile = {"input_sha256": file_sha256(csv_path), "settings": {"conversion_types": "preserve"},
+                               "scan": {"valid_rows": rows}}
+                    write_formats(csv_path, scratch, files, fields, profile)
+                    verify_formats(files, fields, profile)
+                    if output_format == "duckdb":
+                        duckdb_version = version("duckdb")
             else:
-                rows, columns, duckdb_version = export_csv(source, csv_path, scratch, settings, lineage)
+                rows, columns, duckdb_version = export_storage_projection(source, destination, scratch, settings, lineage)
             if file_sha256(source) != digest:
                 raise ValueError("The source file changed during extraction")
-            csv_hash = file_sha256(csv_path)
-            csv_path.rename(output / CSV_ARTIFACT)
+            artifact = {destination.name: file_sha256(destination)}
+            destination.rename(output / destination.name)
         manifest.update(status="completed", rows=rows, source_columns=columns,
-                        artifacts={CSV_ARTIFACT: csv_hash}, duckdb_version=duckdb_version)
+                        artifacts=artifact, duckdb_version=duckdb_version)
         write_json(output / "manifest.json", manifest)
         return output
     except Exception as error:

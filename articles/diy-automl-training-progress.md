@@ -42,7 +42,7 @@ AutoGluonでは学習ログとモデル別のleaderboard、H2Oでは `event_log`
 
 ## 手元で確認する
 
-以下は、進捗と詳細図を加えたDIY AutoML 0.4.0a8開発版を導入した `.venv` でのPowerShell例です。実測環境はWindows 11、Python 3.13.17、scikit-learn 1.8.0。PyPIに向けた配布の準備中で、以下では開発環境からWineの同梱CSVを使います。 [DIY AutoML](https://github.com/okamasaya/DIY_AutoML) · [分類サンプルCSV](https://github.com/okamasaya/DIY_AutoML/tree/main/data/reference)
+以下は、進捗と詳細図を加えたDIY AutoML 0.4.0a8開発版を導入した `.venv` でのPowerShell例です。実測環境はWindows 11、Python 3.13.17、scikit-learn 1.8.0。PyPIに向けた配布の準備中で、以下では開発環境からWineの同梱CSVを使います。 [実行例に対応する開発版](https://github.com/okamasaya/DIY_AutoML/tree/2948e1dc1448e1a26a48b36ff6899c8de29377cc) · [分類サンプルCSV](https://github.com/okamasaya/DIY_AutoML/tree/2948e1dc1448e1a26a48b36ff6899c8de29377cc/data/reference)
 
 ```powershell
 $run = "runs/zenn-wine-$(Get-Date -Format yyyyMMdd-HHmmss-fff)"

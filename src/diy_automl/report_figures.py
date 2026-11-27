@@ -3,7 +3,17 @@ from pathlib import Path
 import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.metrics import confusion_matrix,adjusted_rand_score
+from .run_progress import PROGRESS_SHEET
 from .supervised import metrics
+
+
+CHART_MODES = ("none", "summary", "detail")
+
+
+def chart_mode(value):
+    if value not in CHART_MODES:
+        raise ValueError("Charts must be none, summary or detail")
+    return value
 
 
 class Plans:
@@ -48,7 +58,40 @@ def numeric_group(frame,models,x,ys,errors=None):
     return data
 
 
-def build_plans(manifest,sheets,arrays,max_models=3,raw=None):
+def add_selection_details(plans, sheets, mean, labels, selected, metric, tuned):
+    source = "SL_Search_Folds" if tuned else "SL_CV_Folds"
+    table = sheets[source]
+    identity = "Candidate" if tuned else "Model"
+    folds = sorted(table["Fold"].unique())
+    values = table.pivot(index=identity, columns="Fold", values=metric).reindex(index=mean[identity], columns=folds)
+    scores = values.to_numpy(dtype=float)
+    if not np.isfinite(scores).all() or ((scores < 0) | (scores > 1)).any():
+        raise ValueError("Invalid saved fold scores")
+    plans.add("sl_fold_scores", "fold_scores", source, f"Validation {metric} by fold",
+              "Candidates and folds in declared order. Scores are from the training pool.",
+              {"scores": scores, "folds": np.asarray(folds, dtype=int) + 1},
+              labels=labels, selected=selected, metric=metric)
+    if tuned:
+        times = table.groupby(identity)["Fit Time (s)"].sum(min_count=len(folds)).reindex(mean[identity]).to_numpy(dtype=float)
+        if not np.isfinite(times).all() or (times < 0).any():
+            raise ValueError("Invalid saved fold fit times")
+        plans.add("sl_fold_fit_time", "fit_time", source, "Fit time by candidate",
+                  "Sum of recorded fit times across CV folds. Timing is descriptive.",
+                  {"seconds": times}, labels=labels, selected=selected)
+    if PROGRESS_SHEET in sheets:
+        progress = sheets[PROGRESS_SHEET]
+        started = progress.loc[progress.stage == "cv_start", "elapsed_seconds"].to_numpy(dtype=float)
+        elapsed = progress.loc[progress.stage == "cv", "elapsed_seconds"].to_numpy(dtype=float)
+        if len(started) != 1 or len(elapsed) != scores.size or started[0] > elapsed[0]:
+            raise ValueError("Saved progress does not match the CV fold count")
+        plans.add("sl_cv_progress", "cv_progress", PROGRESS_SHEET, "Cross-validation progress",
+                  "Elapsed time from output setup through the last completed CV fold.",
+                  {"elapsed_seconds": np.concatenate([started, elapsed]), "completed_folds": np.arange(len(elapsed) + 1)})
+    else:
+        plans.skip("sl_cv_progress", "No saved progress. Use --progress excel or both when running select or tune.")
+
+
+def build_plans(manifest,sheets,arrays,max_models=3,raw=None,*,charts="summary"):
     p=Plans();schema=manifest['schema_version'];classes=manifest['classes']
     raw=raw or {}
     if schema==2:
@@ -115,6 +158,8 @@ def build_plans(manifest,sheets,arrays,max_models=3,raw=None):
         p.add('sl_training_cv','cv','SL_Search_Mean' if tuned else 'SL_CV_Mean',f'Training CV mean {metric}',
               'Shared training folds; error bars are fold SD, not CI; display order is declared order',
               {'mean':mean[metric].to_numpy(dtype=float),'sd':sd[metric].to_numpy(dtype=float)},labels=labels,selected=chosen)
+        if charts == "detail":
+            add_selection_details(p, sheets, mean, labels, chosen, metric, tuned)
     elif schema==4:
         frame=sheets['UL_Seed_Summary'];models=frame.Model.drop_duplicates().tolist()
         p.add('ul_seed_summary','grouped','UL_Seed_Summary','Fixed-data initialization sensitivity',
@@ -167,7 +212,7 @@ def draw_figure(plan,path):
 
 def _draw(plan,path,Figure,Canvas,family):
     kind=plan['kind'];d=plan['data']
-    height=max(4.,len(plan.get('labels',[]))*.34+1.5) if kind=='cv' else 5.4
+    height=max(4.,len(plan['labels'])*.34+1.5) if kind in ('cv', 'fold_scores', 'fit_time') else 5.4
     fig=Figure(figsize=(9.,height),layout='constrained');Canvas(fig)
     if kind=='confusion':
         ax=fig.subplots();counts=d['counts']
@@ -183,6 +228,33 @@ def _draw(plan,path,Figure,Canvas,family):
         ax.barh(idx,d['mean'],xerr=d['sd'],color=['#198c83' if i==plan['selected'] else '#779fca' for i in idx],capsize=3)
         ax.set(yticks=idx,yticklabels=plan['labels'],xlabel='CV mean (error bars: fold SD, not CI)')
         ax.invert_yaxis();ax.set_xlim(left=0,right=max(1.02,float(np.nanmax(d['mean']+np.nan_to_num(d['sd'])))*1.03))
+    elif kind == "fold_scores":
+        ax = fig.subplots()
+        scores = d["scores"]
+        image = ax.imshow(scores, aspect="auto", cmap="Blues", vmin=0, vmax=1)
+        ax.set(xticks=np.arange(len(d["folds"])), xticklabels=d["folds"], xlabel="Validation fold",
+               yticks=np.arange(len(plan["labels"])), yticklabels=plan["labels"])
+        chosen = ax.get_yticklabels()[plan["selected"]]
+        chosen.set_color("#146e65")
+        chosen.set_fontweight("bold")
+        for (row, col), score in np.ndenumerate(scores):
+            ax.text(col, row, f"{score:.3f}", ha="center", va="center",
+                    color="white" if score >= .71 else "#17324d", fontsize=8)
+        fig.colorbar(image, ax=ax, label=plan["metric"], pad=.02)
+    elif kind == "fit_time":
+        ax = fig.subplots()
+        idx = np.arange(len(d["seconds"]))
+        colors = ["#198c83" if i == plan["selected"] else "#779fca" for i in idx]
+        bars = ax.barh(idx, d["seconds"], color=colors)
+        ax.bar_label(bars, fmt="%.3f", padding=3, fontsize=8)
+        ax.margins(x=.12)
+        ax.set(yticks=idx, yticklabels=plan["labels"], xlabel="Total CV fit time (seconds)", xlim=(0, None))
+        ax.invert_yaxis()
+    elif kind == "cv_progress":
+        ax = fig.subplots()
+        ax.step(d["elapsed_seconds"], d["completed_folds"], where="post", color="#198c83", linewidth=2)
+        ax.set(xlabel="Elapsed time (seconds)", ylabel="Completed CV folds", xlim=(0, None), ylim=(0, None))
+        ax.grid(axis="y", alpha=.25)
     elif kind=='cluster':
         ax,notes=fig.subplots(1,2,gridspec_kw={'width_ratios':[1.35,1.]})
         if 'coords' in d:

@@ -27,6 +27,8 @@ On Wine at seed 44, the five-feature annealing model and the full 13-feature mod
 
 The interval keeps the fitted models fixed and resamples the same evaluation rows for both methods within classes. The intervals included zero for all 20 Iris and Wine searches, leaving the direction unresolved under these conditions. The runs show how the subset choice can vary even with the same split and evaluation budget. [Experiment settings and results (Japanese)](../ANNEALING_CHECK.md#irisとwineでの検証)
 
+I replayed the searches on the same 15 Iris cross-validation scores. Increasing the budget from 8 to 12 raised the default annealing schedule's optimum hit count from 3 to 6 out of 10 seeds. Random search hit it 8 times at each budget. Ending at a warmer temperature (0.01 instead of 0.002) gave 3 and 7 hits, respectively. Under this schedule, changing the budget changes both the number of proposals and the rate of cooling per step. These results describe one fixed Iris split. If measurement costs differ, the number of columns is a starting point for comparing them. [Follow-up settings and results (Japanese)](../ANNEALING_CHECK.md#irisで探索予算と終点温度を変える)
+
 ## Reproduce search seed 44
 
 From the repository root, run these PowerShell commands using the installed `.venv`. Use a new value for `$work` on subsequent runs.

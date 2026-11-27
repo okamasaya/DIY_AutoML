@@ -9,21 +9,27 @@ def choose(means, metric="F1"):
     ties = np.flatnonzero(np.isclose(values, values.max(), atol=1e-12, rtol=0))
     return int(ties[0]), ties.tolist()
 
-def select(X,y,seed=42,metric="F1",*,folds=None):
+def select(X,y,seed=42,metric="F1",*,folds=None,tree_max_depth=None,tree_max_depths=None,forest_jobs=1,progress=None):
     if metric not in METRICS: raise ValueError("Unknown selection metric")
     if np.bincount(y).min() < 5: raise ValueError("Five samples per training class required for 5-fold CV")
     if folds is None:
         folds = list(StratifiedKFold(5,shuffle=True,random_state=seed).split(X,y))
     rows=[]
-    for name, model in candidates(seed):
+    models = candidates(seed, tree_max_depth=tree_max_depth, tree_max_depths=tree_max_depths, forest_jobs=forest_jobs)
+    for candidate, (name, model) in enumerate(models, start=1):
         for fold,(train,validation) in enumerate(folds):
             estimator=pipeline(clone(model)).fit(X[train],y[train])
-            rows.append({"Model":name,"Fold":fold,**metrics(y[validation],estimator.predict(X[validation]),np.unique(y))})
+            scores = metrics(y[validation], estimator.predict(X[validation]), np.unique(y))
+            rows.append({"Model": name, "Fold": fold, **scores})
+            if progress is not None:
+                progress.fold(name, candidate, len(models), fold + 1, len(folds), metric, scores[metric])
     scores=pd.DataFrame(rows)
     means=scores.groupby("Model",sort=False)[list(METRICS)].mean().reset_index()
     sd=scores.groupby("Model",sort=False)[list(METRICS)].std().reset_index()
     index,ties=choose(means,metric)
-    name,model=candidates(seed)[index]
+    name,model=models[index]
+    if progress is not None:
+        progress.record("refit")
     fitted=pipeline(model).fit(X,y)
     return fitted,name,scores,means,sd,ties,folds
 

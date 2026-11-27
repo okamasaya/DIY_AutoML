@@ -5,14 +5,14 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 import h2o
-from h2o.automl import H2OAutoML
+from h2o.automl import H2OAutoML, get_leaderboard
 from h2o.backend import H2OLocalServer
 import numpy as np
 import pandas as pd
 
 from diy_automl.data import load_csv
 from diy_automl.metric_uncertainty import interval_rows
-from diy_automl.reporting import fail, prepare, save
+from diy_automl.reporting import fail, prepare, save, write_json
 from diy_automl.sl_ranking import score_draws
 from diy_automl.sl_ranking_validation import validate_sl_ranking
 from diy_automl.supervised import METRICS, metrics
@@ -22,11 +22,11 @@ ALGORITHMS = ("GLM", "DRF", "GBM")
 MAX_MODELS = 5
 
 
-def fit_h2o(features, target, train, test, folds, classes, seed):
-    # H2O treats ice_root as a URI and rejects spaces in the workspace path.
-    with TemporaryDirectory(prefix="diy-automl-h2o-") as temporary:
+def fit_h2o(features, target, train, test, folds, classes, seed, *, progress=None):
+    # H2O parses ice_root as a URI. Pass a relative path without reserved characters.
+    with TemporaryDirectory(prefix=".diy-automl-h2o-", dir=".") as temporary:
         server = H2OLocalServer.start(
-            nthreads=1, max_mem_size=1024**3, ice_root=temporary,
+            nthreads=1, max_mem_size=1024**3, ice_root=Path(temporary).name,
             bind_to_localhost=True, verbose=False,
             jvm_custom_args=["-Dfile.encoding=UTF-8", "-Dsun.stdout.encoding=UTF-8", "-Dsun.stderr.encoding=UTF-8",
                              "-Dsys.ai.h2o.telemetry.disabled=true"],
@@ -46,6 +46,13 @@ def fit_h2o(features, target, train, test, folds, classes, seed):
             )
             automl.train(x=list(features.columns), y="label", training_frame=frame, fold_column="cv_fold")
 
+            if progress is not None:
+                progress.mkdir()
+                automl.event_log.as_data_frame().to_csv(progress / "event_log.csv", index=False, mode="x")
+                write_json(progress / "training_info.json", automl.training_info)
+                get_leaderboard(automl, extra_columns="ALL").as_data_frame().to_csv(
+                    progress / "leaderboard.csv", index=False, mode="x",
+                )
             leaderboard = automl.leaderboard.as_data_frame()
             rows = []
             for entry in leaderboard.itertuples(index=False):
@@ -72,7 +79,7 @@ def fit_h2o(features, target, train, test, folds, classes, seed):
             server.shutdown()
 
 
-def compare(csv, reference, output):
+def compare(csv, reference, output, *, capture_progress=False):
     baseline = validate_sl_ranking(reference)
     settings = baseline["settings"]
     directory, manifest = prepare(output, 1, {
@@ -95,6 +102,7 @@ def compare(csv, reference, output):
         classes = np.unique(target)
         ranking, leader, prediction = fit_h2o(
             features, target, train, test, folds, classes, settings["model_seed"],
+            progress=directory / "progress" if capture_progress else None,
         )
         scores, samples, draws = score_draws(target[test], (diy, prediction), classes, settings)
         if not np.array_equal(draws, reference_draws):
@@ -120,5 +128,6 @@ if __name__ == "__main__":
     parser.add_argument("--csv", required=True, type=Path)
     parser.add_argument("--reference", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
+    parser.add_argument("--capture-progress", action="store_true", help="Save H2O event log, timings and leaderboard")
     arguments = parser.parse_args()
-    print(compare(arguments.csv, arguments.reference, arguments.output))
+    print(compare(arguments.csv, arguments.reference, arguments.output, capture_progress=arguments.capture_progress))

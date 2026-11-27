@@ -17,8 +17,9 @@ from openpyxl.utils import get_column_letter
 from .bp_evaluation import BP_REPORT
 from .clustering_subsample import integer
 from .data import load_csv
-from .report_figures import build_plans,draw_figure
+from .report_figures import build_plans,chart_mode,draw_figure
 from .reporting import source_hashes,write_json
+from .run_progress import PROGRESS_LOG
 from .validation import validate
 
 
@@ -28,7 +29,7 @@ def digest(path):
 
 def source_artifact_names(manifest):
     names = ("manifest.json", "report.xlsx", "arrays.npz")
-    return (*names, BP_REPORT) if BP_REPORT in manifest["artifacts"] else names
+    return names + tuple(name for name in (BP_REPORT, PROGRESS_LOG) if name in manifest["artifacts"])
 
 
 def resolve_data(root,manifest,arrays,csv=None,auto_csv=True):
@@ -74,22 +75,26 @@ def placement(sheet):
     return sheet.max_column+3,2,'right'
 
 
-def render_excel_report(source,output,max_models=3,csv=None):
+def render_excel_report(source,output,max_models=3,csv=None,*,charts="summary"):
     max_models=integer(max_models,'max_models',1,3)
+    charts=chart_mode(charts)
     source=Path(source);out=Path(output)
     m=validate(source)
     if m['schema_version'] not in range(2,8): raise ValueError('Unsupported source schema')
-    with np.load(source/'arrays.npz',allow_pickle=False) as stored:
-        arrays={key:stored[key] for key in stored.files}
-    raw,chosen=resolve_data(source,m,arrays,csv)
-    sheets=pd.read_excel(source/'report.xlsx',sheet_name=None)
-    plans,skipped=build_plans(m,sheets,arrays,max_models,raw)
-    if not plans: raise ValueError('No eligible figures; provide the original hash-matching CSV if true labels are missing')
+    plans,skipped,chosen=[],[],None
+    if charts != "none" or csv is not None:
+        with np.load(source/'arrays.npz',allow_pickle=False) as stored:
+            arrays={key:stored[key] for key in stored.files}
+        raw,chosen=resolve_data(source,m,arrays,csv)
+    if charts != "none":
+        sheets=pd.read_excel(source/'report.xlsx',sheet_name=None)
+        plans,skipped=build_plans(m,sheets,arrays,max_models,raw,charts=charts)
+        if not plans: raise ValueError('No eligible figures; provide the original hash-matching CSV if true labels are missing')
     out.mkdir(parents=True,exist_ok=False)
     from . import __version__
     record={'schema_version':8,'status':'running','version':__version__,
             'source_schema':m['schema_version'],'source_version':m['version'],
-            'source_directory':str(source.resolve()),'max_models':max_models,'skipped':skipped,
+            'source_directory':str(source.resolve()),'max_models':max_models,'charts':charts,'skipped':skipped,
             'source_hashes':source_hashes(),'source_artifacts':{},'figures':[],
             'python':platform.python_version(),'created_utc':datetime.now(timezone.utc).isoformat(),
             'dependencies':{name:importlib.metadata.version(name) for name in ['matplotlib','pillow','openpyxl','numpy','scikit-learn']}}
@@ -102,6 +107,11 @@ def render_excel_report(source,output,max_models=3,csv=None):
         if chosen is not None:
             shutil.copy2(chosen,out/'source_input.csv')
             record['input_csv_sha256']=digest(out/'source_input.csv')
+        if charts == "none":
+            record.update(status='completed',seconds=time.perf_counter()-started,figure_count=0,artifacts={},
+                          workbook_bytes=(out/'report.xlsx').stat().st_size)
+            write_json(out/'render_manifest.json',record)
+            return out
         folder=out/'figures';folder.mkdir()
         workbook=load_workbook(out/'report.xlsx')
         if any(sheet._images for sheet in workbook.worksheets):

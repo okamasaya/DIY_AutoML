@@ -42,12 +42,12 @@ def prepare(output,schema,settings):
     write_json(output/"manifest.json",manifest)
     return output,manifest
 
-def save(output,manifest,sheets,arrays,finalize=True):
+def save(output,manifest,sheets,arrays,finalize=True,*,extra_artifacts=()):
     with pd.ExcelWriter(output/"report.xlsx",engine="openpyxl") as writer:
         for name,frame in sheets.items(): frame.to_excel(writer,sheet_name=name,index=False)
     np.savez_compressed(output/"arrays.npz",**arrays)
     manifest["sheets"]={name:len(frame) for name,frame in sheets.items()}
-    manifest["artifacts"]={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in (output/"report.xlsx",output/"arrays.npz")}
+    manifest["artifacts"]={name:file_sha256(output/name) for name in ("report.xlsx", "arrays.npz", *extra_artifacts)}
     if finalize and manifest["status"]=="running": manifest["status"]="completed"
     write_json(output/"manifest.json",manifest)
     return output

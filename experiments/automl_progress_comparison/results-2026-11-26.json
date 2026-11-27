@@ -1,0 +1,266 @@
+{
+  "seeds": {
+    "input_sha256": "f6c7cf2fdeb414c126a5046a6491aab9986cad0697dc612d8951ba15cb46cfc3",
+    "results": {
+      "DIY AutoML": {
+        "correct": 37,
+        "rows": 42,
+        "macro_f1": 0.8730559451457068
+      },
+      "AutoGluon Tabular": {
+        "correct": 37,
+        "rows": 42,
+        "macro_f1": 0.8730559451457068
+      },
+      "H2O AutoML": {
+        "correct": 39,
+        "rows": 42,
+        "macro_f1": 0.927741935483871
+      }
+    },
+    "h2o_minus_diy_conditional_95_interval": [
+      0.0,
+      0.13594276094276092
+    ],
+    "autogluon_fit_leaderboards": 11,
+    "h2o_events": 66
+  },
+  "voyager": {
+    "output_baseline_matched": true,
+    "engine_details": {
+      "diy": {
+        "version": "0.4.0a8",
+        "prior_state": [
+          9.502,
+          -0.004,
+          4.362,
+          0.985
+        ]
+      },
+      "autogluon": {
+        "version": "1.6.3",
+        "selected": {
+          "x_au": "WeightedEnsemble_L2",
+          "y_au": "WeightedEnsemble_L2"
+        }
+      },
+      "h2o": {
+        "version": "3.46.0.12",
+        "selected": {
+          "x_au": "glm",
+          "y_au": "glm"
+        }
+      }
+    },
+    "metrics": [
+      {
+        "model": "DIY EKF",
+        "scenario": "nominal",
+        "test_rows": 44,
+        "position_rmse_km": 41981.63624824278,
+        "tune_position_rmse_km": 45599.9482585449,
+        "tune_error_p90_km": 66959.25525397586,
+        "test_share_within_tune_p90": 0.8863636363636364
+      },
+      {
+        "model": "DIY EKF",
+        "scenario": "bias",
+        "test_rows": 44,
+        "position_rmse_km": 502681.8116172347,
+        "tune_position_rmse_km": 45599.9482585449,
+        "tune_error_p90_km": 66959.25525397586,
+        "test_share_within_tune_p90": 0.0
+      },
+      {
+        "model": "DIY EKF",
+        "scenario": "replayed",
+        "test_rows": 44,
+        "position_rmse_km": 964714783.7270672,
+        "tune_position_rmse_km": 45599.9482585449,
+        "tune_error_p90_km": 66959.25525397586,
+        "test_share_within_tune_p90": 0.0
+      },
+      {
+        "model": "Physics only",
+        "scenario": "nominal",
+        "test_rows": 44,
+        "position_rmse_km": 5240892.500303511,
+        "tune_position_rmse_km": 3714131.799282328,
+        "tune_error_p90_km": 3908609.8043915806,
+        "test_share_within_tune_p90": 0.0
+      },
+      {
+        "model": "Physics only",
+        "scenario": "bias",
+        "test_rows": 44,
+        "position_rmse_km": 5240892.500303511,
+        "tune_position_rmse_km": 3714131.799282328,
+        "tune_error_p90_km": 3908609.8043915806,
+        "test_share_within_tune_p90": 0.0
+      },
+      {
+        "model": "Physics only",
+        "scenario": "replayed",
+        "test_rows": 44,
+        "position_rmse_km": 5240892.500303511,
+        "tune_position_rmse_km": 3714131.799282328,
+        "tune_error_p90_km": 3908609.8043915806,
+        "test_share_within_tune_p90": 0.0
+      },
+      {
+        "model": "Time trend",
+        "scenario": "nominal",
+        "test_rows": 44,
+        "position_rmse_km": 21536437.151687868,
+        "tune_position_rmse_km": 4932607.873049562,
+        "tune_error_p90_km": 6257033.324227465,
+        "test_share_within_tune_p90": 0.0
+      },
+      {
+        "model": "Time trend",
+        "scenario": "bias",
+        "test_rows": 44,
+        "position_rmse_km": 21536437.151687868,
+        "tune_position_rmse_km": 4932607.873049562,
+        "tune_error_p90_km": 6257033.324227465,
+        "test_share_within_tune_p90": 0.0
+      },
+      {
+        "model": "Time trend",
+        "scenario": "replayed",
+        "test_rows": 44,
+        "position_rmse_km": 21536437.151687868,
+        "tune_position_rmse_km": 4932607.873049562,
+        "tune_error_p90_km": 6257033.324227465,
+        "test_share_within_tune_p90": 0.0
+      },
+      {
+        "model": "AutoGluon Tabular",
+        "scenario": "nominal",
+        "test_rows": 44,
+        "position_rmse_km": 60110118.91173568,
+        "tune_position_rmse_km": 24616166.659749825,
+        "tune_error_p90_km": 38511816.70554034,
+        "test_share_within_tune_p90": 0.0
+      },
+      {
+        "model": "AutoGluon Tabular",
+        "scenario": "bias",
+        "test_rows": 44,
+        "position_rmse_km": 60077241.850152515,
+        "tune_position_rmse_km": 24616166.659749825,
+        "tune_error_p90_km": 38511816.70554034,
+        "test_share_within_tune_p90": 0.0
+      },
+      {
+        "model": "AutoGluon Tabular",
+        "scenario": "replayed",
+        "test_rows": 44,
+        "position_rmse_km": 121361609.72974405,
+        "tune_position_rmse_km": 24616166.659749825,
+        "tune_error_p90_km": 38511816.70554034,
+        "test_share_within_tune_p90": 0.0
+      },
+      {
+        "model": "H2O AutoML",
+        "scenario": "nominal",
+        "test_rows": 44,
+        "position_rmse_km": 13461984.08301168,
+        "tune_position_rmse_km": 2221257.8305074046,
+        "tune_error_p90_km": 3543542.407958408,
+        "test_share_within_tune_p90": 0.11363636363636363
+      },
+      {
+        "model": "H2O AutoML",
+        "scenario": "bias",
+        "test_rows": 44,
+        "position_rmse_km": 13575428.310078032,
+        "tune_position_rmse_km": 2221257.8305074046,
+        "tune_error_p90_km": 3543542.407958408,
+        "test_share_within_tune_p90": 0.09090909090909091
+      },
+      {
+        "model": "H2O AutoML",
+        "scenario": "replayed",
+        "test_rows": 44,
+        "position_rmse_km": 439672765.6488005,
+        "tune_position_rmse_km": 2221257.8305074046,
+        "tune_error_p90_km": 3543542.407958408,
+        "test_share_within_tune_p90": 0.0
+      }
+    ],
+    "data_quality": [
+      {
+        "scenario": "nominal",
+        "test_rows": 44,
+        "flagged_rows": 2,
+        "range_rate_consistency_threshold_au": 0.0005154694099407594
+      },
+      {
+        "scenario": "bias",
+        "test_rows": 44,
+        "flagged_rows": 6,
+        "range_rate_consistency_threshold_au": 0.0005154694099407594
+      },
+      {
+        "scenario": "replayed",
+        "test_rows": 44,
+        "flagged_rows": 42,
+        "range_rate_consistency_threshold_au": 0.0005154694099407594
+      }
+    ],
+    "ekf_uncertainty": {
+      "nominal_coverage": 0.95,
+      "squared_mahalanobis_limit": 5.991464547107979,
+      "groups": [
+        {
+          "scenario": "nominal",
+          "split": "tune",
+          "points": 10,
+          "inside": 10,
+          "coverage": 1.0,
+          "mean_semi_minor_axis_km": 22811.660294166726,
+          "mean_semi_major_axis_km": 382541.2704672579
+        },
+        {
+          "scenario": "nominal",
+          "split": "test",
+          "points": 44,
+          "inside": 44,
+          "coverage": 1.0,
+          "mean_semi_minor_axis_km": 19115.645786487115,
+          "mean_semi_major_axis_km": 303361.20540261717
+        },
+        {
+          "scenario": "bias",
+          "split": "test",
+          "points": 44,
+          "inside": 1,
+          "coverage": 0.022727272727272728,
+          "mean_semi_minor_axis_km": 19115.032298817052,
+          "mean_semi_major_axis_km": 303592.81831465295
+        },
+        {
+          "scenario": "replayed",
+          "split": "test",
+          "points": 44,
+          "inside": 0,
+          "coverage": 0.0,
+          "mean_semi_minor_axis_km": 19171.72671239232,
+          "mean_semi_major_axis_km": 173522.00505715358
+        }
+      ]
+    },
+    "h2o_events": {
+      "x_au": 62,
+      "y_au": 62
+    }
+  },
+  "sample_sha256": {
+    "seeds-autogluon-fold1.csv": "e2ceb590c7d8a754e93c5ffd4ead428a66eee0faef654f1fd2959cca916fb415",
+    "seeds-h2o-events.csv": "cbe839f03f5f33e1ed61ed4a1cee03db3791de73fbd8749f60d3426e260b56a2",
+    "voyager-h2o-x-events.csv": "c9221b62070c54cf272d65e30f39e09eb561634cf7fc687355189d4d60e16487",
+    "voyager-h2o-y-events.csv": "fa0384c35cea8850f78e5be3cb34d72f6bc5d50112256fad92be148de12ced85",
+    "voyager-ekf-progress.jsonl": "7654244fec3800b35695e9ffe9e9d32493fefc90778b09ca195bbdcc0b1e0795"
+  }
+}

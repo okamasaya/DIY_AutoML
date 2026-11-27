@@ -6,6 +6,7 @@ from pathlib import Path
 import pytest
 
 from diy_automl import audit_data_csv, extract_data
+from diy_automl.cli import main
 from diy_automl.data_extract import SCHEMA, bound_filter
 from diy_automl.data_extract_validation import validate_data_extract
 from diy_automl.reporting import file_sha256
@@ -117,3 +118,57 @@ def test_csv_projection_checks_rows_after_the_limit(tmp_path):
     with pytest.raises(ValueError, match="record width differs near line 3"):
         extract_data(source, output, ["target"], limit=1)
     assert not (output / "data.csv").exists()
+
+
+@pytest.mark.parametrize("form", ["csv", "parquet", "duckdb"])
+def test_cli_recipe_keeps_only_selected_format_and_exact_csv_cells(tmp_path, monkeypatch, form):
+    if form != "csv":
+        pytest.importorskip("pyarrow")
+    if form == "duckdb":
+        pytest.importorskip("duckdb")
+    source = tmp_path / "source.csv"
+    source.write_text("Label,ID,Unused\nA,001,x\nB,,y\nA,3.20,z\n", encoding="utf-8")
+    digest = file_sha256(source)
+    recipe = tmp_path / "recipe.json"
+    recipe.write_text(json.dumps({"columns": ["ID", "Label"], "format": form}), encoding="utf-8-sig")
+    output = tmp_path / "extract"
+    monkeypatch.setattr("sys.argv", ["diy-automl", "extract-data", "--source", str(source),
+                                    "--recipe", str(recipe), "--output", str(output)])
+    main()
+    manifest = validate_data_extract(output, source)
+    assert manifest["input_sha256"] == digest == file_sha256(source)
+    assert {path.name for path in output.iterdir()} == {"manifest.json", f"data.{form}"}
+    if form == "parquet":
+        from pyarrow.parquet import read_table
+
+        rows = [tuple(row.values()) for row in read_table(output / "data.parquet").to_pylist()]
+    elif form == "duckdb":
+        import duckdb
+
+        with duckdb.connect(str(output / "data.duckdb"), read_only=True) as db:
+            rows = db.execute("SELECT * FROM main.data").fetchall()
+    else:
+        with (output / "data.csv").open(encoding="utf-8", newline="") as stream:
+            reader = csv.reader(stream)
+            assert next(reader) == ["ID", "Label"]
+            rows = [tuple(row) for row in reader]
+    assert rows == [("001", "A"), ("", "B"), ("3.20", "A")]
+
+
+def test_duckdb_projection_preserves_null_and_native_integer_type(tmp_path):
+    duckdb = pytest.importorskip("duckdb")
+    source = tmp_path / "source's.duckdb"
+    with duckdb.connect(str(source)) as db:
+        db.execute("CREATE TABLE data (wide HUGEINT, label VARCHAR)")
+        db.execute("INSERT INTO data VALUES (CAST(? AS HUGEINT), NULL), (10, ''), (1, 'removed')", [str(2**126 + 1)])
+    output = extract_data(source, tmp_path / "extract", ["label", "wide"],
+                          where=(("wide", "ge", 10),), output_format="duckdb")
+    assert validate_data_extract(output, source)["rows"] == 2
+    with duckdb.connect(str(output / "data.duckdb"), read_only=True) as db:
+        assert db.execute("SELECT * FROM main.data").fetchall() == [(None, 2**126 + 1), ("", 10)]
+        assert db.execute("DESCRIBE SELECT wide FROM main.data").fetchone()[1] == "HUGEINT"
+
+    rejected = tmp_path / "lossy"
+    with pytest.raises(ValueError, match="Parquet would change"):
+        extract_data(source, rejected, ["wide"], output_format="parquet")
+    assert not (rejected / "data.parquet").exists()

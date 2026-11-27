@@ -4,7 +4,7 @@
 
 仮題は「AutoMLの最終スコアを、学習の途中経過から読み直す」。分類の途中経過と評価結果を扱う独立した技術記事の一次稿にした。WineのCV平均が上がり、共通の保留では正解が1件減った例から入り、進捗、共通保留での比較、外部のログ、再現手順へ進む。Zenn用の `published: false` と実測図2点を用意した。 [記事の下書き](../articles/diy-automl-training-progress.md)
 
-当日のHANDOFFと実験記録は、開発作業ツリーの `docs/HANDOFF_20261126.md` と以下のパスにある。
+当日の作業と実験資料は、日付別の引継ぎと以下のパスから確認できる。 [11月26日のHANDOFF](HANDOFF_20261126.md)
 
 | 本文の材料 | 文章化するときに残す条件 | 根拠 |
 | --- | --- | --- |
@@ -17,7 +17,7 @@ PyPIは準備中という一文に収め、本文の実行例は進捗と詳細�
 
 掲載値を両実験の集計JSONと照合し、掲載用PNGは実測図とSHA-256が一致した。本文のWine手順を再実行し、135件のCV記録、Excelの `Progress` シート、図5点と元のセル値の保持を確認。再実行の出力は `runs/zenn-wine-20261126-160703-548/`。標準MarkdownをChromeの390pxと1280pxで表示し、図2点、表、コードブロックを確認した。npmレジストリの名前解決に失敗したため、Zenn CLI固有の表示確認は未実施。
 
-公開前に、本文末尾から進捗と詳細図を含む公開コードの版へたどれるようリンクを確定する。GitHub連携では原稿と図2点を同じ公開対象へ含める。Webエディタを使う場合は図2点をアップロードし、本文中の画像参照先を置き換える。 [Zenn CLIの公式ガイド](https://zenn.dev/zenn/articles/zenn-cli-guide) · [画像連携の公式ガイド](https://zenn.dev/zenn/articles/deploy-github-images)
+本文末尾の実行例には、進捗と詳細図を含む開発コミットと同じ版のCSVへのリンクを付けた。GitHub連携では原稿と図2点を同じ公開対象へ含める。Webエディタを使う場合は図2点をアップロードし、本文中の画像参照先を置き換える。 [Zenn CLIの公式ガイド](https://zenn.dev/zenn/articles/zenn-cli-guide) · [画像連携の公式ガイド](https://zenn.dev/zenn/articles/deploy-github-images)
 
 ## 2026年11月20日：開発メモ (5) のBP向け試作画面
 

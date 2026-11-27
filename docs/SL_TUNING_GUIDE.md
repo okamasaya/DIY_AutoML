@@ -1,6 +1,6 @@
 # 学習側だけのSLハイパーパラメータ探索（0.4.0a4）
 
-`tune` は宣言した27設定を、学習側の共通層化5foldで比較します。testは最初に約20%分離し、選定した1設定だけを学習側全体で再学習してtest評価します。既存の固定5モデルのselectはそのまま残しています。
+`tune` は既定で27設定を、学習側の共通層化5foldで比較します。testは最初に約20%分離し、選定した1設定だけを学習側全体で再学習してtest評価します。
 
 ```sh
 .venv/bin/python -m diy_automl tune --csv data/reference/wine.csv --target target --output runs/wine-tune
@@ -21,6 +21,10 @@ Python入口は `tune_csv(csv, target, output, seed=42, metric='F1', bootstrap_r
 
 Candidate IDは0..26です。手法順は表の順、各直積は右側の値を先に変えます。各手法の最初が従来の既定設定で、IDは0/6/10/13/19です。Random Forestの木の数100、Logistic Regression max_iter=1000、SVM gamma=scale等は固定し、全パラメータを保存します。乱数はseedで固定し、seed自体は探索しません。
 
+`--tree-max-depth 3`（Pythonでは `tree_max_depth=3`）を指定すると、Decision TreeとRandom Forestで `max_depth=3` に固定します。両モデルの `min_samples_leaf` と他のモデルの探索範囲はそのまま使い、合計21設定を比較します。検索した設定、深さの上限、候補数は `SL_Search_Settings`、`Summary`、manifestから確認できます。
+
+個別の上限は `--decision-tree-max-depth` または `--random-forest-max-depth` で指定でき、共通の上限より優先されます。共通の上限を省略して一方だけ指定した場合、もう一方は表の深さ候補を探索します。Decision Treeだけを固定すると23設定、Random Forestだけを固定すると25設定です。Python APIでは `tree_max_depths={"Decision Tree": 3}` のように指定します。
+
 共通のStratifiedKFold(n_splits=5,shuffle=True,random_state=seed)を全候補で使います。各foldのPipelineはStandardScalerをfoldの学習部分だけでfitします。候補間で同じfoldのscalerが一致することも実行中に確認します。
 
 選定は既定macro F1の5fold単純平均です。atol=1e-12、rtol=0で同率を残し、候補順の最初を採用します。test、時間、fold SDでは同率を解消しません。選定CV値は探索の楽観バイアスを含みうるため、未知データへの不偏な性能推定と解釈しません。
@@ -31,7 +35,25 @@ Candidate IDは0..26です。手法順は表の順、各直積は右側の値を
 
 区間は固定した学習済み・選定済みモデルと観測クラス件数に条件付きであり、学習・選定・データ/分割の変動を含みません。ゼロ幅は未知の不確かさゼロを意味しません。fold SDも独立反復のCIではありません。
 
-## schema 7：8シートと配列
+## `select` と `tune` の途中経過を残す
+
+```sh
+diy-automl select --csv iris.csv --target target --progress both --output runs/iris-progress
+diy-automl tune --csv iris.csv --target target --progress excel --output runs/iris-tune-progress
+```
+
+| `--progress` | 実行時の動作 |
+| --- | --- |
+| `off`（既定） | 通常どおり実行する |
+| `console` | 進捗を標準エラー出力に表示する |
+| `excel` | `progress.jsonl` に随時追記し、完了時のExcelに `Progress` シートを追加する |
+| `both` | コンソール表示と保存の両方を行う |
+
+`select_csv` と `tune_csv` では `progress="both"` のように指定する。データ読込、分割、各候補とfoldの完了・学習側の選定指標、再学習、保留評価、区間計算、保存開始を記録する。経過時間は出力先の準備後から計る。候補番号とfold番号は進捗では1から始まる。日付順の `select` では区間計算を省くため、その進捗も省く。
+
+Excelの `Progress` シートは完了時に一度追加する。実行中や中断後は `progress.jsonl` に書き込み済みの行を確認できる。`tune` の従来の候補ごとの途中保存も使える。完了後は `manifest.json` で実行状態を確認でき、`report` で追加の図付きExcelを作っても進捗ログとシートを参照できる。
+
+## schema 7の既定8シートと配列
 
 | シート | 内容 | 既定行数 |
 | --- | --- | ---: |

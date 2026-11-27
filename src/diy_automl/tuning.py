@@ -11,7 +11,7 @@ from sklearn.exceptions import ConvergenceWarning
 from sklearn.model_selection import StratifiedKFold
 
 from .selection import choose
-from .supervised import METRICS, candidates, metrics, pipeline
+from .supervised import METRICS, TREE_MODELS, candidates, effective_tree_depths, metrics, pipeline, tree_depth_settings
 
 MAX_ROWS = 5000
 MAX_FEATURES = 100
@@ -25,9 +25,22 @@ SEARCH_SPACES = [
 FOLD_COLUMNS = ['Candidate','Model','Fold','Status',*METRICS,'Fit Time (s)','Warnings','Error']
 
 
-def search_candidates(seed=42):
+def search_spaces(tree_max_depth=None, *, tree_max_depths=None):
+    settings = tree_depth_settings(tree_max_depth, tree_max_depths)
+    if not settings:
+        return SEARCH_SPACES
+    depths = effective_tree_depths(settings)
+    spaces = SEARCH_SPACES.copy()
+    for index, model in enumerate(TREE_MODELS):
+        if depths[model] is not None:
+            spaces[index] = {**spaces[index], 'max_depth': [depths[model]]}
+    return spaces
+
+
+def search_candidates(seed=42, *, tree_max_depth=None, tree_max_depths=None, forest_jobs=1):
     result=[]
-    for (name,base),space in zip(candidates(seed),SEARCH_SPACES):
+    spaces=search_spaces(tree_max_depth, tree_max_depths=tree_max_depths)
+    for (name,base),space in zip(candidates(seed, forest_jobs=forest_jobs),spaces):
         for values in product(*space.values()):
             changed=dict(zip(space,values))
             estimator=clone(base).set_params(**changed)
@@ -35,11 +48,12 @@ def search_candidates(seed=42):
     return result
 
 
-def configurations(seed=42):
+def configurations(seed=42, *, tree_max_depth=None, tree_max_depths=None, forest_jobs=1):
     return pd.DataFrame([
         {'Candidate':i,'Model':name,'Search Parameters':json.dumps(changed,sort_keys=True),
          'Estimator Parameters':json.dumps(model.get_params(),sort_keys=True)}
-        for i,(name,model,changed) in enumerate(search_candidates(seed))])
+        for i,(name,model,changed) in enumerate(search_candidates(
+            seed, tree_max_depth=tree_max_depth, tree_max_depths=tree_max_depths, forest_jobs=forest_jobs))])
 
 
 class ConvergenceFailure(RuntimeError):
@@ -69,7 +83,7 @@ def aggregate(rows):
     return pd.DataFrame(means),pd.DataFrame(deviations)
 
 
-def search(X,y,seed=42,metric='F1',progress=None):
+def search(X,y,seed=42,metric='F1',progress=None,*,tree_max_depth=None,tree_max_depths=None,forest_jobs=1,events=None):
     """The caller passes the training pool only. This function has no test input."""
     if metric not in METRICS:
         raise ValueError('Unknown selection metric')
@@ -78,7 +92,7 @@ def search(X,y,seed=42,metric='F1',progress=None):
     folds=list(StratifiedKFold(5,shuffle=True,random_state=seed).split(X,y))
     if min(len(train) for train,_ in folds)<9:
         raise ValueError('The declared k-NN grid requires at least 9 training samples per fold')
-    grid=search_candidates(seed)
+    grid=search_candidates(seed, tree_max_depth=tree_max_depth, tree_max_depths=tree_max_depths, forest_jobs=forest_jobs)
     rows=[{'Candidate':i,'Model':name,'Fold':fold,'Status':'not_run',
            **dict.fromkeys(METRICS,np.nan),'Fit Time (s)':np.nan,'Warnings':'','Error':''}
           for i,(name,_,_) in enumerate(grid) for fold in range(5)]
@@ -115,6 +129,8 @@ def search(X,y,seed=42,metric='F1',progress=None):
                            **{'Fit Time (s)':time.perf_counter()-started})
                 checkpoint()
                 raise
+            if events is not None:
+                events.fold(name, cid + 1, len(grid), fold + 1, len(folds), metric, row[metric])
         checkpoint()
     means,sd=aggregate(rows)
     selected,ties=choose(means,metric)

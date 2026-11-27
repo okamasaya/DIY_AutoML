@@ -12,9 +12,10 @@ from .clustering_subsample import integer
 from .data import load_csv
 from .metric_uncertainty import MAX_CLASSES, interval_rows, scores_from_confusion
 from .reporting import fail, prepare, save, summary
+from .sl_compute import limit_sl_threads, sl_compute_summary
 from .sl_ranking import classification_tables, cv_assignments, cv_predict, evaluation_split, ranking_settings, score_draws
 from .sl_uncertainty_audit import confusion_counts, diagnostic_tables, parse_offsets, predict_offsets, record_rounded_inputs
-from .supervised import METRICS, candidates, pipeline
+from .supervised import METRICS, TREE_MODELS, candidates, pipeline, sl_model_options, tree_depth_options, tree_depth_summary
 from .tuning import MAX_FEATURES, MAX_ROWS
 
 
@@ -28,12 +29,20 @@ DIAGNOSTICS = ("float32_input_predictions", "roundoff_by_feature", "offset_predi
 
 def annealing_settings(csv, target, width, seed, model, model_seed, cv_repeats, metric,
                        budget, max_features, search_seed, initial_temperature, final_temperature,
-                       exhaustive, bootstrap_repeats, bootstrap_seed, confidence, shifts):
+                       exhaustive, bootstrap_repeats, bootstrap_seed, confidence, shifts,
+                       *, tree_max_depth=None, tree_max_depths=None, cpu_threads=None, forest_jobs=None):
     settings = ranking_settings(
         csv, target, seed, model_seed, cv_repeats, metric, 0, bootstrap_repeats, bootstrap_seed, confidence,
+        tree_max_depth=tree_max_depth, tree_max_depths=tree_max_depths,
+        cpu_threads=cpu_threads, forest_jobs=forest_jobs,
     )
-    if model not in dict(candidates(settings["model_seed"])):
+    models = dict(candidates(settings["model_seed"]))
+    if model not in models:
         raise ValueError(f"Unknown classifier: {model!r}")
+    if tree_depth_options(settings) and (model not in TREE_MODELS or set(settings.get("tree_max_depths", {})) - {model}):
+        raise ValueError("Tree depth settings must target the selected Decision Tree or Random Forest")
+    if forest_jobs is not None and model != "Random Forest":
+        raise ValueError("forest_jobs requires choosing Random Forest")
     limit = width if max_features is None else integer(max_features, "max_features", 1, width)
     budget = integer(budget, "budget", 1, MAX_BUDGET)
     temperatures = initial_temperature, final_temperature
@@ -175,6 +184,8 @@ def report_tables(histories, arrays, manifest, space):
         ("Proposal", "Mask bits follow original CSV feature order from left to right."),
         ("Test", "One fixed winner per arm. Differences use paired, stratified row bootstrap, conditional on fitted models."),
         ("Systematic Bias", "Unmeasured. Offsets are hypothetical test scenarios."),
+        *tree_depth_summary(settings),
+        *sl_compute_summary(settings),
     ])
     for frame in tables.values():
         for name in ("Feature", "Feature With Largest Roundoff"):
@@ -211,7 +222,8 @@ def record_holdout(data, train, test, model, histories, settings, arrays):
 def annealing_check_csv(csv, target, output, seed=42, model="SVM", model_seed=42, cv_repeats=2, metric="F1",
                         budget=32, max_features=None, search_seed=44, initial_temperature=.03,
                         final_temperature=.002, exhaustive=False, bootstrap_repeats=1000,
-                        bootstrap_seed=43, confidence=.95, shift=()):
+                        bootstrap_seed=43, confidence=.95, shift=(), *, tree_max_depth=None, tree_max_depths=None,
+                        cpu_threads=None, forest_jobs=None):
     """Compare classical annealing and uniform random subset search with an equal CV fit budget."""
     data = load_csv(csv, target)
     width = data.X.shape[1]
@@ -222,12 +234,14 @@ def annealing_check_csv(csv, target, output, seed=42, model="SVM", model_seed=42
         csv, target, width, seed, model, model_seed, cv_repeats, metric, budget, max_features,
         search_seed, initial_temperature, final_temperature, exhaustive, bootstrap_repeats,
         bootstrap_seed, confidence, parse_offsets(shift, data.feature_names),
+        tree_max_depth=tree_max_depth, tree_max_depths=tree_max_depths,
+        cpu_threads=cpu_threads, forest_jobs=forest_jobs,
     )
     space, methods = search_plan(width, settings)
     train, _, test = evaluation_split(data.y, classes, settings)
     training, truth = data.X[train], data.y[train]
     assignments = cv_assignments(truth, settings)
-    estimator = dict(candidates(settings["model_seed"]))[model]
+    estimator = dict(candidates(settings["model_seed"], **sl_model_options(settings)))[model]
     output, manifest = prepare(output, SCHEMA, settings)
     manifest.update(classes=data.classes, features=data.feature_names, methods=methods, stage="cv")
     try:
@@ -242,14 +256,16 @@ def annealing_check_csv(csv, target, output, seed=42, model="SVM", model_seed=42
             predictions.append(predicted.astype(np.uint8))
             return subset_score(truth, classes, assignments, predicted, settings), elapsed
 
-        histories = {method: search_subsets(space, method, settings, evaluate) for method in methods}
+        with limit_sl_threads(settings):
+            histories = {method: search_subsets(space, method, settings, evaluate) for method in methods}
         arrays = {
             "target": data.y, "train": train, "test": test, "cv_fold_assignments": assignments,
             "cv_masks": np.asarray(masks), "cv_predictions": np.stack(predictions),
             "cv_seconds": np.array([trial.seconds for history in histories.values() for trial in history]),
         }
         manifest["stage"] = "holdout"
-        record_holdout(data, train, test, estimator, histories, settings, arrays)
+        with limit_sl_threads(settings):
+            record_holdout(data, train, test, estimator, histories, settings, arrays)
         tables, evidence = report_tables(histories, arrays, manifest, space)
         arrays.update(evidence)
         manifest["stage"] = "completed"

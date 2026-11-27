@@ -2,6 +2,7 @@ import argparse
 from datetime import datetime,timezone
 from importlib import import_module
 import json
+from . import __version__
 from .workflow import run_csv
 from .selection_workflow import select_csv
 from .clustering_repeat_workflow import repeat_clustering_csv
@@ -15,24 +16,44 @@ from .sl_uncertainty_audit import audit_sl_uncertainty
 from .annealing_workflow import annealing_check_csv
 from .data_audit import audit_data_csv, prepare_bp_csv
 from .data_conversion import FORMATS, TYPE_MODES
-from .data_extract import extract_data
-from .supervised import METRICS, candidates
+from .data_extract import extract_data, extraction_settings, read_extraction_recipe
+from .report_figures import CHART_MODES
+from .run_progress import MODES as PROGRESS_MODES
+from .sl_compute import sl_compute_settings
+from .supervised import METRICS, TREE_MODELS, candidates, tree_depth_settings
 
-_STATE_SPACE_HANDLERS = {
+_ON_DEMAND_HANDLERS = {
     "kalman-track": (".kalman_workflow", "kalman_track_csv"),
     "ekf-benchmark": (".ekf_benchmark", "run_ekf_benchmark"),
     "ukf-benchmark": (".ekf_benchmark", "run_ukf_benchmark"),
     "particle-benchmark": (".ekf_benchmark", "run_particle_benchmark"),
+    "gnn-compare": (".graph_classification", "classify_graph_nodes"),
 }
+
+def add_supervised_options(parser):
+    parser.add_argument("--tree-max-depth", type=int, metavar="N",
+                        help="Set a shared depth limit for Decision Tree and each Random Forest tree")
+    parser.add_argument("--decision-tree-max-depth", type=int, metavar="N",
+                        help="Set the Decision Tree depth limit, overriding --tree-max-depth")
+    parser.add_argument("--random-forest-max-depth", type=int, metavar="N",
+                        help="Set the depth limit for each Random Forest tree, overriding --tree-max-depth")
+    parser.add_argument("--cpu-threads", type=int, metavar="N",
+                        help="Limit native BLAS/OpenMP pools during supervised fitting and prediction")
+    parser.add_argument("--forest-jobs", type=int, metavar="N",
+                        help="Set Random Forest worker count; use -1 for all joblib-visible CPUs")
+
 
 def main():
     parser=argparse.ArgumentParser(description="Reimplemented DIY AutoML evaluation")
+    parser.add_argument("--version", action="version", version=f"DIY AutoML {__version__}")
     sub=parser.add_subparsers(dest="command",required=True)
     for command in ("run","select","repeat-ul","repeat-dl","subsample-ul","tune"):
         p=sub.add_parser(command)
         p.add_argument("--csv",required=True); p.add_argument("--target",required=True)
         p.add_argument("--output",default=None)
-        if command in ("run","select","tune"): p.add_argument("--seed",type=int,default=42)
+        if command in ("run","select","tune"):
+            p.add_argument("--seed",type=int,default=42)
+            add_supervised_options(p)
         if command=="run":
             p.add_argument("--methods",nargs="+",choices=["sl","ul","dl"],default=["sl","ul","dl"])
             p.add_argument("--epochs",type=int,default=100)
@@ -40,6 +61,8 @@ def main():
         elif command in ("select","tune"):
             p.add_argument("--metric",choices=["Accuracy","Precision","Recall","F1"],default="F1")
             p.add_argument("--bootstrap-repeats",type=int,default=1000)
+            p.add_argument("--progress", choices=PROGRESS_MODES, default="off",
+                           help="Show progress on stderr, save a log and Excel sheet, or both")
             if command=="select":
                 grouping=p.add_mutually_exclusive_group()
                 grouping.add_argument("--group-column",help="Keep all rows with the same ID together and exclude this column from features")
@@ -66,6 +89,7 @@ def main():
     p.add_argument("--output",default=None)
     p.add_argument("--seed",type=int,default=42,help="Seed for data partitions")
     p.add_argument("--model-seed",type=int,default=42,help="Fixed model seed across CV repeats")
+    add_supervised_options(p)
     p.add_argument("--cv-repeats",type=int,default=5)
     p.add_argument("--metric",choices=METRICS,default="F1")
     p.add_argument("--comparison-fraction",type=float,default=0.0,
@@ -82,6 +106,7 @@ def main():
     p.add_argument("--seed",type=int,default=42,help="Seed for data partitions")
     p.add_argument("--model",choices=[name for name, _ in candidates()],default="SVM")
     p.add_argument("--model-seed",type=int,default=42)
+    add_supervised_options(p)
     p.add_argument("--cv-repeats",type=int,default=2)
     p.add_argument("--metric",choices=METRICS,default="F1")
     p.add_argument("--budget",type=int,default=32,help="Maximum distinct subsets per search arm")
@@ -119,7 +144,9 @@ def main():
     p.add_argument("--output-dir",default="runs/bp-preview",help="点検結果を保存する親フォルダ")
     p=sub.add_parser("extract-data",help="Select columns from a CSV, Parquet or DuckDB file")
     p.add_argument("--source",required=True,help="Path to a .csv, .parquet or .duckdb file")
-    p.add_argument("--columns",nargs="+",required=True,metavar="COLUMN",help="Output columns in the requested order")
+    columns = p.add_mutually_exclusive_group(required=True)
+    columns.add_argument("--columns",nargs="+",metavar="COLUMN",help="Output columns in the requested order, as CSV")
+    columns.add_argument("--recipe",metavar="JSON",help="JSON file with columns and optional csv, parquet or duckdb format")
     p.add_argument("--where",action="append",nargs=3,default=[],metavar=("COLUMN", "OP", "VALUE"),
                    help="Filter Parquet or DuckDB using eq, ne, lt, le, gt or ge. Repeat to apply all conditions.")
     p.add_argument("--limit",type=int,help="Maximum output rows in source order")
@@ -129,6 +156,7 @@ def main():
     p.add_argument("--output",default=None)
     p.add_argument("--csv",default=None)
     p.add_argument("--max-models",type=int,default=3)
+    p.add_argument("--charts",choices=CHART_MODES,default="summary",help="Copy numerical results or add summary or detailed charts")
     p=sub.add_parser("uncertainty",help="Evaluate fixed-model metric sampling uncertainty from a saved classification run")
     p.add_argument("--run",dest="source",required=True)
     p.add_argument("--output",default=None)
@@ -169,7 +197,34 @@ def main():
         if name == "particle-benchmark":
             p.add_argument("--particles", type=int, default=256)
         p.add_argument("--output", default=None)
+    p = sub.add_parser("gnn-compare", help="Compare GCN and logistic regression on labeled nodes of a known graph")
+    p.add_argument("--nodes", required=True, help="Headerless TSV: node ID, numeric features, class label")
+    p.add_argument("--edges", required=True, help="Headerless TSV of pairs of known node IDs")
+    p.add_argument("--seed", type=int, default=42)
+    p.add_argument("--train-per-class", type=int, default=20)
+    p.add_argument("--validation-fraction", type=float, default=0.2)
+    p.add_argument("--hidden-size", type=int, default=16)
+    p.add_argument("--epochs", type=int, default=120)
+    p.add_argument("--output", default=None)
     args=vars(parser.parse_args()); command=args.pop("command")
+    if command == "extract-data":
+        recipe = args.pop("recipe")
+        if recipe is not None:
+            try:
+                args.update(read_extraction_recipe(recipe))
+                extraction_settings(args["source"], args["columns"], args["where"], args["limit"],
+                                    output_format=args["output_format"])
+            except (OSError, ValueError) as error:
+                p = sub.choices[command]
+                p.error(str(error))
+    if "tree_max_depth" in args:
+        individual_depths = (args.pop("decision_tree_max_depth"), args.pop("random_forest_max_depth"))
+        overrides = {model: depth for model, depth in zip(TREE_MODELS, individual_depths) if depth is not None}
+        try:
+            args.update(tree_depth_settings(args["tree_max_depth"], overrides))
+            args.update(sl_compute_settings(args["cpu_threads"], args["forest_jobs"]))
+        except ValueError as error:
+            parser.error(str(error))
     if command=="bp-preview":
         from .bp_preview import launch_preview
 
@@ -187,8 +242,8 @@ def main():
         "annealing-check":annealing_check_csv,"audit-data":audit_data_csv,"extract-data":extract_data,
         "prepare-bp":prepare_bp_csv,
     }
-    if command in _STATE_SPACE_HANDLERS:
-        module, function = _STATE_SPACE_HANDLERS[command]
+    if command in _ON_DEMAND_HANDLERS:
+        module, function = _ON_DEMAND_HANDLERS[command]
         handler = getattr(import_module(module, __package__), function)
     else:
         handler = handlers[command]
