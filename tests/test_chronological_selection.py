@@ -40,6 +40,7 @@ def test_bp_chronological_selection_keeps_entire_dates_in_order(tmp_path):
     assert selection.audit.profile["time"] == original.profile["time"]
     output, result = evaluate_selection(selection, tmp_path / "evaluation")
     manifest = validate(output, 3)
+    assert (manifest["settings"]["cpu_threads"], manifest["settings"]["forest_jobs"]) == (1, 1)
     assert manifest["features"] == ["値"]
     assert manifest["split"]["clock"] == "utc"
     assert manifest["split"]["test"] == {"start": "2024-01-30", "end": "2024-02-02", "days": 4, "rows": 8}

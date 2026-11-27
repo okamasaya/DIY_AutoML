@@ -1,0 +1,448 @@
+{
+  "results": {
+    "wine": {
+      "input_sha256": "a297f8c376cd0107b1fe9d66d992e025e1a128d78fbf1801b706d4c8dc43c918",
+      "rows": 178,
+      "features": 13,
+      "training_rows": 142,
+      "same_holdout_indices": true,
+      "select": {
+        "model": "SVM",
+        "selected_candidate": null,
+        "search_parameters": null,
+        "tied_candidates": [
+          "SVM"
+        ],
+        "candidates": 5,
+        "cv_folds": 25,
+        "cv_mean_macro_f1": 0.9864815662344266,
+        "holdout_correct": 35,
+        "holdout_rows": 36,
+        "holdout_macro_f1": 0.9709618874773139,
+        "conditional_95_interval": [
+          0.9089184060721062,
+          1.0
+        ],
+        "classes": [
+          0,
+          1,
+          2
+        ],
+        "confusion_matrix": [
+          [
+            12,
+            0,
+            0
+          ],
+          [
+            0,
+            14,
+            0
+          ],
+          [
+            0,
+            1,
+            9
+          ]
+        ],
+        "phase_elapsed_seconds": {
+          "load": 0.0,
+          "split": 0.018,
+          "cv_start": 0.023,
+          "refit": 0.92,
+          "holdout": 0.923,
+          "bootstrap": 0.925,
+          "report": 2.314
+        },
+        "cv_elapsed_seconds": 0.897,
+        "cv_fit_seconds": null,
+        "cli_seconds": 5.695,
+        "progress_sha256": "3eb372a5b515258fc527c475d5c26a138c7fe470c6f4e7abe6fcaea66c4baba6",
+        "renderings": {
+          "none": {
+            "figures": 0,
+            "workbook_bytes": 27797,
+            "render_seconds": 0.108
+          },
+          "summary": {
+            "figures": 2,
+            "workbook_bytes": 85643,
+            "render_seconds": 1.591
+          },
+          "detail": {
+            "figures": 4,
+            "workbook_bytes": 162387,
+            "render_seconds": 0.819
+          }
+        }
+      },
+      "tune": {
+        "model": "SVM",
+        "selected_candidate": 15,
+        "search_parameters": {
+          "C": 10.0,
+          "kernel": "rbf"
+        },
+        "tied_candidates": [
+          15
+        ],
+        "candidates": 27,
+        "cv_folds": 135,
+        "cv_mean_macro_f1": 0.9926570048309179,
+        "holdout_correct": 34,
+        "holdout_rows": 36,
+        "holdout_macro_f1": 0.9407407407407407,
+        "conditional_95_interval": [
+          0.8383838383838383,
+          1.0
+        ],
+        "classes": [
+          0,
+          1,
+          2
+        ],
+        "confusion_matrix": [
+          [
+            12,
+            0,
+            0
+          ],
+          [
+            0,
+            14,
+            0
+          ],
+          [
+            0,
+            2,
+            8
+          ]
+        ],
+        "phase_elapsed_seconds": {
+          "load": 0.0,
+          "split": 0.006,
+          "cv_start": 0.013,
+          "refit": 10.727,
+          "holdout": 10.858,
+          "bootstrap": 11.005,
+          "report": 12.802
+        },
+        "cv_elapsed_seconds": 10.714,
+        "cv_fit_seconds": 2.3367785993032157,
+        "cli_seconds": 15.903,
+        "progress_sha256": "e6ca5655722041f81a8ce55d6c2e40925863940df500b3dc29275716d459e5b3",
+        "renderings": {
+          "none": {
+            "figures": 0,
+            "workbook_bytes": 44217,
+            "render_seconds": 1.913
+          },
+          "summary": {
+            "figures": 2,
+            "workbook_bytes": 145245,
+            "render_seconds": 2.296
+          },
+          "detail": {
+            "figures": 5,
+            "workbook_bytes": 413767,
+            "render_seconds": 3.064
+          }
+        }
+      }
+    },
+    "seeds": {
+      "input_sha256": "f6c7cf2fdeb414c126a5046a6491aab9986cad0697dc612d8951ba15cb46cfc3",
+      "rows": 210,
+      "features": 7,
+      "training_rows": 168,
+      "same_holdout_indices": true,
+      "select": {
+        "model": "Logistic Regression",
+        "selected_candidate": null,
+        "search_parameters": null,
+        "tied_candidates": [
+          "Logistic Regression"
+        ],
+        "candidates": 5,
+        "cv_folds": 25,
+        "cv_mean_macro_f1": 0.9285730597904511,
+        "holdout_correct": 37,
+        "holdout_rows": 42,
+        "holdout_macro_f1": 0.8730559451457068,
+        "conditional_95_interval": [
+          0.7531615566430307,
+          0.9521367521367522
+        ],
+        "classes": [
+          1,
+          2,
+          3
+        ],
+        "confusion_matrix": [
+          [
+            9,
+            2,
+            3
+          ],
+          [
+            0,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            14
+          ]
+        ],
+        "phase_elapsed_seconds": {
+          "load": 0.0,
+          "split": 0.005,
+          "cv_start": 0.006,
+          "refit": 0.591,
+          "holdout": 0.599,
+          "bootstrap": 0.603,
+          "report": 2.285
+        },
+        "cv_elapsed_seconds": 0.585,
+        "cv_fit_seconds": null,
+        "cli_seconds": 5.407,
+        "progress_sha256": "2c8af398cbd740ae0972f53ec98a71441b39d1da4f37f23c84fb2b8bb47280c8",
+        "renderings": {
+          "none": {
+            "figures": 0,
+            "workbook_bytes": 30893,
+            "render_seconds": 0.095
+          },
+          "summary": {
+            "figures": 2,
+            "workbook_bytes": 91722,
+            "render_seconds": 0.532
+          },
+          "detail": {
+            "figures": 4,
+            "workbook_bytes": 173885,
+            "render_seconds": 0.786
+          }
+        }
+      },
+      "tune": {
+        "model": "Logistic Regression",
+        "selected_candidate": 12,
+        "search_parameters": {
+          "C": 10.0
+        },
+        "tied_candidates": [
+          12
+        ],
+        "candidates": 27,
+        "cv_folds": 135,
+        "cv_mean_macro_f1": 0.9517421419160549,
+        "holdout_correct": 38,
+        "holdout_rows": 42,
+        "holdout_macro_f1": 0.9006921270547522,
+        "conditional_95_interval": [
+          0.8149641577060932,
+          0.9761600681140911
+        ],
+        "classes": [
+          1,
+          2,
+          3
+        ],
+        "confusion_matrix": [
+          [
+            10,
+            1,
+            3
+          ],
+          [
+            0,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            14
+          ]
+        ],
+        "phase_elapsed_seconds": {
+          "load": 0.0,
+          "split": 0.005,
+          "cv_start": 0.011,
+          "refit": 10.664,
+          "holdout": 10.83,
+          "bootstrap": 10.967,
+          "report": 12.762
+        },
+        "cv_elapsed_seconds": 10.653,
+        "cv_fit_seconds": 2.171183201018721,
+        "cli_seconds": 15.722,
+        "progress_sha256": "bbbb2e0a829591856e1221d1ad2c8e4a105e83c04d2921de31c8e283f8209856",
+        "renderings": {
+          "none": {
+            "figures": 0,
+            "workbook_bytes": 46777,
+            "render_seconds": 1.702
+          },
+          "summary": {
+            "figures": 2,
+            "workbook_bytes": 150490,
+            "render_seconds": 2.659
+          },
+          "detail": {
+            "figures": 5,
+            "workbook_bytes": 437526,
+            "render_seconds": 2.978
+          }
+        }
+      }
+    },
+    "breast_cancer": {
+      "input_sha256": "32cb9f217d4e04fe3ffc521a396a13336cd0f1e094445d2a0a8d54335458e8e7",
+      "rows": 569,
+      "features": 30,
+      "training_rows": 455,
+      "same_holdout_indices": true,
+      "select": {
+        "model": "Logistic Regression",
+        "selected_candidate": null,
+        "search_parameters": null,
+        "tied_candidates": [
+          "Logistic Regression"
+        ],
+        "candidates": 5,
+        "cv_folds": 25,
+        "cv_mean_macro_f1": 0.9764259233960633,
+        "holdout_correct": 112,
+        "holdout_rows": 114,
+        "holdout_macro_f1": 0.9811507936507937,
+        "conditional_95_interval": [
+          0.9526381387619444,
+          1.0
+        ],
+        "classes": [
+          0,
+          1
+        ],
+        "confusion_matrix": [
+          [
+            41,
+            1
+          ],
+          [
+            1,
+            71
+          ]
+        ],
+        "phase_elapsed_seconds": {
+          "load": 0.0,
+          "split": 0.007,
+          "cv_start": 0.008,
+          "refit": 1.468,
+          "holdout": 1.473,
+          "bootstrap": 1.476,
+          "report": 3.156
+        },
+        "cv_elapsed_seconds": 1.46,
+        "cv_fit_seconds": null,
+        "cli_seconds": 6.169,
+        "progress_sha256": "ea35d1b0a611d13ff43c3aff1dcbb849fb59aba3456695a2711d24b03eac0a32",
+        "renderings": {
+          "none": {
+            "figures": 0,
+            "workbook_bytes": 31117,
+            "render_seconds": 0.099
+          },
+          "summary": {
+            "figures": 2,
+            "workbook_bytes": 91320,
+            "render_seconds": 0.468
+          },
+          "detail": {
+            "figures": 4,
+            "workbook_bytes": 175561,
+            "render_seconds": 0.775
+          }
+        }
+      },
+      "tune": {
+        "model": "Logistic Regression",
+        "selected_candidate": 11,
+        "search_parameters": {
+          "C": 0.1
+        },
+        "tied_candidates": [
+          11
+        ],
+        "candidates": 27,
+        "cv_folds": 135,
+        "cv_mean_macro_f1": 0.9810713505801762,
+        "holdout_correct": 111,
+        "holdout_rows": 114,
+        "holdout_macro_f1": 0.9715828832571666,
+        "conditional_95_interval": [
+          0.933693394266722,
+          1.0
+        ],
+        "classes": [
+          0,
+          1
+        ],
+        "confusion_matrix": [
+          [
+            40,
+            2
+          ],
+          [
+            1,
+            71
+          ]
+        ],
+        "phase_elapsed_seconds": {
+          "load": 0.0,
+          "split": 0.007,
+          "cv_start": 0.013,
+          "refit": 11.553,
+          "holdout": 11.727,
+          "bootstrap": 11.915,
+          "report": 13.529
+        },
+        "cv_elapsed_seconds": 11.54,
+        "cv_fit_seconds": 2.698310600593686,
+        "cli_seconds": 16.546,
+        "progress_sha256": "ebcc6ea8eef73bca3865ac9c813a8e1d888b8039c4c603e26becf96f4fc16641",
+        "renderings": {
+          "none": {
+            "figures": 0,
+            "workbook_bytes": 48608,
+            "render_seconds": 1.674
+          },
+          "summary": {
+            "figures": 2,
+            "workbook_bytes": 151293,
+            "render_seconds": 2.463
+          },
+          "detail": {
+            "figures": 5,
+            "workbook_bytes": 438813,
+            "render_seconds": 3.465
+          }
+        }
+      }
+    }
+  },
+  "environment": {
+    "version": "0.4.0a8",
+    "python": "3.13.17",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "dependencies": {
+      "numpy": "2.3.5",
+      "pandas": "2.2.3",
+      "scipy": "1.17.0",
+      "scikit-learn": "1.8.0",
+      "openpyxl": "3.1.5"
+    }
+  }
+}

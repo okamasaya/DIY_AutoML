@@ -7,13 +7,14 @@ import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.styles import Font, PatternFill
 from openpyxl.utils import get_column_letter
-from threadpoolctl import threadpool_limits
 
 from .calendar_comparison import BY_MONTH, BY_MONTH_CLASS, COMPARISON, METHODS
 from .data_audit import excel_value
 
 
 BP_REPORT = "bp_report.xlsx"
+BP_CPU_THREADS = 1
+BP_FOREST_JOBS = 1
 TRAINING_BLOCKERS = {
     "incomplete_input", "no_valid_rows", "row_width", "duplicate_header", "empty_header",
     "target_not_found", "target_ambiguous", "target_not_declared", "fewer_than_two_classes",
@@ -42,13 +43,12 @@ def evaluate_selection(selection, output):
     profile = selection.audit.profile
     if training_blockers(profile):
         raise ValueError("抽出後の点検で、学習に必要な確認項目が見つかりました。")
-    with threadpool_limits(limits=1):
-        directory = select_csv(
-            selection.csv, profile["settings"]["target"], output,
-            expected_input_sha256=profile["input_sha256"], bp_summary=True,
-            group_column=profile["settings"]["id_column"], group_identical=selection.group_identical,
-            time_column=profile["settings"]["time_column"],
-        )
+    directory = select_csv(
+        selection.csv, profile["settings"]["target"], output,
+        expected_input_sha256=profile["input_sha256"], bp_summary=True,
+        group_column=profile["settings"]["id_column"], group_identical=selection.group_identical,
+        time_column=profile["settings"]["time_column"], cpu_threads=BP_CPU_THREADS, forest_jobs=BP_FOREST_JOBS,
+    )
     manifest = json.loads((directory / "manifest.json").read_text(encoding="utf-8"))
     return directory, manifest["bp_summary"]
 

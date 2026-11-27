@@ -68,6 +68,32 @@ Windowsでは `bp-preview` でCSVの点検、使う列の抽出と再点検、�
 
 `select` は学習側の共通層化5foldのmacro F1平均で選定し、選定した1モデルだけtest評価します。数値同率はatol=1e-12、rtol=0で残し、候補順を採用します。testスコア・時間では解消しません。層化paired percentile bootstrapは正解クラス別件数を固定した1,000反復、95%、seed=43が既定です。固定済みモデル・観測クラス件数に条件付きであり、学習・選定の変動を含みません。ゼロ幅も未知の不確かさゼロを意味しません。
 
+### 木の深さを設定する
+
+`--tree-max-depth` は決定木とランダムフォレストの各木の深さに、指定した正の整数を上限として適用します。指定値はExcelの `Summary` と `manifest.json` に保存されます。深さ3でRaisinを比較する例です。
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -m diy_automl select --csv data/reference/raisin.csv --target target --tree-max-depth 3 --output runs/raisin-depth-3
+```
+
+`run --methods sl`、`select`、`rank-sl`、`tune` で指定できます。`annealing-check` では `--model "Decision Tree"` または `--model "Random Forest"` と組み合わせます。Python APIの引数は `tree_max_depth=3` です。`tune` で指定すると木の深さを固定し、ほかの設定を比較します。 [探索範囲の詳細](docs/SL_TUNING_GUIDE.md#宣言した探索範囲と順序)
+
+手法別に指定するには `--decision-tree-max-depth` と `--random-forest-max-depth` を使います。共通の上限と併用した場合は、各モデルの個別指定が優先されます。次の例は決定木だけに上限3を指定します。
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -m diy_automl select --csv data/reference/raisin.csv --target target --decision-tree-max-depth 3 --output runs/raisin-decision-tree-3
+```
+
+Pythonでは `tree_max_depths={"Decision Tree": 3, "Random Forest": 5}` のように渡します。`annealing-check` の個別指定は `--model` で選んだ手法に適用します。使用した個別指定は `Summary` とmanifestから確認できます。
+
+### 教師あり学習のCPU並列度を指定する
+
+DS向けCLIとPython APIでは、対応するBLAS/OpenMPのスレッド上限と、ランダムフォレストの並列数を個別に設定できます。たとえば `select` に `--cpu-threads 2 --forest-jobs 2` を渡します。Pythonでは `cpu_threads=2, forest_jobs=2` を指定します。設定は `Summary` とmanifestに記録します。
+
+`--cpu-threads` は教師あり学習・予測中のネイティブスレッドプールの上限です。`--forest-jobs -1` はjoblibが認識する全CPUを使います。二つは異なる層の並列設定なので、CPUやメモリに合わせて調整します。`run` の教師あり学習、`select`、`rank-sl`、`tune`、`annealing-check` に対応します。`annealing-check` で並列数を指定する場合は `--model "Random Forest"` を選びます。 [scikit-learnの並列処理の説明](https://scikit-learn.org/stable/computing/parallelism.html) · [BP画面のCPU設定](docs/DATA_AUDIT.md#画面からのモデル比較)
+
+`select` と `tune` の `--progress both` は、進捗を標準エラー出力に表示し、`progress.jsonl` と評価Excelの `Progress` シートにも残します。 [表示と保存の設定](docs/SL_TUNING_GUIDE.md#select-と-tune-の途中経過を残す)
+
 DLはtrainだけでscalerをfitします。`--split-seed` と `--training-seed` を独立に指定でき、省略時は両方とも `--seed`（42）を使います。分割は概ね64/16/20、MLP32-16-8、100epoch、batch16です。test最高のseedを選ぶ入口はありません。
 
 ULは固定データ最大5,000行、KMeans n_init=auto、GMM n_init=1/full、階層4linkage、k=2..10です。UL反復のTarget ARIとAssignment ARIは別の量です。45 seed対を独立標本としたSEM/CIや自動選定は行いません。fold SD、点ごとのSilhouette SD/SE、seed SD、test区間も区別します。
@@ -165,7 +191,7 @@ Pythonでは `diy_automl.kalman_track_csv` を使えます。力学モデルと�
 
 ## SLの設定探索と紹介記事（0.4.0a4）
 
-`tune`（schema 7）は宣言した27設定を学習側の共通5foldで比較し、選定した1設定だけを再学習・test評価します。各foldのtrain-only scaler、同率時の候補順、条件付きbootstrapを使います。詳細は `docs/SL_TUNING_GUIDE.md`、検証結果は `docs/VALIDATION_SL_TUNING.md` に記載しています。
+`tune`（schema 7）は既定で27設定を学習側の共通5foldで比較し、選定した1設定だけを再学習・test評価します。各foldのtrain-only scaler、同率時の候補順、条件付きbootstrapを使います。詳細は `docs/SL_TUNING_GUIDE.md`、検証結果は `docs/VALIDATION_SL_TUNING.md` に記載しています。
 
 ```sh
 .venv/bin/python -m diy_automl tune --csv data/reference/wine.csv --target target --output runs/wine-tune
@@ -181,6 +207,8 @@ Zenn用の紹介原稿は `articles/`、選定フロー図は `images/diy-automl
 ## 図付きExcel（0.4.0a5）
 
 保存済みのrun/select/tune/反復結果から、モデルを再学習せずに図付きExcelを作れます。元の数値Excelと学習manifestはそのまま残し、画像・描画入力・配置・版を別に記録します。
+
+`report --charts detail` は、分類の `select`・`tune` に各foldのスコアを、`tune` に学習時間の図を追加します。図の量は `none`、`summary`、`detail` から選べます。 [図付きExcelガイド](docs/EXCEL_REPORT_GUIDE.md#図の量を選ぶ)
 
 ```sh
 .venv/bin/python -m diy_automl report --run runs/wine-tune --output runs/wine-tune-illustrated

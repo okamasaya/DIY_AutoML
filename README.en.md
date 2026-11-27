@@ -56,6 +56,12 @@ The audit writes a workbook and `profile.json` to `runs/iris-audit`. In `runs/ir
 
 In a Windows run, the workflow used 120 Iris rows to compare candidates, selected an SVM, and classified 29 of the 30 held-out rows correctly. The held-out macro F1 was 0.967. [Iris example and evaluation conditions (Japanese)](articles/diy-automl-development-note-01-overview.md)
 
+Use `--tree-max-depth 3` to cap the depth of the Decision Tree and each Random Forest tree in `run` with SL, `select`, `rank-sl`, or `tune`. The Python keyword is `tree_max_depth=3`. With `tune`, the depth is fixed and the other parameters remain in the search. The specified limit is recorded in the Excel `Summary` and the run manifest. [Tuning guide (Japanese)](docs/SL_TUNING_GUIDE.md)
+
+Use `--decision-tree-max-depth` and `--random-forest-max-depth` for separate limits. Each option takes precedence over the shared limit for its model. The Python equivalent is `tree_max_depths={"Decision Tree": 3, "Random Forest": 5}`. If `tune` receives only one model's limit, it keeps the default depth grid for the other model.
+
+Use `--cpu-threads 2 --forest-jobs 2` to set native thread limits and Random Forest parallelism for supervised evaluation. The Python keywords are `cpu_threads` and `forest_jobs`. The preview uses one native thread and one forest worker for the default CPU evaluation. [Preview setup and MacBook Air target (Japanese)](docs/DATA_AUDIT.md#データ点検の画面を使う)
+
 To open the Windows preview with the same sample, run the command below and choose `target` as the label column. [Preview guide (Japanese)](docs/DATA_AUDIT.md#データ点検の画面を使う)
 
 ```powershell

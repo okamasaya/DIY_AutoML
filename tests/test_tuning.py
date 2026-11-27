@@ -14,6 +14,7 @@ from sklearn.preprocessing import StandardScaler
 from diy_automl import tuning
 from diy_automl import tuning_workflow as workflow
 from diy_automl.data import load_csv
+from diy_automl.run_progress import PROGRESS_LOG
 from diy_automl.selection import bootstrap
 from diy_automl.supervised import candidates,metrics
 from diy_automl.tuning_validation import validate_tuning
@@ -94,12 +95,17 @@ def test_failed_cv_saves_state(tmp_path,monkeypatch,failure_index):
         return original(*args)
     monkeypatch.setattr(tuning,'fit_checked',fit)
     out=tmp_path/'failure'
-    with pytest.raises(RuntimeError): workflow.tune_csv(CSV,'target',out,bootstrap_repeats=5)
+    progress = "excel" if failure_index else "off"
+    with pytest.raises(RuntimeError): workflow.tune_csv(CSV,'target',out,bootstrap_repeats=5,progress=progress)
     with pytest.raises(ValueError): validate_tuning(out)
     m=validate_tuning(out,allow_failed=True)
     assert m['stage']=='cv' and 'selected_candidate' not in m
     states=pd.read_excel(out/'report.xlsx',sheet_name='SL_Search_Folds').Status.tolist()
     assert states==['completed']*failure_index+['failed']+['not_run']*(134-failure_index)
+    if failure_index:
+        events = [json.loads(line) for line in (out / PROGRESS_LOG).read_text(encoding="utf-8").splitlines()]
+        assert sum(event["stage"] == "cv" for event in events) == failure_index
+        assert events[-1]["stage"] == "failed"
 
 
 def test_refit_failure_never_tests(tmp_path,monkeypatch):

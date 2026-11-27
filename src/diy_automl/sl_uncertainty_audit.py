@@ -10,7 +10,8 @@ import pandas as pd
 from .data import load_csv
 from .metric_uncertainty import interval_rows, score_samples, scores_from_confusion
 from .reporting import fail, prepare, save, summary
-from .supervised import METRICS, candidates, pipeline
+from .sl_compute import limit_sl_threads, sl_compute_options, sl_compute_summary
+from .supervised import METRICS, candidates, pipeline, sl_model_options, tree_depth_options, tree_depth_summary
 
 
 SCHEMA = 11
@@ -152,6 +153,8 @@ def audit_tables(arrays, manifest):
             ("Numerical Input", "Rounding test inputs to Float32 and converting back to Float64 for prediction"),
             ("Systematic Scenarios", "Hypothetical constant offsets applied to test features"),
             ("Actual Systematic Bias", "Unmeasured. Calibration or independent labels are needed to estimate it."),
+            *tree_depth_summary(manifest["settings"]),
+            *sl_compute_summary(manifest["settings"]),
         ]),
         "Statistical": interval_rows(points, arrays["bootstrap_scores"], METRICS, manifest["settings"]["confidence"]),
         **diagnostic_tables(arrays, manifest),
@@ -184,6 +187,8 @@ def audit_sl_uncertainty(source, csv, output, shift=()):
     settings = {
         "csv": str(csv), "target": config["target"], "source": str(source), "shifts": scenarios,
         **{name: config[name] for name in ("model_seed", "bootstrap_seed", "bootstrap_repeats", "confidence")},
+        **tree_depth_options(config),
+        **sl_compute_options(config),
     }
     output, manifest = prepare(output, SCHEMA, settings)
     manifest.update({
@@ -194,11 +199,13 @@ def audit_sl_uncertainty(source, csv, output, shift=()):
     try:
         if manifest["input_sha256"] != input_hash:
             raise ValueError("Input CSV changed during audit setup")
-        model = pipeline(candidates(settings["model_seed"])[reference["selected_candidate"]][1])
-        model.fit(data.X[train], data.y[train])
+        models = candidates(settings["model_seed"], **sl_model_options(settings))
+        model = pipeline(models[reference["selected_candidate"]][1])
         test_features, truth = data.X[test], data.y[test]
-        if not np.array_equal(model.predict(test_features), baseline):
-            raise ValueError("Refitted model does not reproduce the saved test predictions")
+        with limit_sl_threads(settings):
+            model.fit(data.X[train], data.y[train])
+            if not np.array_equal(model.predict(test_features), baseline):
+                raise ValueError("Refitted model does not reproduce the saved test predictions")
 
         classes = np.arange(len(data.classes))
         _, samples, draws = score_draws(truth, baseline[None, :], classes, settings)
@@ -210,7 +217,8 @@ def audit_sl_uncertainty(source, csv, output, shift=()):
             "train": train, "test": test, "truth": truth, "baseline_predictions": baseline,
             "confusion": confusion, "bootstrap_indices": draws, "bootstrap_scores": samples,
         }
-        record_diagnostics(model, test_features, arrays, manifest)
+        with limit_sl_threads(settings):
+            record_diagnostics(model, test_features, arrays, manifest)
         return save(output, manifest, audit_tables(arrays, manifest), arrays)
     except Exception as error:
         fail(output, manifest, error)

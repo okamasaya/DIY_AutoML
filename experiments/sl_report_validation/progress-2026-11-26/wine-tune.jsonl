@@ -1,0 +1,142 @@
+{"elapsed_seconds": 0.0, "stage": "load"}
+{"elapsed_seconds": 0.006, "stage": "split"}
+{"elapsed_seconds": 0.013, "stage": "cv_start"}
+{"elapsed_seconds": 0.325, "stage": "cv", "model": "Decision Tree", "candidate": 1, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.7990196078431372}
+{"elapsed_seconds": 0.328, "stage": "cv", "model": "Decision Tree", "candidate": 1, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9010256410256411}
+{"elapsed_seconds": 0.331, "stage": "cv", "model": "Decision Tree", "candidate": 1, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9333333333333332}
+{"elapsed_seconds": 0.334, "stage": "cv", "model": "Decision Tree", "candidate": 1, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.9645191409897292}
+{"elapsed_seconds": 0.337, "stage": "cv", "model": "Decision Tree", "candidate": 1, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.929514963880289}
+{"elapsed_seconds": 0.57, "stage": "cv", "model": "Decision Tree", "candidate": 2, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.7990196078431372}
+{"elapsed_seconds": 0.573, "stage": "cv", "model": "Decision Tree", "candidate": 2, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9010256410256411}
+{"elapsed_seconds": 0.576, "stage": "cv", "model": "Decision Tree", "candidate": 2, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 0.582, "stage": "cv", "model": "Decision Tree", "candidate": 2, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.8957360722066605}
+{"elapsed_seconds": 0.587, "stage": "cv", "model": "Decision Tree", "candidate": 2, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9246031746031745}
+{"elapsed_seconds": 0.836, "stage": "cv", "model": "Decision Tree", "candidate": 3, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.7990196078431372}
+{"elapsed_seconds": 0.839, "stage": "cv", "model": "Decision Tree", "candidate": 3, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9010256410256411}
+{"elapsed_seconds": 0.842, "stage": "cv", "model": "Decision Tree", "candidate": 3, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9333333333333332}
+{"elapsed_seconds": 0.846, "stage": "cv", "model": "Decision Tree", "candidate": 3, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.8957360722066605}
+{"elapsed_seconds": 0.849, "stage": "cv", "model": "Decision Tree", "candidate": 3, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9645191409897292}
+{"elapsed_seconds": 1.108, "stage": "cv", "model": "Decision Tree", "candidate": 4, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.7990196078431372}
+{"elapsed_seconds": 1.113, "stage": "cv", "model": "Decision Tree", "candidate": 4, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9010256410256411}
+{"elapsed_seconds": 1.116, "stage": "cv", "model": "Decision Tree", "candidate": 4, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 1.121, "stage": "cv", "model": "Decision Tree", "candidate": 4, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.8957360722066605}
+{"elapsed_seconds": 1.125, "stage": "cv", "model": "Decision Tree", "candidate": 4, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9246031746031745}
+{"elapsed_seconds": 1.352, "stage": "cv", "model": "Decision Tree", "candidate": 5, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.7990196078431372}
+{"elapsed_seconds": 1.356, "stage": "cv", "model": "Decision Tree", "candidate": 5, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9010256410256411}
+{"elapsed_seconds": 1.359, "stage": "cv", "model": "Decision Tree", "candidate": 5, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9333333333333332}
+{"elapsed_seconds": 1.362, "stage": "cv", "model": "Decision Tree", "candidate": 5, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.9645191409897292}
+{"elapsed_seconds": 1.365, "stage": "cv", "model": "Decision Tree", "candidate": 5, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.929514963880289}
+{"elapsed_seconds": 1.596, "stage": "cv", "model": "Decision Tree", "candidate": 6, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.7990196078431372}
+{"elapsed_seconds": 1.599, "stage": "cv", "model": "Decision Tree", "candidate": 6, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9010256410256411}
+{"elapsed_seconds": 1.602, "stage": "cv", "model": "Decision Tree", "candidate": 6, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 1.605, "stage": "cv", "model": "Decision Tree", "candidate": 6, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.8957360722066605}
+{"elapsed_seconds": 1.608, "stage": "cv", "model": "Decision Tree", "candidate": 6, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9246031746031745}
+{"elapsed_seconds": 1.98, "stage": "cv", "model": "Random Forest", "candidate": 7, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.9280303030303031}
+{"elapsed_seconds": 2.108, "stage": "cv", "model": "Random Forest", "candidate": 7, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 2.206, "stage": "cv", "model": "Random Forest", "candidate": 7, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 2.329, "stage": "cv", "model": "Random Forest", "candidate": 7, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 2.42, "stage": "cv", "model": "Random Forest", "candidate": 7, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 2.796, "stage": "cv", "model": "Random Forest", "candidate": 8, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.8973112128146452}
+{"elapsed_seconds": 2.887, "stage": "cv", "model": "Random Forest", "candidate": 8, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 2.975, "stage": "cv", "model": "Random Forest", "candidate": 8, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 3.097, "stage": "cv", "model": "Random Forest", "candidate": 8, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 3.176, "stage": "cv", "model": "Random Forest", "candidate": 8, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 3.545, "stage": "cv", "model": "Random Forest", "candidate": 9, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.9280303030303031}
+{"elapsed_seconds": 3.68, "stage": "cv", "model": "Random Forest", "candidate": 9, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 3.795, "stage": "cv", "model": "Random Forest", "candidate": 9, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 3.929, "stage": "cv", "model": "Random Forest", "candidate": 9, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 4.013, "stage": "cv", "model": "Random Forest", "candidate": 9, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 4.412, "stage": "cv", "model": "Random Forest", "candidate": 10, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.8973112128146452}
+{"elapsed_seconds": 4.541, "stage": "cv", "model": "Random Forest", "candidate": 10, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 4.671, "stage": "cv", "model": "Random Forest", "candidate": 10, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 4.787, "stage": "cv", "model": "Random Forest", "candidate": 10, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 4.911, "stage": "cv", "model": "Random Forest", "candidate": 10, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 5.202, "stage": "cv", "model": "Logistic Regression", "candidate": 11, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.9316017316017314}
+{"elapsed_seconds": 5.211, "stage": "cv", "model": "Logistic Regression", "candidate": 11, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 5.219, "stage": "cv", "model": "Logistic Regression", "candidate": 11, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 5.227, "stage": "cv", "model": "Logistic Regression", "candidate": 11, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 5.234, "stage": "cv", "model": "Logistic Regression", "candidate": 11, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 5.599, "stage": "cv", "model": "Logistic Regression", "candidate": 12, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.8935574229691877}
+{"elapsed_seconds": 5.608, "stage": "cv", "model": "Logistic Regression", "candidate": 12, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 5.616, "stage": "cv", "model": "Logistic Regression", "candidate": 12, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 5.625, "stage": "cv", "model": "Logistic Regression", "candidate": 12, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 5.633, "stage": "cv", "model": "Logistic Regression", "candidate": 12, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 5.993, "stage": "cv", "model": "Logistic Regression", "candidate": 13, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.9316017316017314}
+{"elapsed_seconds": 6.002, "stage": "cv", "model": "Logistic Regression", "candidate": 13, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 6.011, "stage": "cv", "model": "Logistic Regression", "candidate": 13, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 6.02, "stage": "cv", "model": "Logistic Regression", "candidate": 13, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 6.028, "stage": "cv", "model": "Logistic Regression", "candidate": 13, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.929514963880289}
+{"elapsed_seconds": 6.311, "stage": "cv", "model": "SVM", "candidate": 14, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.9632850241545894}
+{"elapsed_seconds": 6.317, "stage": "cv", "model": "SVM", "candidate": 14, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9691228070175438}
+{"elapsed_seconds": 6.32, "stage": "cv", "model": "SVM", "candidate": 14, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 6.328, "stage": "cv", "model": "SVM", "candidate": 14, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 6.334, "stage": "cv", "model": "SVM", "candidate": 14, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 6.629, "stage": "cv", "model": "SVM", "candidate": 15, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.9632850241545894}
+{"elapsed_seconds": 6.634, "stage": "cv", "model": "SVM", "candidate": 15, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9691228070175438}
+{"elapsed_seconds": 6.64, "stage": "cv", "model": "SVM", "candidate": 15, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 6.646, "stage": "cv", "model": "SVM", "candidate": 15, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.9632850241545894}
+{"elapsed_seconds": 6.651, "stage": "cv", "model": "SVM", "candidate": 15, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 6.94, "stage": "cv", "model": "SVM", "candidate": 16, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.9632850241545894}
+{"elapsed_seconds": 6.945, "stage": "cv", "model": "SVM", "candidate": 16, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 6.949, "stage": "cv", "model": "SVM", "candidate": 16, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 6.952, "stage": "cv", "model": "SVM", "candidate": 16, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 6.955, "stage": "cv", "model": "SVM", "candidate": 16, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 7.256, "stage": "cv", "model": "SVM", "candidate": 17, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.9316017316017314}
+{"elapsed_seconds": 7.261, "stage": "cv", "model": "SVM", "candidate": 17, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 7.266, "stage": "cv", "model": "SVM", "candidate": 17, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 7.271, "stage": "cv", "model": "SVM", "candidate": 17, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 7.277, "stage": "cv", "model": "SVM", "candidate": 17, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 7.578, "stage": "cv", "model": "SVM", "candidate": 18, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.8935574229691877}
+{"elapsed_seconds": 7.584, "stage": "cv", "model": "SVM", "candidate": 18, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9691228070175438}
+{"elapsed_seconds": 7.59, "stage": "cv", "model": "SVM", "candidate": 18, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 7.595, "stage": "cv", "model": "SVM", "candidate": 18, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 7.601, "stage": "cv", "model": "SVM", "candidate": 18, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9645191409897292}
+{"elapsed_seconds": 7.962, "stage": "cv", "model": "SVM", "candidate": 19, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.9316017316017314}
+{"elapsed_seconds": 7.968, "stage": "cv", "model": "SVM", "candidate": 19, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 7.972, "stage": "cv", "model": "SVM", "candidate": 19, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 7.977, "stage": "cv", "model": "SVM", "candidate": 19, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 7.981, "stage": "cv", "model": "SVM", "candidate": 19, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 8.327, "stage": "cv", "model": "k-NN", "candidate": 20, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.8935574229691877}
+{"elapsed_seconds": 8.333, "stage": "cv", "model": "k-NN", "candidate": 20, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 8.339, "stage": "cv", "model": "k-NN", "candidate": 20, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 8.345, "stage": "cv", "model": "k-NN", "candidate": 20, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.929514963880289}
+{"elapsed_seconds": 8.352, "stage": "cv", "model": "k-NN", "candidate": 20, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 8.657, "stage": "cv", "model": "k-NN", "candidate": 21, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.8935574229691877}
+{"elapsed_seconds": 8.66, "stage": "cv", "model": "k-NN", "candidate": 21, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 8.663, "stage": "cv", "model": "k-NN", "candidate": 21, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 8.667, "stage": "cv", "model": "k-NN", "candidate": 21, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.929514963880289}
+{"elapsed_seconds": 8.67, "stage": "cv", "model": "k-NN", "candidate": 21, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 8.929, "stage": "cv", "model": "k-NN", "candidate": 22, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.8935574229691877}
+{"elapsed_seconds": 8.932, "stage": "cv", "model": "k-NN", "candidate": 22, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9393939393939394}
+{"elapsed_seconds": 8.936, "stage": "cv", "model": "k-NN", "candidate": 22, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 8.939, "stage": "cv", "model": "k-NN", "candidate": 22, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.9645191409897292}
+{"elapsed_seconds": 8.942, "stage": "cv", "model": "k-NN", "candidate": 22, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.929514963880289}
+{"elapsed_seconds": 9.203, "stage": "cv", "model": "k-NN", "candidate": 23, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.8935574229691877}
+{"elapsed_seconds": 9.209, "stage": "cv", "model": "k-NN", "candidate": 23, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9393939393939394}
+{"elapsed_seconds": 9.214, "stage": "cv", "model": "k-NN", "candidate": 23, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 9.217, "stage": "cv", "model": "k-NN", "candidate": 23, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.9645191409897292}
+{"elapsed_seconds": 9.22, "stage": "cv", "model": "k-NN", "candidate": 23, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.929514963880289}
+{"elapsed_seconds": 9.524, "stage": "cv", "model": "k-NN", "candidate": 24, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.8935574229691877}
+{"elapsed_seconds": 9.53, "stage": "cv", "model": "k-NN", "candidate": 24, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 9.534, "stage": "cv", "model": "k-NN", "candidate": 24, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 9.537, "stage": "cv", "model": "k-NN", "candidate": 24, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.929514963880289}
+{"elapsed_seconds": 9.541, "stage": "cv", "model": "k-NN", "candidate": 24, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 9.832, "stage": "cv", "model": "k-NN", "candidate": 25, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.8935574229691877}
+{"elapsed_seconds": 9.838, "stage": "cv", "model": "k-NN", "candidate": 25, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 9.843, "stage": "cv", "model": "k-NN", "candidate": 25, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 9.848, "stage": "cv", "model": "k-NN", "candidate": 25, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.929514963880289}
+{"elapsed_seconds": 9.852, "stage": "cv", "model": "k-NN", "candidate": 25, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 10.18, "stage": "cv", "model": "k-NN", "candidate": 26, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.8935574229691877}
+{"elapsed_seconds": 10.187, "stage": "cv", "model": "k-NN", "candidate": 26, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 10.194, "stage": "cv", "model": "k-NN", "candidate": 26, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 10.201, "stage": "cv", "model": "k-NN", "candidate": 26, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.929514963880289}
+{"elapsed_seconds": 10.207, "stage": "cv", "model": "k-NN", "candidate": 26, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 10.514, "stage": "cv", "model": "k-NN", "candidate": 27, "candidates": 27, "fold": 1, "folds": 5, "metric": "F1", "score": 0.8935574229691877}
+{"elapsed_seconds": 10.519, "stage": "cv", "model": "k-NN", "candidate": 27, "candidates": 27, "fold": 2, "folds": 5, "metric": "F1", "score": 1.0}
+{"elapsed_seconds": 10.522, "stage": "cv", "model": "k-NN", "candidate": 27, "candidates": 27, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 10.528, "stage": "cv", "model": "k-NN", "candidate": 27, "candidates": 27, "fold": 4, "folds": 5, "metric": "F1", "score": 0.929514963880289}
+{"elapsed_seconds": 10.533, "stage": "cv", "model": "k-NN", "candidate": 27, "candidates": 27, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9665831244778613}
+{"elapsed_seconds": 10.727, "stage": "refit"}
+{"elapsed_seconds": 10.858, "stage": "holdout"}
+{"elapsed_seconds": 11.005, "stage": "bootstrap"}
+{"elapsed_seconds": 12.802, "stage": "report"}

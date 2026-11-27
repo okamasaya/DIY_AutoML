@@ -8,7 +8,7 @@ version = "0.4.0a8"
 description = "Compare machine learning models and inspect the evidence behind their scores"
 readme = "README.pypi.md"
 requires-python = ">=3.12"
-dependencies = ["numpy>=2", "pandas>=2.2", "scipy>=1.14", "scikit-learn>=1.6", "openpyxl>=3.1", "matplotlib>=3.9"]
+dependencies = ["numpy>=2", "pandas>=2.2", "scipy>=1.14", "scikit-learn>=1.6", "threadpoolctl>=3.2", "openpyxl>=3.1", "matplotlib>=3.9"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Programming Language :: Python :: 3",

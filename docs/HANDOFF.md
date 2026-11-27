@@ -1,10 +1,12 @@
 # 引継ぎと再開の入口
 
-更新日：2026-11-24（日本時間）
+更新日：2026-11-27（日本時間）
 
-**再開用の入口**。DS・BPの合意、時系列とGNNの実装状況、環境と資料の復元手順を保存した。次は4媒体の原稿整理から進める。 [再開用セーブポイント](RECOVERY_CHECKPOINT_20261124.md) · [Full Paper・Letter・Zenn・DEV Communityの資料一覧](PUBLICATION_HANDOFF_20261124.md)
+**開発は元のDIY_AutoMLフォルダーの `codex/gnn-node-classification` から再開する。** まず11月26日の開発差分を保存し、記事を統合済みの `main` に取り込む準備をする。再ビルド、投稿、後続開発の順序は11月27日の項に記録した。 [11月26日のHANDOFF](HANDOFF_20261126.md)
 
-**直近は、ボイジャー・NYC Taxi・Iris・UCI Pedal Meで、GCNが辺を使う効果を比較した。** ボイジャーの過去観測混入では辺なしより誤差が下がり、他のデータや通常条件では基準が上回った。 [4データの比較](../experiments/gnn_application_checks/README.md) · [Coraの結果と手順](GRAPH_CLASSIFICATION.md) · [ロードマップ](ROADMAP.md)
+11月24日時点のDS・BPの合意、時系列とGNNの実装状況、環境の復元手順と4媒体向けの資料を保存してある。 [再開用セーブポイント](RECOVERY_CHECKPOINT_20261124.md) · [Full Paper・Letter・Zenn・DEV Communityの資料一覧](PUBLICATION_HANDOFF_20261124.md)
+
+11月24日までに、ボイジャー・NYC Taxi・Iris・UCI Pedal Meで、GCNが辺を使う効果を比較した。ボイジャーの過去観測混入では辺なしより誤差が下がり、他のデータや通常条件では基準が上回った。 [4データの比較](../experiments/gnn_application_checks/README.md) · [Coraの結果と手順](GRAPH_CLASSIFICATION.md) · [ロードマップ](ROADMAP.md)
 
 Zenn開発メモの投稿前の確認記録は編集メモにある。BP向けアプリの初回利用の確認と、日付順の分類での性能差の区間はロードマップから再開できる。 [Zenn編集メモ](ZENN_EDITORIAL_NOTES.md) · [ロードマップ](ROADMAP.md)
 
@@ -45,6 +47,24 @@ Full Paperの処理フロー図、BP画面の結果グラフ、詳細グラフ�
 実装を伴う作業では、再開に必要な依存版・実行コマンド・入力や保存先も関連する手順へ残す。
 
 ## 現在の引継ぎ
+
+### 2026年11月27日
+
+GitHubの `main`、手元の `main` と `origin/main` は `604983d` で一致した。元の開発作業ツリーは `codex/gnn-node-classification`、`HEAD=036497b`。両ブランチの分岐後、`main` 側に20コミット、開発側に5コミットがある。開発側の5コミットに加え、木の深さ、CPU並列度、JSON列抽出、進捗ログ、Excel詳細図、実験記録の未コミット差分がある。Codexの原稿用チェックアウトは `codex/dev-automl-evaluation-en`（`08c5dfd`）でクリーン。
+
+| 順序 | 作業 | 現状と次の一手 |
+| --- | --- | --- |
+| 1 | 開発差分の保存と統合準備 | 11月26日の実装・テスト・実験記録を確認し、開発側の5コミットと未コミット差分を保全する。Zenn原稿、図2点、編集メモは手元にも見えるが、4ファイルとも `main` 上の内容と一致した。別件の論文出力は `output/` にある。統合時は公開済みの差分と開発差分を照合し、統合したソースで回帰を確認する。 [11月26日の開発記録](HANDOFF_20261126.md) |
+| 2 | PyPI候補の再ビルドと試用 | 既存の `0.4.0a8` wheel・sdistは、進捗ログと詳細図の追加前にビルド・導入を確認した。開発ツリーでは後から全304テストが通過した。次は両機能を含むwheel・sdistを作り、クリーン環境で `--progress both`、`--charts detail`、Excelの検証まで通す。公開名・公開リポジトリ・ライセンスは要決定。TestPyPIからの取得、ローカル・Colabでの試用、本番公開が残る。 [配布手順](PYPI_RELEASE.md) |
+| 並行 | Zenn・DEV Community | Zennの学習進捗記事と図は [PR #13](https://github.com/okamasaya/DIY_AutoML/pull/13)、DEVの評価記事3本と目次は [PR #14](https://github.com/okamasaya/DIY_AutoML/pull/14) で統合済み。対象4記事のGit原稿は `published: false`。Zennは進捗と詳細図を含む公開コード版への参照と最終表示の確認、DEVは投稿画面のプレビューと公開の状態確認が残る。 [DEV原稿一覧](https://github.com/okamasaya/DIY_AutoML/tree/main/docs/dev_community) |
+| 後続 | 評価・BP・研究資料 | 表形式ではfoldの学習側で完結する欠損補完とカテゴリ変換が次の候補。日付順評価の差の区間、モデルの保存・再利用、探索予算も検討する。BPはQt試作とMacBook Air実機検証、フィジカルAIはカルマン系・GCNの適用先ごとの検証を計画として持つ。Full PaperとLetterの改稿に使う実験資料は保存済み。 [開発ロードマップ](ROADMAP.md) · [追加検証](MODEL_VALIDATION_TODO.md) · [投稿資料](PUBLICATION_HANDOFF_20261124.md) |
+
+### 2026年11月26日
+
+- DS向けに木の深さ・CPU並列度、JSONによる列抽出、進捗の保存先とExcelの図の量を設定できるようにした。BPの現在の画面はCPUを抑える設定で、MacBook Air実機とQt版は後続の作業。
+- Wine・Seeds・Breast Cancer Wisconsinで途中経過とレポートを照合した。AutoGluon・H2Oとは軽量な分類の保留予測と合成Voyagerの途中記録を比較した。日常の回帰確認はDIYで進め、評価条件やモデルを変えたときに必要に応じて外部と照合する。
+- 開発版の全304テストが通過した。ローカルの配布候補は木の深さ・CPU・JSON抽出を含む時点のもの。進捗と詳細図を含めた候補の再ビルドと新規環境での導入確認が残っている。
+- 本日の変更は作業ツリーに保存してある。作業ブランチとベースコミット、参照すべき実測ファイル、再開時の手順は日付別の記録にある。 [11月26日のHANDOFF](HANDOFF_20261126.md)
 
 ### 2026年11月24日
 

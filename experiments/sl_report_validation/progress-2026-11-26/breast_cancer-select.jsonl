@@ -1,0 +1,32 @@
+{"elapsed_seconds": 0.0, "stage": "load"}
+{"elapsed_seconds": 0.007, "stage": "split"}
+{"elapsed_seconds": 0.008, "stage": "cv_start"}
+{"elapsed_seconds": 0.081, "stage": "cv", "model": "Decision Tree", "candidate": 1, "candidates": 5, "fold": 1, "folds": 5, "metric": "F1", "score": 0.9303571428571429}
+{"elapsed_seconds": 0.087, "stage": "cv", "model": "Decision Tree", "candidate": 1, "candidates": 5, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9303571428571429}
+{"elapsed_seconds": 0.091, "stage": "cv", "model": "Decision Tree", "candidate": 1, "candidates": 5, "fold": 3, "folds": 5, "metric": "F1", "score": 0.8970717607138369}
+{"elapsed_seconds": 0.097, "stage": "cv", "model": "Decision Tree", "candidate": 1, "candidates": 5, "fold": 4, "folds": 5, "metric": "F1", "score": 0.882610939112487}
+{"elapsed_seconds": 0.102, "stage": "cv", "model": "Decision Tree", "candidate": 1, "candidates": 5, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9191726938205811}
+{"elapsed_seconds": 0.199, "stage": "cv", "model": "Random Forest", "candidate": 2, "candidates": 5, "fold": 1, "folds": 5, "metric": "F1", "score": 0.9649865332820315}
+{"elapsed_seconds": 0.296, "stage": "cv", "model": "Random Forest", "candidate": 2, "candidates": 5, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9535714285714285}
+{"elapsed_seconds": 0.409, "stage": "cv", "model": "Random Forest", "candidate": 2, "candidates": 5, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9303571428571429}
+{"elapsed_seconds": 0.55, "stage": "cv", "model": "Random Forest", "candidate": 2, "candidates": 5, "fold": 4, "folds": 5, "metric": "F1", "score": 0.9641025641025641}
+{"elapsed_seconds": 0.684, "stage": "cv", "model": "Random Forest", "candidate": 2, "candidates": 5, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9883288444273439}
+{"elapsed_seconds": 0.697, "stage": "cv", "model": "Logistic Regression", "candidate": 3, "candidates": 5, "fold": 1, "folds": 5, "metric": "F1", "score": 0.9641025641025641}
+{"elapsed_seconds": 0.704, "stage": "cv", "model": "Logistic Regression", "candidate": 3, "candidates": 5, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9883288444273439}
+{"elapsed_seconds": 0.72, "stage": "cv", "model": "Logistic Regression", "candidate": 3, "candidates": 5, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9765221878224974}
+{"elapsed_seconds": 0.726, "stage": "cv", "model": "Logistic Regression", "candidate": 3, "candidates": 5, "fold": 4, "folds": 5, "metric": "F1", "score": 0.9881894873458793}
+{"elapsed_seconds": 0.731, "stage": "cv", "model": "Logistic Regression", "candidate": 3, "candidates": 5, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9649865332820315}
+{"elapsed_seconds": 0.736, "stage": "cv", "model": "SVM", "candidate": 4, "candidates": 5, "fold": 1, "folds": 5, "metric": "F1", "score": 0.9401709401709402}
+{"elapsed_seconds": 0.749, "stage": "cv", "model": "SVM", "candidate": 4, "candidates": 5, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9767857142857143}
+{"elapsed_seconds": 0.762, "stage": "cv", "model": "SVM", "candidate": 4, "candidates": 5, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9649865332820315}
+{"elapsed_seconds": 0.768, "stage": "cv", "model": "SVM", "candidate": 4, "candidates": 5, "fold": 4, "folds": 5, "metric": "F1", "score": 0.9645684620376379}
+{"elapsed_seconds": 0.777, "stage": "cv", "model": "SVM", "candidate": 4, "candidates": 5, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9881894873458793}
+{"elapsed_seconds": 1.441, "stage": "cv", "model": "k-NN", "candidate": 5, "candidates": 5, "fold": 1, "folds": 5, "metric": "F1", "score": 0.9641025641025641}
+{"elapsed_seconds": 1.446, "stage": "cv", "model": "k-NN", "candidate": 5, "candidates": 5, "fold": 2, "folds": 5, "metric": "F1", "score": 0.9641025641025641}
+{"elapsed_seconds": 1.452, "stage": "cv", "model": "k-NN", "candidate": 5, "candidates": 5, "fold": 3, "folds": 5, "metric": "F1", "score": 0.9416442221367193}
+{"elapsed_seconds": 1.458, "stage": "cv", "model": "k-NN", "candidate": 5, "candidates": 5, "fold": 4, "folds": 5, "metric": "F1", "score": 0.952455590386625}
+{"elapsed_seconds": 1.463, "stage": "cv", "model": "k-NN", "candidate": 5, "candidates": 5, "fold": 5, "folds": 5, "metric": "F1", "score": 0.9765221878224974}
+{"elapsed_seconds": 1.468, "stage": "refit"}
+{"elapsed_seconds": 1.473, "stage": "holdout"}
+{"elapsed_seconds": 1.476, "stage": "bootstrap"}
+{"elapsed_seconds": 3.156, "stage": "report"}

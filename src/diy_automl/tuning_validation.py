@@ -9,9 +9,11 @@ from sklearn.model_selection import StratifiedKFold
 from sklearn.preprocessing import StandardScaler
 
 from .data import split_indices
+from .run_progress import validate_progress
 from .selection import bootstrap,choose
-from .supervised import METRICS,metrics
-from .tuning import MAX_FEATURES,MAX_ROWS,SEARCH_SPACES,aggregate,configurations
+from .sl_compute import sl_compute_options,sl_compute_settings
+from .supervised import METRICS,metrics,sl_model_options,tree_depth_options
+from .tuning import MAX_FEATURES,MAX_ROWS,aggregate,configurations,search_spaces
 from .ul_subsample_validation import require,same_table
 
 SHEETS={'SL_Search_Settings','SL_Search_Folds','SL_Search_Mean','SL_Search_SD',
@@ -26,17 +28,20 @@ def validate_tuning(directory,allow_failed=False):
     for name in ['report.xlsx','arrays.npz']:
         require(hashlib.sha256((root/name).read_bytes()).hexdigest()==m['artifacts'][name],f'Artifact checksum mismatch: {name}')
     sheets=pd.read_excel(root/'report.xlsx',sheet_name=None)
-    require(set(sheets)==SHEETS,'Sheet names differ')
+    require(set(sheets)==SHEETS | validate_progress(root, m, sheets),'Sheet names differ')
     require({key:len(value) for key,value in sheets.items()}==m['sheets'],'Sheet row counts differ')
     s=m['settings'];seed=s['seed'];metric=s['metric']
-    require(s['search_spaces']==SEARCH_SPACES and s['folds']==5,'Search space or folds differ')
+    depth_options=tree_depth_options(s)
+    require(s['search_spaces']==search_spaces(**depth_options) and s['folds']==5,'Search space or folds differ')
+    compute_options=sl_compute_options(s)
+    require(compute_options==sl_compute_settings(**compute_options),'CPU settings differ')
     require(s['limits']==dict(rows=MAX_ROWS,features=MAX_FEATURES),'Limits differ')
     require(s['tie_atol']==1e-12 and s['tie_rtol']==0,'Tie rule differs')
-    configs=configurations(seed)
+    configs=configurations(seed, **sl_model_options(s))
     same_table(sheets['SL_Search_Settings'],configs,'Configurations differ')
     rows=sheets['SL_Search_Folds']
-    require(rows.Candidate.tolist()==[i for i in range(27) for _ in range(5)],'Candidate fold order differs')
-    require(rows.Fold.tolist()==list(range(5))*27,'Fold order differs')
+    require(rows.Candidate.tolist()==[i for i in range(len(configs)) for _ in range(5)],'Candidate fold order differs')
+    require(rows.Fold.tolist()==list(range(5))*len(configs),'Fold order differs')
     require(set(rows.Status)<={'completed','failed','not_run'},'Unknown or running fold status')
     for _,row in rows.iterrows():
         require(row.Model==configs.iloc[int(row.Candidate)].Model,'Model identity differs')
@@ -51,7 +56,7 @@ def validate_tuning(directory,allow_failed=False):
         require('error' in m,'Missing failure reason')
         if 'failed' in states:
             i=states.index('failed')
-            require(states==['completed']*i+['failed']+['not_run']*(135-i-1),'Invalid fold failure order')
+            require(states==['completed']*i+['failed']+['not_run']*(len(states)-i-1),'Invalid fold failure order')
             require(m['stage']=='cv' and pd.notna(rows.iloc[i].Error),'Missing CV failure details')
         else:
             require(set(states)=={'completed'} and m['stage'] in ['refit','test','bootstrap'],'Unexplained failure')

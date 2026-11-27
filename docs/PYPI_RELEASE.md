@@ -34,6 +34,12 @@ PyPIの英語説明は `README.pypi.md` を使う。配布の対象はパッケ�
 
 両環境で `pip check` と、Irisの点検・比較結果の検証が通った。ここでの記録は作業端末から配布候補を導入した結果。TestPyPIから取得する試験は次の手順で行う。
 
+### 2026年11月26日の回帰確認
+
+木の深さ・CPU並列度の指定とJSONによる列抽出を含む最新のローカル候補は `runs/pypi-regression-0.4.0a8-20261126/dist`。同じ作業フォルダーに `SHA256SUMS.txt`、`build.log`、`pytest.xml`、環境別の `smoke.log` を保存した。wheelとソース配布物は `twine check --strict` を通過し、収録した63個のPythonモジュールは作業ツリーと一致した。開発環境の全300テストが通過した。
+
+Windowsの新規Python 3.12.16環境にwheelを、3.13.17環境にソース配布物を導入した。PyPIへ接続できない実行環境だったため、依存パッケージは取得済みのものを新しい環境に複製した。両方で `pip check`、Irisの既定評価（SVM、保留30件中29件正解）、JSONでの列抽出、木の深さとCPUの指定値の照合が通った。3.13.17環境では `storage` のParquetとDuckDBへの抽出も確認した。
+
 ## TestPyPIで導入を確認する
 
 TestPyPIは本番PyPIとはアカウントとAPIトークンが別。TestPyPI側のAPIトークンを、Twineが求めたときに入力する。 [TestPyPIの公式手順](https://packaging.python.org/en/latest/guides/using-testpypi/)
@@ -60,7 +66,7 @@ if ($LASTEXITCODE -ne 0) { throw 'Dependency check failed' }
 if ($LASTEXITCODE -ne 0) { throw 'Iris smoke test failed' }
 ```
 
-確認用スクリプトは、インストール先から対象バージョンを読み、点検と5モデル比較を実行する。続けてExcel・配列・manifestの整合を検証する。ColabではTestPyPIから取得した同じwheelを試用ノートブックで選べる。 [Colabでの試用](PYPI_ALPHA_TRIAL.md#colabやローカルjupyterで試す)
+確認用スクリプトは、インストール先の対象バージョンで、点検、5モデル比較、JSONでの列抽出、木の深さ・CPU並列度を指定した評価を行い、保存結果を検証する。`storage` を導入した環境では `--storage` でParquet・DuckDB出力の確認を追加できる。ColabではTestPyPIから取得した同じwheelを試用ノートブックで選べる。 [Colabでの試用](PYPI_ALPHA_TRIAL.md#colabやローカルjupyterで試す)
 
 ## 本番PyPIに公開する
 
