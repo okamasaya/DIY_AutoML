@@ -1,0 +1,61 @@
+{
+  "display_name": "UC_AutoMaiL",
+  "name": "uc-automail",
+  "version": "0.4.0a8",
+  "repository": "https://github.com/okamasaya/DIY_AutoML",
+  "commit": "76923341424b414e8004dcadf071cbc151bccd24",
+  "license": "MIT",
+  "files": [
+    {
+      "kind": "bdist_wheel",
+      "filename": "uc_automail-0.4.0a8-py3-none-any.whl",
+      "sha256": "6e16ccef9a33d8438f4de49900c58f249e779c16743639936ce1a235bafa93b6",
+      "size_bytes": 165746
+    },
+    {
+      "kind": "sdist",
+      "filename": "uc_automail-0.4.0a8.tar.gz",
+      "sha256": "1dc74f4870a005929868889c19e0f93d334f770d5d4ac947441a0544b6d3f6b0",
+      "size_bytes": 143249
+    }
+  ],
+  "python_modules_verified": 64,
+  "build_commit": "4ff386adf6115a63ca5b5b6d9dbaa996216c1acf",
+  "verification": {
+    "twine_check_strict": "passed",
+    "pytest": {
+      "passed": 304
+    },
+    "windows": [
+      {
+        "python": "3.12.16",
+        "distribution": "bdist_wheel",
+        "iris_holdout_correct": 29,
+        "iris_holdout_total": 30,
+        "cv_events": 25,
+        "excel_figures": 4,
+        "storage": false
+      },
+      {
+        "python": "3.13.17",
+        "distribution": "sdist",
+        "iris_holdout_correct": 29,
+        "iris_holdout_total": 30,
+        "cv_events": 25,
+        "excel_figures": 4,
+        "storage": true
+      }
+    ],
+    "index_project_metadata": {
+      "testpypi": 404,
+      "pypi": 404
+    },
+    "notebook": {
+      "environment": "local Jupyter on Windows",
+      "parent_matplotlib_backend": "module://matplotlib_inline.backend_inline",
+      "code_cells_passed": 5,
+      "archive_files_verified": 31,
+      "colab_host_checked": false
+    }
+  }
+}

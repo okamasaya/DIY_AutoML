@@ -2,7 +2,7 @@
 
 [English overview](README.en.md)
 
-UC_AutoMaiL（旧DIY AutoML）は、機械学習モデルを比較し、評価値の不確かさを調べるPythonパッケージです。名前の `UC` は開発の出発点である不確かさ（Uncertainty）に由来します。配布名とCLIは `uc-automail` です。 [α版の試用手順](docs/PYPI_ALPHA_TRIAL.md)
+UC_AutoMaiL（旧DIY AutoML）は、機械学習モデルを比較し、評価値の不確かさを調べるPythonパッケージです。名前の `UC` は開発の出発点である不確かさ（Uncertainty）に由来します。配布名とCLIは `uc-automail` です。 [α版の試用手順](PyPI/TRIAL.md)
 
 旧クラウド環境の0.4.0a1ソースは未取得です。このリポジトリは元資料ZIPと引継ぎ仕様から新たに実装しました。初回再実装は **0.4.0a1.post1**、DL反復は **0.4.0a2**、UL部分抽出は **0.4.0a3**、SL設定探索は **0.4.0a4**、図付きExcelは **0.4.0a5**、評価値の誤差評価は **0.4.0a6**、DLバックエンド追加の準備は **0.4.0a7**、分類・状態推定・GCNを収めた配布試用版は **0.4.0a8** です。旧実装とのAPI・数値・manifest互換性は保証していません。schema番号2/3/4は引継ぎの用途区分を採用したもので、旧validatorとの互換を意味しません。過去の96 passedは今回の検証結果ではありません。
 
@@ -31,7 +31,7 @@ Pythonパッケージの自作コードと配布用ファイルはMITライセ�
 
 ## セットアップ
 
-配布候補の **0.4.0a8** は、wheelからWindowsとColabで分類・カルマン・粒子フィルタ・GCNを試せるα版です。 [試用手順とノートブック](docs/PYPI_ALPHA_TRIAL.md)
+配布候補の **0.4.0a8** は、分類・カルマン・粒子フィルタ・GCNを試せるα版です。 [試用手順とノートブック](PyPI/TRIAL.md) · [PyPIの公開作業](PyPI/)
 
 0.4.0a7は、PyTorch追加に向けた共通データ/結果形式とTensorFlow学習処理の分離です。現在の学習バックエンドはTensorFlowのみで、PyTorch/JAXの実装や依存追加はまだありません。Julia/Rust版も将来展望です。[準備した境界と次の条件](docs/DL_BACKENDS.md)を参照してください。
 

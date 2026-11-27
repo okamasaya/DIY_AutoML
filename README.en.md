@@ -9,7 +9,7 @@ UC_AutoMaiL, originally called DIY AutoML, helps you compare machine learning mo
 
 The five development notes cover the workflow, library cross-checks, storage benchmarks, feature selection, and the Windows preview. [English development notes](docs/development-notes/README.md)
 
-The distribution trial for version `0.4.0a8` includes a local wheel and a CPU notebook for trying classification, state estimation, and graph classification from that wheel. [Trial instructions (Japanese)](docs/PYPI_ALPHA_TRIAL.md) · [Colab and Jupyter notebook](notebooks/Alpha_Trial.ipynb)
+The distribution trial for version `0.4.0a8` includes a wheel and a CPU notebook for trying classification, state estimation, and graph classification. [Trial instructions (Japanese)](PyPI/TRIAL.md) · [Colab and Jupyter notebook](PyPI/Alpha_Trial.ipynb) · [PyPI release files](PyPI/)
 
 ## What you can do
 
