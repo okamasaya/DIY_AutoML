@@ -33,6 +33,15 @@ WindowsのTcl/Tk付きPythonで、リポジトリのルートから起動する�
 .\.venv\Scripts\python.exe -X utf8 -m diy_automl bp-preview --csv data/reference/raisin.csv
 ~~~
 
+MacBook Airで確認するときは、python.org版のTcl/Tk付きPythonを使用し、次をリポジトリのルートから実行する。`python -m tkinter` に相当するコマンドで確認用のウィンドウを開き、それを閉じてからBP画面を起動する。以下はmacOS向けの確認手順で、実機での動作と計測は未確認。 [Python.orgのmacOS版Tcl/Tk](https://www.python.org/download/mac/tcltk/) · [Tkinterの確認方法](https://docs.python.org/3/library/tkinter.html)
+
+```sh
+python3.13 -m venv .venv
+.venv/bin/python -m pip install -e .
+.venv/bin/python -m tkinter
+.venv/bin/python -X utf8 -m diy_automl bp-preview --csv data/reference/raisin.csv
+```
+
 1. 「CSVを選ぶ」でUTF-8のファイルを開く。正解列を選ぶとラベルの内訳も表示する。正解列は空欄でも点検できる。顧客IDや観測日で評価を分けるときは、点検前に「評価の分割方法」で選ぶ。 [グループ単位の分割](#グループ単位の分割) · [日付順の分割](#日付順の分割)
 2. 「点検する」で走査し、列数が合う行・欠損セル・全列一致の余分な行・ラベルの種類と、確認する項目を表示する。読み取りが途中で止まった場合は、集計できた範囲を表示する。
 3. 「Excelを開く」で詳細を参照する。既定では `runs/bp-preview` の下に点検ごとのフォルダーを作り、Excel、JSON、元CSVの照合用情報を保存する。元CSVは読み取りに使う。
@@ -52,11 +61,20 @@ Iranian Churnで圧縮なしの画面操作を検証した。特徴量を13列�
 
 ### 画面からのモデル比較
 
+BP画面は1件ずつモデルを比較し、教師あり学習・予測中の対応するネイティブスレッドプールの上限を1に設定する。ランダムフォレストも並列数1で実行する。行単位とグループ単位の評価区間は1,000反復で計算する。指定値は `manifest.json` と詳細Excelの `Summary` に記録する。
+
 点検済みの抽出CSVを共通の `select_csv` に渡す。画面の実行では、正解ラベルの文字列表記を保ち、たとえば `001` と `1` はそれぞれのクラスとして扱う。学習側の5分割CVのmacro F1で候補を比較し、選んだモデルを保留テストで評価する。既定の「行単位」では層化80/20分割を使い、固定したモデルの95%区間は保留行をクラス内で再標本化して求める。
 
 評価結果は、選んだ列の実行フォルダーの `evaluations` に保存する。通常の `report.xlsx` と配列に加え、`bp_report.xlsx` は同じ詳細シートの先頭に「まず読む」と「ラベル別」を付ける。学習側にも同じ数値の入力があった保留行は件数を表示する。行の由来や顧客・時期の分割を検討するときの手掛かりになる。
 
 Windowsの画面でIranian Churnの7特徴量・3,150行を使い、保留630行で581正解・49誤分類と表示した。解約99件のうち64件を拾い、35件を見逃し、14件を解約と誤判定した。macro F1は0.839（95%区間0.793〜0.878）。保留の107行は学習側にも同じ入力値があった。これは3,150行での画面操作検証で、別の実験の2,754行への整理とは評価対象が異なる。
+
+2026年11月26日にWindows（Core i5-14400、16 GB）で、画面と同じ点検・列抽出・5モデル比較・評価Excel作成の処理を各1回計測した。時間は処理開始からExcelの保存まで、メモリはPythonプロセスのピークワーキングセット。
+
+| データ | 行数 | 特徴量 | 経過時間 | ピークメモリ |
+| --- | ---: | ---: | ---: | ---: |
+| UCI Raisin | 900 | 7 | 3.3秒 | 175 MiB |
+| UCI Iranian Churn | 3,150 | 7 | 4.1秒 | 178 MiB |
 
 ### グループ単位の分割
 
@@ -132,11 +150,35 @@ with duckdb.connect(config={"threads": "1"}) as db:
 
 ## 学習用CSVを抽出する
 
-`extract-data` はCSV、Parquet、DuckDBファイル内の `main.data` テーブルから、指定した列を `data.csv` に出力する。列順は `--columns` の順。分類に使う場合は正解ラベルの列も含める。列を絞るだけなら標準のCSV処理で実行できる。行条件を使う場合は `storage` 環境でParquetかDuckDBを入力する。
+`extract-data` はCSV、Parquet、DuckDBファイル内の `main.data` テーブルから、指定した列を抽出する。`--columns` を使うと指定順で `data.csv` に保存する。分類に使う場合は正解ラベルの列も含める。CSVからCSVへの列抽出は基本依存で実行できる。ParquetやDuckDBを入出力に使う場合は任意依存の `storage` を導入する。
 
 ~~~powershell
 .\.venv\Scripts\python.exe -X utf8 -m diy_automl extract-data --source data/reference/raisin.csv --columns Area Perimeter target --output runs/raisin-selected-columns
 ~~~
+
+### JSONで列と保存形式を指定する
+
+DS向けCLIでは、`--columns` と `--recipe` のいずれかを使う。たとえば次の内容をUTF-8の `raisin-columns.json` に保存する。
+
+```json
+{
+  "columns": ["Area", "Perimeter", "target"],
+  "format": "parquet"
+}
+```
+
+```powershell
+.\.venv\Scripts\python.exe -X utf8 -m diy_automl extract-data --source data/reference/raisin.csv --recipe raisin-columns.json --output runs/raisin-selected-parquet
+.\.venv\Scripts\python.exe -X utf8 scripts/validate_data_extract.py runs/raisin-selected-parquet --source data/reference/raisin.csv
+```
+
+`columns` は出力する列名の配列で、記載順を使う。`format` は `csv`、`parquet`、`duckdb` のいずれかで、省略時は `csv`。出力フォルダーには選んだ形式の `data.*` と `manifest.json` が入る。DuckDBのテーブル名は `main.data`。Pythonでは `diy_automl.extract_data(source, output, columns, output_format="parquet")` と指定する。
+
+CSV入力のセルは文字列表記を保持する。CSVからParquetやDuckDBを作る場合は、選択列の一時CSVを出力フォルダー内に作り、書き出し後に片付ける。型付きデータのParquet出力で再読込時に列の型が変わる場合は保存を中止する。たとえばDuckDBの128ビット整数 (`HUGEINT`) を保つには `duckdb` を選ぶ。ParquetやDuckDBから現行の学習コマンドに渡すには `format` を `csv` にして抽出する。この場合は値をCSVの表現で出力する。
+
+### 行条件を指定する
+
+`--where` と `--limit` は `--columns` と `--recipe` のどちらにも追加できる。行条件を使う場合はParquetかDuckDBを入力する。
 
 ```powershell
 .\.venv\Scripts\python.exe -X utf8 -m diy_automl extract-data --source runs/raisin-parquet-work/converted/data.parquet --columns Area Perimeter target --where Area ge 60000 --limit 250 --output runs/raisin-extracted
@@ -149,7 +191,7 @@ with duckdb.connect(config={"threads": "1"}) as db:
 - `--limit` は条件に合う行を元の順序で先頭から指定件数まで取る。省略すると該当する全行を出す。入力がクラスなどで並んでいると件数制限後の分布も変わるため、抽出後に `audit-data` でクラス件数を確認してから学習に進む。 [DuckDBの行順序](https://duckdb.org/docs/1.4/sql/dialect/order_preservation)
 - 元CSVから直接抽出する場合は、セルの文字列表記を保つ。件数上限を指定した場合も、末尾まで行の形を確認してからファイルを保存する。
 
-`manifest.json` に抽出条件、入力ファイルと出力CSVのSHA-256、入力の列型、出力の件数を保存する。点検で作った中継ファイルを変換manifestと一緒に使うと、元CSVのSHA-256もたどれる。Pythonからは `diy_automl.extract_data` を呼べる。
+`manifest.json` に抽出条件、入力・出力ファイルのSHA-256、入力の列型、出力の件数を保存する。点検で作った中継ファイルを変換manifestと一緒に使うと、元CSVのSHA-256もたどれる。
 
 このRaisinの例は、元CSVでは各450行。面積が60,000画素以上の行を件数上限なしで抽出すると、Besni 428行、Kecimen 237行の665行だった。元順で先頭250行を取ると、Besni 13行、Kecimen 237行になる。条件のみの結果は `--limit 250` を省いて再現できる。3段階のExcelは `prepare-bp` で出力し、「まず読む」の対象行数と「Class_Counts」の品種別件数を確認した。250行の再点検と既存の `select` まで実行し、抽出CSVのハッシュが学習記録の入力と一致することも確認した。 [BP向けの解説原稿](../articles/backup/diy-automl-bp-filtered-rows.md)
 

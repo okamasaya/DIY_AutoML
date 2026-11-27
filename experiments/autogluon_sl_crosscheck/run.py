@@ -32,14 +32,15 @@ def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def fit(training, label, classes, path, settings):
+def fit(training, label, classes, path, settings, *, leaderboard_path=None):
     seed = settings["model_seed"]
     parameters = {key: {"ag_args": {"name": key}} for key in BASE_MODELS}
     for key in ("RF", "XT"):
         parameters[key].update(n_estimators=100, random_state=seed)
     parameters["LR"]["random_state"] = seed
     predictor = TabularPredictor(
-        label=label, eval_metric=AG_METRICS[settings["metric"]], path=str(path), verbosity=0,
+        label=label, eval_metric=AG_METRICS[settings["metric"]], path=str(path),
+        verbosity=2 if leaderboard_path is not None else 0,
         problem_type="binary" if len(classes) == 2 else "multiclass",
         learner_kwargs={"random_state": seed},
     )
@@ -47,6 +48,8 @@ def fit(training, label, classes, path, settings):
     refitted = predictor.refit_full(model="all", set_best_to_refit_full=False, num_cpus=1, num_gpus=0)
     if set(refitted) != set(NAMES):
         raise ValueError(f"Expected every AutoGluon candidate to refit, got {refitted}")
+    if leaderboard_path is not None:
+        predictor.leaderboard(silent=True).to_csv(leaderboard_path, index=False, mode="x")
     return predictor, refitted
 
 
@@ -64,7 +67,7 @@ def predict_checked(predictor, model, features, truth, classes, metric, checks):
     return prediction
 
 
-def crosscheck(csv, reference, output):
+def crosscheck(csv, reference, output, *, capture_progress=False):
     reference, output = reference.resolve(), output.resolve()
     if output.is_relative_to(reference):
         raise ValueError("Use an output directory outside the saved DIY ranking")
@@ -90,6 +93,9 @@ def crosscheck(csv, reference, output):
     assignments = arrays["cv_fold_assignments"]
     diy_rank = pd.read_excel(reference / "report.xlsx", sheet_name="CV_Ranking").iloc[0]
     output.mkdir(parents=True, exist_ok=False)
+    progress = output / "progress" if capture_progress else None
+    if progress is not None:
+        progress.mkdir()
     manifest = {
         "status": "running", "stage": "cv", "protocol": "autogluon_sl_crosscheck",
         "input_csv": str(csv.resolve()), "input_sha256": input_hash,
@@ -109,9 +115,13 @@ def crosscheck(csv, reference, output):
             for fold in range(FOLDS):
                 mask = folds == fold
                 rows = train[mask]
+                leaderboard = None
+                if progress is not None:
+                    print(f"Outer CV repeat {repeat + 1}/{len(assignments)}, fold {fold + 1}/{FOLDS}", flush=True)
+                    leaderboard = progress / f"repeat-{repeat + 1}-fold-{fold + 1}.csv"
                 with TemporaryDirectory(prefix="diy-ag-cv-") as temporary:
                     predictor, refitted = fit(labeled.iloc[train[~mask]], label, classes,
-                                              Path(temporary) / "predictor", settings)
+                                              Path(temporary) / "predictor", settings, leaderboard_path=leaderboard)
                     for i, name in enumerate(NAMES):
                         cv_pred[repeat, i, mask] = predict_checked(
                             predictor, refitted[name], features.iloc[rows], data.y[rows], classes, metric, checks,
@@ -120,7 +130,10 @@ def crosscheck(csv, reference, output):
         leader, tables = cv_tables(data.y[train], classes, assignments, cv_pred, NAMES, metric)
         selected = NAMES[leader]
         manifest.update(stage="refit", selected_model=selected, diy_selected_model=diy["selected_model"])
-        predictor, refitted = fit(labeled.iloc[train], label, classes, output / "predictor", settings)
+        if progress is not None:
+            print("Final training and refit", flush=True)
+        predictor, refitted = fit(labeled.iloc[train], label, classes, output / "predictor", settings,
+                                  leaderboard_path=progress / "final.csv" if progress is not None else None)
         manifest["selected_refit"] = refitted[selected]
         if len(comparison):
             arrays["comparison_predictions"] = np.stack([
@@ -171,5 +184,6 @@ if __name__ == "__main__":
     parser.add_argument("--csv", type=Path, required=True)
     parser.add_argument("--reference", type=Path, required=True, help="A completed rank-sl output directory")
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--capture-progress", action="store_true", help="Emit fit logs and save per-fit leaderboards")
     args = parser.parse_args()
-    crosscheck(args.csv, args.reference, args.output)
+    crosscheck(args.csv, args.reference, args.output, capture_progress=args.capture_progress)

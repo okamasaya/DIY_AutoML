@@ -4,18 +4,23 @@ from .calendar_comparison import COMPARISON, calendar_comparison
 from .chronological_selection import chronological_partitions, chronology, require_class_coverage
 from .data import load_csv,split_indices
 from .grouped_selection import grouped_partitions, identical_input_groups
+from .run_progress import RunProgress, progress_mode
 from .selection import select,bootstrap
-from .supervised import METRICS, metrics
+from .sl_compute import limit_sl_threads, sl_compute_settings, sl_compute_summary
+from .supervised import METRICS, metrics, sl_model_options, tree_depth_settings, tree_depth_summary
 from .reporting import prepare,save,fail,summary,file_sha256,write_json
 
 def select_csv(csv,target,output,seed=42,metric="F1",bootstrap_repeats=1000,bootstrap_seed=43,confidence=.95,
                *, expected_input_sha256=None, bp_summary=False, group_column=None, group_identical=False,
-               time_column=None):
+               time_column=None, tree_max_depth=None, tree_max_depths=None, cpu_threads=None, forest_jobs=None,
+               progress="off"):
     if group_column is not None and group_identical:
         raise ValueError("Choose a group column or group identical inputs")
     if time_column is not None and (group_column is not None or group_identical):
         raise ValueError("Choose chronological or grouped selection")
     settings = dict(csv=str(csv),target=target,seed=seed,metric=metric)
+    settings.update(tree_depth_settings(tree_max_depth, tree_max_depths))
+    settings.update(sl_compute_settings(cpu_threads, forest_jobs))
     if time_column is None:
         settings.update(bootstrap_repeats=bootstrap_repeats,bootstrap_seed=bootstrap_seed,confidence=confidence)
     else:
@@ -26,13 +31,18 @@ def select_csv(csv,target,output,seed=42,metric="F1",bootstrap_repeats=1000,boot
         settings["group_column"] = group_column
     if group_identical:
         settings["group_identical"] = True
+    if progress_mode(progress) != "off":
+        settings["progress"] = progress
     out,m=prepare(output,3,settings)
+    events = RunProgress(progress, out)
     try:
+        events.record("load")
         if expected_input_sha256 is not None and m["input_sha256"] != expected_input_sha256:
             raise ValueError("The training CSV no longer matches its audit")
         d=load_csv(csv,target,target_as_text=bp_summary,group_column=group_column,time_column=time_column)
         if expected_input_sha256 is not None and file_sha256(csv) != expected_input_sha256:
             raise ValueError("The training CSV changed while it was being read")
+        events.record("split")
         groups = identical_input_groups(d.X) if group_identical else d.groups
         inner_folds, test_groups = None, None
         interval_scope = "Conditional on fixed fitted model and observed class counts; excludes training and selection variability"
@@ -70,10 +80,16 @@ def select_csv(csv,target,output,seed=42,metric="F1",bootstrap_repeats=1000,boot
                 ("Training groups", m["split"]["train_groups"]), ("Held-out groups", m["split"]["test_groups"]),
                 ("Holdout rows", len(test)), ("Outer fold", holdout),
             ]
-        model,name,folds,means,sd,ties,indices=select(d.X[train],d.y[train],seed,metric,folds=inner_folds)
-        pred=model.predict(d.X[test])
+        events.record("cv_start")
+        with limit_sl_threads(settings):
+            model,name,folds,means,sd,ties,indices=select(d.X[train],d.y[train],seed,metric,folds=inner_folds,
+                                                        progress=events if progress != "off" else None,
+                                                        **sl_model_options(settings))
+            events.record("holdout")
+            pred=model.predict(d.X[test])
         test_scores = metrics(d.y[test], pred, np.unique(d.y))
         if d.observation_days is None:
+            events.record("bootstrap")
             samples,intervals=bootstrap(d.y[test],pred,bootstrap_repeats,confidence,bootstrap_seed,
                                         classes=np.unique(d.y),group_ids=test_groups)
         else:
@@ -95,7 +111,8 @@ def select_csv(csv,target,output,seed=42,metric="F1",bootstrap_repeats=1000,boot
                 "SL_Test":pd.DataFrame([{"Model":name,**test_scores}]),
                 "SL_Bootstrap":samples,"SL_Test_Intervals":intervals,
                 "Summary":summary([("Selected",name),("Selection",f"5-fold mean {metric}; atol=1e-12, rtol=0; candidate order"),
-                    ("Interval",m["interval_scope"]),("Zero width","Does not imply no unknown uncertainty"), *split_rows])}
+                    ("Interval",m["interval_scope"]),("Zero width","Does not imply no unknown uncertainty"),
+                    *split_rows, *tree_depth_summary(settings), *sl_compute_summary(settings)])}
         if d.observation_days is not None:
             calendar_sheets, baselines, rule = calendar_comparison(arrays, len(d.classes))
             sheets.update(calendar_sheets)
@@ -108,17 +125,22 @@ def select_csv(csv,target,output,seed=42,metric="F1",bootstrap_repeats=1000,boot
                                        f"overall {sources['overall']}"),
                 ("Monthly macro F1", "Uses the full label set. An undefined class F1 contributes zero."),
             ])], ignore_index=True)
+        events.record("report")
+        progress_artifacts = events.attach(sheets)
         if not bp_summary:
-            return save(out,m,sheets,arrays)
+            return save(out,m,sheets,arrays,extra_artifacts=progress_artifacts)
 
         from .bp_evaluation import BP_REPORT, summarize_evaluation, write_bp_report
 
         result = summarize_evaluation(d, arrays, test_scores, intervals, m, sheets.get(COMPARISON))
-        save(out,m,sheets,arrays,finalize=False)
+        save(out,m,sheets,arrays,finalize=False,extra_artifacts=progress_artifacts)
         write_bp_report(out, result, sheets)
         m["bp_summary"] = result
         m["artifacts"][BP_REPORT] = file_sha256(out / BP_REPORT)
         m["status"] = "completed"
         write_json(out / "manifest.json", m)
         return out
-    except Exception as e: fail(out,m,e); raise
+    except Exception as error:
+        events.failed()
+        fail(out, m, error)
+        raise

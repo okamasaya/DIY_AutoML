@@ -14,8 +14,9 @@ from .metric_uncertainty import (
     scores_from_confusion,
 )
 from .reporting import fail, prepare, save, summary
+from .sl_compute import limit_sl_threads, sl_compute_settings, sl_compute_summary
 from .sl_uncertainty_audit import confusion_counts, diagnostic_tables, parse_offsets, record_diagnostics
-from .supervised import METRICS, candidates, metrics, pipeline
+from .supervised import METRICS, candidates, metrics, pipeline, sl_model_options, tree_depth_settings, tree_depth_summary
 from .tuning import MAX_FEATURES, MAX_ROWS
 
 
@@ -33,7 +34,8 @@ COMPARISON_SCOPE = (
 
 
 def ranking_settings(csv, target, seed, model_seed, cv_repeats, metric,
-                     comparison_fraction, bootstrap_repeats, bootstrap_seed, confidence):
+                     comparison_fraction, bootstrap_repeats, bootstrap_seed, confidence,
+                     *, tree_max_depth=None, tree_max_depths=None, cpu_threads=None, forest_jobs=None):
     if metric not in METRICS:
         raise ValueError("Unknown ranking metric")
     if (isinstance(comparison_fraction, bool) or not isinstance(comparison_fraction, Real)
@@ -49,6 +51,8 @@ def ranking_settings(csv, target, seed, model_seed, cv_repeats, metric,
         "metric": metric, "comparison_fraction": float(comparison_fraction),
         "bootstrap_repeats": bootstrap_repeats, "bootstrap_seed": bootstrap_seed,
         "confidence": confidence, "tie_atol": TIE_ATOL,
+        **tree_depth_settings(tree_max_depth, tree_max_depths),
+        **sl_compute_settings(cpu_threads, forest_jobs),
     }
 
 
@@ -229,6 +233,8 @@ def audit_tables(target, classes, arrays, names, leader, settings):
             ("Test Scope", TEST_SCOPE),
             ("Comparison Scope", COMPARISON_SCOPE if len(arrays["comparison"]) else "Comparison split not requested."),
             ("Comparison Use", "CV results determine the ranking and the final test candidate."),
+            *tree_depth_summary(settings),
+            *sl_compute_summary(settings),
         ]),
         "Split_Counts": pd.DataFrame(counts),
     }
@@ -258,11 +264,13 @@ def ranking_uncertainty_tables(arrays, manifest):
 
 
 def rank_sl_csv(csv, target, output, seed=42, model_seed=42, cv_repeats=5, metric="F1",
-                comparison_fraction=0.0, bootstrap_repeats=1000, bootstrap_seed=43, confidence=.95, shift=()):
+                comparison_fraction=0.0, bootstrap_repeats=1000, bootstrap_seed=43, confidence=.95, shift=(),
+                *, tree_max_depth=None, tree_max_depths=None, cpu_threads=None, forest_jobs=None):
     """Save a repeated CV ranking and the uncertainty evaluation of its test leader."""
     settings = ranking_settings(
         csv, target, seed, model_seed, cv_repeats, metric, comparison_fraction,
-        bootstrap_repeats, bootstrap_seed, confidence,
+        bootstrap_repeats, bootstrap_seed, confidence, tree_max_depth=tree_max_depth, tree_max_depths=tree_max_depths,
+        cpu_threads=cpu_threads, forest_jobs=forest_jobs,
     )
     data = load_csv(csv, target)
     settings["shifts"] = parse_offsets(shift, data.feature_names)
@@ -270,36 +278,39 @@ def rank_sl_csv(csv, target, output, seed=42, model_seed=42, cv_repeats=5, metri
     if len(data.y) > MAX_ROWS or data.X.shape[1] > MAX_FEATURES or len(classes) > MAX_CLASSES:
         raise ValueError(f"Ranking supports up to {MAX_ROWS} rows, {MAX_FEATURES} features and {MAX_CLASSES} classes")
     train, comparison, test = evaluation_split(data.y, classes, settings)
-    models = candidates(settings["model_seed"])
+    models = candidates(settings["model_seed"], **sl_model_options(settings))
     names = [name for name, _ in models]
     output, manifest = prepare(output, SCHEMA, settings)
     manifest.update(classes=data.classes, features=data.feature_names, candidates=names, stage="cv",
                     systematic_bias_status="unmeasured")
     try:
         assignments = cv_assignments(data.y[train], settings)
-        predictions = cv_predict(data.X[train], data.y[train], assignments, models)
+        with limit_sl_threads(settings):
+            predictions = cv_predict(data.X[train], data.y[train], assignments, models)
         leader, tables = cv_tables(data.y[train], classes, assignments, predictions, names, metric)
         arrays = {
             "target": data.y, "train": train, "test": test, "comparison": comparison,
             "cv_fold_assignments": assignments, "cv_predictions": predictions,
         }
         manifest.update(selected_candidate=leader, selected_model=names[leader], stage="holdout")
-        fitted = pipeline(clone(models[leader][1])).fit(data.X[train], data.y[train])
-        if len(comparison):
-            comparison_predictions = []
-            for i, (_, model) in enumerate(models):
-                estimator = fitted if i == leader else pipeline(clone(model)).fit(data.X[train], data.y[train])
-                comparison_predictions.append(estimator.predict(data.X[comparison]))
-            arrays["comparison_predictions"] = np.stack(comparison_predictions)
-        test_features = data.X[test]
-        arrays["test_predictions"] = fitted.predict(test_features)
+        with limit_sl_threads(settings):
+            fitted = pipeline(clone(models[leader][1])).fit(data.X[train], data.y[train])
+            if len(comparison):
+                comparison_predictions = []
+                for i, (_, model) in enumerate(models):
+                    estimator = fitted if i == leader else pipeline(clone(model)).fit(data.X[train], data.y[train])
+                    comparison_predictions.append(estimator.predict(data.X[comparison]))
+                arrays["comparison_predictions"] = np.stack(comparison_predictions)
+            test_features = data.X[test]
+            arrays["test_predictions"] = fitted.predict(test_features)
         evidence = add_holdout_tables(
             tables, data.y, classes, arrays, names, leader, settings, class_names=data.classes,
         )
         tables.update(audit_tables(data.y, classes, arrays, names, leader, settings))
         arrays.update(evidence)
         manifest["stage"] = "uncertainty"
-        record_diagnostics(fitted, test_features, arrays, manifest)
+        with limit_sl_threads(settings):
+            record_diagnostics(fitted, test_features, arrays, manifest)
         tables.update(ranking_uncertainty_tables(arrays, manifest))
         manifest["stage"] = "completed"
         return save(output, manifest, tables, arrays)

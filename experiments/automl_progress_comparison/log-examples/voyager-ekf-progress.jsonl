@@ -1,0 +1,3 @@
+{"scenario": "nominal", "observation_updates": 104, "forecasts": 103, "elapsed_seconds": 2.560975}
+{"scenario": "bias", "observation_updates": 104, "forecasts": 103, "elapsed_seconds": 2.611527}
+{"scenario": "replayed", "observation_updates": 104, "forecasts": 103, "elapsed_seconds": 2.662024}

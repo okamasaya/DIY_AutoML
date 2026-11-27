@@ -1,4 +1,4 @@
-# 保存済み結果から図付きExcelを作る（0.4.0a5）
+# 保存済み結果から図付きExcelを作る
 
 `report` は学習をやり直さず、completedの保存結果から図付きExcelを作る入口です。元の数値Excel・NPZ・学習manifestをコピーして残し、別ファイル `report_with_figures.xlsx` にPNGを埋め込みます。図付きExcel単独でも画像を表示でき、外部PNGへの参照には依存しません。
 
@@ -8,7 +8,21 @@
 .venv/bin/python scripts/validate_excel_report.py runs/wine-select-illustrated
 ```
 
-Python入口は `render_excel_report(source, output, max_models=3, csv=None)` です。sourceはmanifest.json/report.xlsx/arrays.npzを含むフォルダ、outputは新規フォルダだけを受け付けます。図の生成に分類器やクラスタモデルの再学習・再予測は行いません。ULの2次元表示には、保存された標準化に基づくPCAを計算します。
+Python入口は `render_excel_report(source, output, max_models=3, csv=None, charts="summary")` です。sourceはmanifest.json/report.xlsx/arrays.npzを含むフォルダ、outputは新規フォルダだけを受け付けます。図の生成に分類器やクラスタモデルの再学習・再予測は行いません。ULの2次元表示には、保存された標準化に基づくPCAを計算します。
+
+## 図の量を選ぶ
+
+```sh
+diy-automl report --run runs/wine-select --charts detail --output runs/wine-select-detail
+```
+
+| `--charts` | 出力 |
+| --- | --- |
+| `none` | 元の数値Excelと検証用ファイルを新しいフォルダーにコピーする。開くファイルは `report.xlsx` |
+| `summary`（既定） | 次の表に示す標準図を `report_with_figures.xlsx` に加える |
+| `detail` | `select` と `tune` の標準図に、候補ごとの各foldスコアを加える。`tune` には候補ごとのCV fit時間の合計も加える |
+
+`detail` で `--progress excel` または `--progress both` を使った `select`・`tune` の結果を渡すと、経過時間に対するCVの完了fold数も図にする。fit時間は計測した学習区間の合計で、進捗図は読込・分割なども含む実行開始からの経過時間を使う。ほかの入口の結果を `detail` で開くと標準の図が入る。 [進捗の記録方法](SL_TUNING_GUIDE.md#select-と-tune-の途中経過を残す)
 
 ## 表示する図と選び方
 
@@ -28,9 +42,10 @@ runのSL表示はtestスコアの順位ではありません。ULの最大3件�
 
 元の数値セル・シート名・順序を維持し、短い表や幅広い表は下、それ以外は右の空き領域へ配置します。複数図の間隔は行高を考慮して決めます。描画用のcaptionはPNG内に含め、データ表のセルへ説明行を追加しません。
 
-出力は次の構成です。
+`summary` と `detail` の出力は次の構成です。`none` には元の結果と `render_manifest.json` が入り、作図用のファイルは生成しません。
 
 - `report.xlsx` / `arrays.npz` / `manifest.json`: 元の学習結果をそのままコピー。manifestのstatus/version/schemaは学習時のものです。
+- 元の `select` または `tune` で進捗を記録した場合は `progress.jsonl` もコピーします。図付きExcelには `Progress` シートが残ります。
 - `report_with_figures.xlsx`: 数値表を保った図付きExcel。
 - `figures/*.png`: Excelに埋め込んだものと同じPNG。
 - `figure_data.npz`: confusion matrix、投影座標、ラベル、CV値・SD、学習曲線など実際の描画入力。

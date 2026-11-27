@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 import sys
 from tempfile import TemporaryDirectory
+from time import perf_counter
 
 import numpy as np
 import pandas as pd
@@ -69,7 +70,7 @@ def splits(data):
     return train, tune, score
 
 
-def diy(data, train, score):
+def diy(data, train, score, *, progress=None):
     # Reuse the physical model and prior from the Voyager example.
     sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "scripts"))
     from make_voyager_demo import (OBSERVATION_STD, PRIOR_MEAN, PRIOR_STD, PROCESS_STD,
@@ -78,7 +79,7 @@ def diy(data, train, score):
 
     forecasts = pd.DataFrame(index=data.index, columns=TARGETS, dtype=float)
     position_covariance = np.full((len(data), 2, 2), np.nan)
-    for _, scenario in data.groupby("scenario", sort=False):
+    for name, scenario in data.groupby("scenario", sort=False):
         earth = scenario[OBSERVER].to_numpy()
         result = extended_kalman_filter(
             scenario[SENSORS].to_numpy(), initial_mean=PRIOR_MEAN, initial_covariance=np.diag(PRIOR_STD**2),
@@ -90,6 +91,8 @@ def diy(data, train, score):
         # Row i's forecast is stored at step i+1, before that step's observations are incorporated.
         forecasts.loc[scenario.index[:-1], TARGETS] = result["forecast"][1:, :2]
         position_covariance[scenario.index[:-1]] = result["forecast_covariance"][1:, :2, :2]
+        if progress is not None:
+            progress(name, len(scenario), len(scenario) - 1)
     state = PRIOR_MEAN
     orbit = {}
     for step, day in enumerate(range(7, 729, 7), 1):
@@ -133,25 +136,32 @@ def score_ekf_uncertainty(score, forecast, covariance):
     return rows, {"nominal_coverage": level, "squared_mahalanobis_limit": float(limit), "groups": groups}
 
 
-def autogluon(run, train, tune, score, *, features=FEATURES, targets=TARGETS):
+def autogluon(run, train, tune, score, *, features=FEATURES, targets=TARGETS, capture_progress=False):
     from importlib.metadata import version
     from autogluon.tabular import TabularPredictor
 
     forecasts, selected = [], {}
+    progress = run / "autogluon-progress" if capture_progress else None
+    if progress is not None:
+        progress.mkdir()
     for target in targets:
+        if progress is not None:
+            print(f"AutoGluon fit for {target}", flush=True)
         predictor = TabularPredictor(label=target, problem_type="regression", eval_metric="root_mean_squared_error",
-                                     path=str(run / "ag_models" / target), verbosity=1)
+                                     path=str(run / "ag_models" / target), verbosity=2 if capture_progress else 1)
         predictor.fit(train[features + [target]], tuning_data=tune[features + [target]], num_cpus=1, num_gpus=0,
                       num_bag_folds=0, num_stack_levels=0,
                       hyperparameters={"LR": {}, "RF": {"n_estimators": 64}, "XT": {"n_estimators": 64}})
         selected[target] = predictor.model_best
+        if progress is not None:
+            predictor.leaderboard(silent=True).to_csv(progress / f"{target}.csv", index=False, mode="x")
         forecasts.append(predictor.predict(score[features]).to_numpy())
     return {"AutoGluon Tabular": np.column_stack(forecasts)}, {"version": version("autogluon.tabular"), "selected": selected}
 
 
-def h2o_automl(train, tune, score, *, features=FEATURES, targets=TARGETS):
+def h2o_automl(train, tune, score, *, features=FEATURES, targets=TARGETS, progress=None):
     import h2o
-    from h2o.automl import H2OAutoML
+    from h2o.automl import H2OAutoML, get_leaderboard
     from h2o.backend import H2OLocalServer
 
     # H2O parses this argument as a URI. Use a relative path without reserved characters.
@@ -167,12 +177,22 @@ def h2o_automl(train, tune, score, *, features=FEATURES, targets=TARGETS):
             forecasts, selected = [], {}
             features_only = h2o.H2OFrame(score[features])
             for target in targets:
+                if progress is not None:
+                    print(f"H2O fit for {target}", flush=True)
                 training = h2o.H2OFrame(train[features + [target]])
                 validation = h2o.H2OFrame(tune[features + [target]])
                 automl = H2OAutoML(include_algos=["GLM", "DRF", "GBM"], max_models=4, nfolds=0,
                                    sort_metric="RMSE", seed=SEED)
                 automl.train(x=features, y=target, training_frame=training,
                              validation_frame=validation, leaderboard_frame=validation)
+                if progress is not None:
+                    destination = progress / target
+                    destination.mkdir(parents=True)
+                    automl.event_log.as_data_frame().to_csv(destination / "event_log.csv", index=False, mode="x")
+                    write_json(destination / "training_info.json", automl.training_info)
+                    get_leaderboard(automl, extra_columns="ALL").as_data_frame().to_csv(
+                        destination / "leaderboard.csv", index=False, mode="x",
+                    )
                 leader = automl.leader
                 selected[target] = leader.algo
                 forecasts.append(leader.predict(features_only).as_data_frame()["predict"].to_numpy())
@@ -181,15 +201,23 @@ def h2o_automl(train, tune, score, *, features=FEATURES, targets=TARGETS):
             server.shutdown()
 
 
-def run_engine(engine, run, data):
+def run_engine(engine, run, data, *, capture_progress=False):
     train, tune, score = splits(data)
     if engine == "diy":
-        estimates, details, covariance = diy(data, train, score)
+        started = perf_counter()
+
+        def record_scenario(name, updates, forecasts):
+            event = {"scenario": name, "observation_updates": updates, "forecasts": forecasts,
+                     "elapsed_seconds": round(perf_counter() - started, 6)}
+            with (run / "diy-progress.jsonl").open("a", encoding="utf-8") as stream:
+                stream.write(json.dumps(event, allow_nan=False) + "\n")
+
+        estimates, details, covariance = diy(data, train, score, progress=record_scenario if capture_progress else None)
         uncertainty, summary = score_ekf_uncertainty(score, estimates["DIY EKF"], covariance)
     elif engine == "autogluon":
-        estimates, details = autogluon(run, train, tune, score)
+        estimates, details = autogluon(run, train, tune, score, capture_progress=capture_progress)
     else:
-        estimates, details = h2o_automl(train, tune, score)
+        estimates, details = h2o_automl(train, tune, score, progress=run / "h2o-progress" if capture_progress else None)
     rows = []
     for name, forecast in estimates.items():
         if forecast.shape != (len(score), 2) or not np.isfinite(forecast).all():
@@ -257,6 +285,7 @@ def main():
     parser.add_argument("action", choices=("prepare", *ENGINES, "report"))
     parser.add_argument("--run", type=Path, required=True)
     parser.add_argument("--source", type=Path, default=Path("runs/voyager-synthetic-20261124"))
+    parser.add_argument("--capture-progress", action="store_true", help="Capture progress during engine stages")
     args = parser.parse_args()
     if args.action == "prepare":
         prepare(args.source, args.run)
@@ -265,7 +294,7 @@ def main():
         if args.action == "report":
             report(args.run, data)
         else:
-            run_engine(args.action, args.run, data)
+            run_engine(args.action, args.run, data, capture_progress=args.capture_progress)
     print(args.run)
 
 

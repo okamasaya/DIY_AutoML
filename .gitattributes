@@ -2,3 +2,6 @@
 data/reference/*.csv -text whitespace=cr-at-eol
 validation/business-output-20261112/**/*.csv -text whitespace=cr-at-eol
 originals/** -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
+# Keep the archived log bytes referenced by the experiment SHA-256 manifests.
+experiments/automl_progress_comparison/log-examples/* -text whitespace=cr-at-eol
+experiments/sl_report_validation/progress-2026-11-26/*.jsonl -text whitespace=cr-at-eol

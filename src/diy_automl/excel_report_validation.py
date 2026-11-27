@@ -10,7 +10,7 @@ from openpyxl.utils.units import pixels_to_EMU
 
 from .clustering_subsample import integer
 from .excel_report import digest,placement,resolve_data,row_pixels,source_artifact_names
-from .report_figures import build_plans
+from .report_figures import build_plans,chart_mode
 from .ul_subsample_validation import require
 from .validation import validate
 
@@ -20,21 +20,30 @@ def validate_excel_report(directory):
     r=json.loads((root/'render_manifest.json').read_text())
     require(r['schema_version']==8 and r['status']=='completed','Rendering did not complete')
     integer(r['max_models'],'max_models',1,3)
+    charts=chart_mode(r.get('charts','summary'))
     require(set(r['dependencies'])=={'matplotlib','pillow','openpyxl','numpy','scikit-learn'},'Renderer dependency record differs')
     m=validate(root)
+    require(m['schema_version'] in range(2,8),'Unsupported source schema')
     require(r['source_schema']==m['schema_version'] and r['source_version']==m['version'],'Source provenance differs')
     require(set(r['source_artifacts'])==set(source_artifact_names(m)),'Source artifact set differs')
     for name,expected in r['source_artifacts'].items(): require(digest(root/name)==expected,'Copied source checksum differs')
-    require(set(r['artifacts'])=={'report_with_figures.xlsx','figure_data.npz'},'Rendered artifact set differs')
+    expected_artifacts=set() if charts == 'none' else {'report_with_figures.xlsx','figure_data.npz'}
+    require(set(r['artifacts'])==expected_artifacts,'Rendered artifact set differs')
     for name,expected in r['artifacts'].items(): require(digest(root/name)==expected,'Rendered artifact checksum differs')
     require((root/'source_input.csv').exists()==('input_csv_sha256' in r),'CSV provenance differs')
     csv=root/'source_input.csv' if 'input_csv_sha256' in r else None
     if csv is not None: require(digest(csv)==r['input_csv_sha256']==m['input_sha256'],'Supplemental CSV checksum differs')
+    if charts == 'none':
+        require(r['figure_count']==0 and r['figures']==[] and r['skipped']==[],'Unexpected figures in a numerical report')
+        require(not any((root/name).exists() for name in ('figures','figure_data.npz','report_with_figures.xlsx')),
+                'Unexpected rendered files in a numerical report')
+        require(r['workbook_bytes']==(root/'report.xlsx').stat().st_size,'Numerical workbook size differs')
+        return r
     with np.load(root/'arrays.npz',allow_pickle=False) as stored:
         arrays={key:stored[key] for key in stored.files}
     raw,_=resolve_data(root,m,arrays,csv,auto_csv=False)
     sheets=pd.read_excel(root/'report.xlsx',sheet_name=None)
-    plans,skipped=build_plans(m,sheets,arrays,r['max_models'],raw)
+    plans,skipped=build_plans(m,sheets,arrays,r['max_models'],raw,charts=charts)
     require(r['skipped']==skipped,'Omitted figures differ')
     require(len(plans)==r['figure_count']==len(r['figures']) and len(plans)>0,'Figure count differs')
     with np.load(root/'figure_data.npz',allow_pickle=False) as stored:

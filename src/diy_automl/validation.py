@@ -96,15 +96,35 @@ def validate(directory,schema=None,allow_failed=False):
         from .dl_repeat_validation import validate_dl_repeat
         return validate_dl_repeat(root,allow_failed=allow_failed)
     if m["status"]!="completed": raise ValueError("Run did not complete")
-    if version in (18, 19, 20, 21) and set(m["artifacts"]) != {"report.xlsx", "arrays.npz"}:
-        raise ValueError("Unexpected tracking artifacts")
+    if version in (18, 19, 20, 21, 22) and set(m["artifacts"]) != {"report.xlsx", "arrays.npz"}:
+        kind = "graph" if version == 22 else "tracking"
+        raise ValueError(f"Unexpected {kind} artifacts")
     for name,digest in m["artifacts"].items():
         if hashlib.sha256((root/name).read_bytes()).hexdigest()!=digest:
             raise ValueError(f"Artifact checksum mismatch: {name}")
-    sheets=pd.read_excel(root/"report.xlsx",sheet_name=None)
+    graph_types = {"Node ID": str, "Label": str, "Logistic regression": str, "GCN": str}
+    read_options = {"dtype": graph_types, "keep_default_na": False} if version == 22 else {}
+    sheets=pd.read_excel(root/"report.xlsx",sheet_name=None,**read_options)
     if {k:len(v) for k,v in sheets.items()}!=m["sheets"]: raise ValueError("Sheet row counts differ")
+    if version in (2, 3) and {"tree_max_depth", "tree_max_depths", "cpu_threads", "forest_jobs"} & m["settings"].keys():
+        from .sl_compute import sl_compute_options, sl_compute_settings, sl_compute_summary
+        from .supervised import TREE_MODELS, tree_depth_options, tree_depth_settings, tree_depth_summary
+
+        depth = tree_depth_options(m["settings"])
+        compute = sl_compute_options(m["settings"])
+        settings = tree_depth_settings(**depth) | sl_compute_settings(**compute)
+        items = {"Tree max depth", "Native CPU threads", "Random Forest jobs", *(f"{model} max depth" for model in TREE_MODELS)}
+        values = sheets["Summary"]
+        recorded = values.loc[values["Item"].isin(items), ["Item", "Value"]]
+        expected = tree_depth_summary(settings) + sl_compute_summary(settings)
+        if (depth | compute) != settings or list(recorded.itertuples(index=False, name=None)) != expected:
+            raise ValueError("Recorded tree depth or CPU settings differ")
     if version in SHEETS:
         expected = SHEETS[version]
+        if version == 3:
+            from .run_progress import validate_progress
+
+            expected = expected | validate_progress(root, m, sheets)
         if version == 3 and m["settings"].get("time_column") is not None and "calendar_rule" in m:
             expected = expected | COMPARISON_SHEETS
         if set(sheets) != expected:
@@ -171,5 +191,9 @@ def validate(directory,schema=None,allow_failed=False):
             from .ekf_benchmark import validate_filter_benchmark
 
             validate_filter_benchmark(m, arrays, sheets)
+        elif version == 22:
+            from .graph_classification import validate_graph_classification
+
+            validate_graph_classification(m, arrays, sheets)
         else: raise ValueError("Unknown schema")
     return m

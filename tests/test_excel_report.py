@@ -141,6 +141,34 @@ def test_selected_models_and_all_seed_policy(tmp_path):
     assert len([key for key in plans[0]['data'] if key.startswith('Epoch_')])==10
 
 
+def test_numerical_report_copies_saved_evidence_without_rendering(tmp_path, monkeypatch):
+    def unexpected(*args, **kwargs):
+        raise AssertionError('Plotting or automatic CSV recovery was called')
+
+    monkeypatch.setattr(renderer, 'build_plans', unexpected)
+    monkeypatch.setattr(renderer, 'resolve_data', unexpected)
+    out = renderer.render_excel_report(SOURCES[2], tmp_path / 'numeric-only', charts='none')
+    report = validate_excel_report(out)
+    assert report['charts'] == 'none' and report['figure_count'] == 0
+    assert {path.name for path in out.iterdir()} == {'manifest.json', 'report.xlsx', 'arrays.npz', 'render_manifest.json'}
+    for name in report['source_artifacts']:
+        assert (out / name).read_bytes() == (SOURCES[2] / name).read_bytes()
+
+
+def test_tuning_details_use_saved_fold_scores_and_fit_times(tmp_path):
+    source = SOURCES[7]
+    out = renderer.render_excel_report(source, tmp_path / 'tune-detail', charts='detail')
+    report = validate_excel_report(out)
+    assert [figure['id'] for figure in report['figures']] == [
+        'sl_selected_cm', 'sl_training_cv', 'sl_fold_scores', 'sl_fold_fit_time',
+    ]
+    assert [figure['id'] for figure in report['skipped']] == ['sl_cv_progress']
+    folds = pd.read_excel(source / 'report.xlsx', sheet_name='SL_Search_Folds')
+    with np.load(out / 'figure_data.npz', allow_pickle=False) as data:
+        np.testing.assert_array_equal(data['sl_fold_scores__scores'], folds['F1'].to_numpy().reshape(-1, 5))
+        np.testing.assert_allclose(data['sl_fold_fit_time__seconds'], folds['Fit Time (s)'].to_numpy().reshape(-1, 5).sum(axis=1))
+
+
 def checksum(out,record_key,name):
     p=out/'render_manifest.json';m=json.loads(p.read_text());m[record_key][name]=renderer.digest(out/name);p.write_text(json.dumps(m))
 

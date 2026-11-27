@@ -65,6 +65,12 @@
 - **Public time series.** Use one-month-ahead AirPassengers and 30-minute-ahead NYC Taxi forecasts with chronological splits. The current DIY workflow selects persistence on both. Adding seasonal candidates in the AirPassengers experiment gives a held-out RMSE of 27.89 thousand passengers, compared with AutoGluon's 27.49 thousand. AutoGluon and H2O lead on NYC Taxi overall. Persistence has a lower absolute error than H2O at 2,056 of the 6,288 held-out timestamps.
 - **Takeaway.** Show the input and modeling assumptions beside each result. Include what the comparisons reveal about when a filter, a simple baseline, or a learned tabular model works under these settings.
 
+### DEV Community follow-up text
+
+The 5% rule was the minimum improvement I required in this experiment. On the selection periods, the Kalman filter had 32.6% higher RMSE than persistence on AirPassengers and 14.5% higher RMSE on NYC Taxi. Both series would therefore have selected persistence with a 0% improvement threshold as well.
+
+On the NYC Taxi holdout, persistence had lower absolute error at 2,056 timestamps and H2O at 4,232. On the timestamps won by each method, the average reduction in absolute error was 743 passengers for persistence and 1,100 for H2O. Across all 6,288 timestamps, the mean absolute errors were 1,276 and 779 passengers, respectively. This comparison uses the observed outcomes. Any rule for switching methods at forecast time needs to use information available then and be evaluated on a later period. [Recalculation from paired forecasts (Japanese)](../../experiments/seasonal_forecast_crosscheck/README.md#直近値とh2oの時点別誤差)
+
 ## ChatGPTへの引継ぎ
 
 上の骨子と表を使い、①なぜこの比較をしたか、②ボイジャーで力学モデルが効く条件、③公開時系列で手法を切り替えた結果、④モデルの有用性を判断する材料、の順で文章化する。数字には単位と保留区間を添える。NYC Taxiでの優劣は全体RMSEと時点別比較の両方を残す。日本語本文の構成と英語見出しは編集時に調整できる。

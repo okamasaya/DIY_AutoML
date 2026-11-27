@@ -1,8 +1,12 @@
 # 引継ぎと再開の入口
 
-更新日：2026-11-24（日本時間）
+更新日：2026-11-27（日本時間）
 
-**直近は、AirPassengersとNYC TaxiでDIY AutoML・AutoGluon・H2Oを比較した。** 航空ではDIYの季節候補がAutoGluonと近いRMSEで、タクシーではAutoGluonとH2OがDIYの選んだ直近値を上回った。 [結果と再現手順](../experiments/seasonal_forecast_crosscheck/README.md) · [ボイジャーの予測楕円](../experiments/voyager_crosscheck/README.md#ekf自身が見積もった誤差の評価) · [ロードマップ](ROADMAP.md)
+**次は、統合済みの `main` を基にPyPI候補を再ビルドする。** 木の深さ、CPU並列度、JSON列抽出、進捗ログ、Excel詳細図を含む開発差分を、記事を収録済みの版に統合した。再ビルド、投稿、後続開発の順序は11月27日の項に記録した。 [11月26日の開発記録](HANDOFF_20261126.md)
+
+11月24日時点のDS・BPの合意、時系列とGNNの実装状況、環境の復元手順と4媒体向けの資料を保存してある。 [再開用セーブポイント](RECOVERY_CHECKPOINT_20261124.md) · [Full Paper・Letter・Zenn・DEV Communityの資料一覧](PUBLICATION_HANDOFF_20261124.md)
+
+11月24日までに、ボイジャー・NYC Taxi・Iris・UCI Pedal Meで、GCNが辺を使う効果を比較した。ボイジャーの過去観測混入では辺なしより誤差が下がり、他のデータや通常条件では基準が上回った。 [4データの比較](../experiments/gnn_application_checks/README.md) · [Coraの結果と手順](GRAPH_CLASSIFICATION.md) · [ロードマップ](ROADMAP.md)
 
 Zenn開発メモの投稿前の確認記録は編集メモにある。BP向けアプリの初回利用の確認と、日付順の分類での性能差の区間はロードマップから再開できる。 [Zenn編集メモ](ZENN_EDITORIAL_NOTES.md) · [ロードマップ](ROADMAP.md)
 
@@ -44,8 +48,29 @@ Full Paperの処理フロー図、BP画面の結果グラフ、詳細グラフ�
 
 ## 現在の引継ぎ
 
+### 2026年11月27日
+
+記事を含む `main` の `604983d` を基点に、開発側の5コミットと、11月26日の実装・テスト・実験記録を保存した `1d6282f`、掲載ログの保存形式を整えた `2948e1d` を統合した。標準分類と外部比較のログ11点は、統合した作業ツリーとGitの内容が記録済みのSHA-256に一致した。元の開発フォルダーの `output/` には、別件の論文出力がある。
+
+統合後のソースで回帰テスト304件が通過した。Wineの再現手順では、135件のCV記録と詳細図5点のExcelを作り、元のセル値の一致も確認した。検証結果のローカル保存先は元の開発フォルダーの `runs/git-sync-20261127/`。
+
+| 順序 | 作業 | 現状と次の一手 |
+| --- | --- | --- |
+| 1 | PyPI候補の再ビルドと試用 | 既存の `0.4.0a8` wheel・sdistは、進捗ログと詳細図の追加前にビルド・導入を確認した。次は両機能を含むwheel・sdistを作り、クリーン環境で `--progress both`、`--charts detail`、Excelの検証まで通す。公開名・公開リポジトリ・ライセンスは要決定。TestPyPIからの取得、ローカル・Colabでの試用、本番公開が残る。 [配布手順](PYPI_RELEASE.md) |
+| 並行 | Zenn・DEV Community | Zennの学習進捗記事と図は [PR #13](https://github.com/okamasaya/DIY_AutoML/pull/13)、DEVの評価記事3本と目次は [PR #14](https://github.com/okamasaya/DIY_AutoML/pull/14) で統合済み。対象4記事のGit原稿は `published: false`。Zennの再現手順は進捗と詳細図を含む開発コミットへのリンクに差し替えた。Zenn・DEVの投稿画面での表示確認が残る。 [DEV原稿一覧](https://github.com/okamasaya/DIY_AutoML/tree/main/docs/dev_community) |
+| 後続 | 評価・BP・研究資料 | 表形式ではfoldの学習側で完結する欠損補完とカテゴリ変換が次の候補。日付順評価の差の区間、モデルの保存・再利用、探索予算も検討する。BPはQt試作とMacBook Air実機検証、フィジカルAIはカルマン系・GCNの適用先ごとの検証を計画として持つ。Full PaperとLetterの改稿に使う実験資料は保存済み。 [開発ロードマップ](ROADMAP.md) · [追加検証](MODEL_VALIDATION_TODO.md) · [投稿資料](PUBLICATION_HANDOFF_20261124.md) |
+
+### 2026年11月26日
+
+- DS向けに木の深さ・CPU並列度、JSONによる列抽出、進捗の保存先とExcelの図の量を設定できるようにした。BPの現在の画面はCPUを抑える設定で、MacBook Air実機とQt版は後続の作業。
+- Wine・Seeds・Breast Cancer Wisconsinで途中経過とレポートを照合した。AutoGluon・H2Oとは軽量な分類の保留予測と合成Voyagerの途中記録を比較した。日常の回帰確認はDIYで進め、評価条件やモデルを変えたときに必要に応じて外部と照合する。
+- 開発版の全304テストが通過した。ローカルの配布候補は木の深さ・CPU・JSON抽出を含む時点のもの。進捗と詳細図を含めた候補の再ビルドと新規環境での導入確認が残っている。
+- 本日の変更は作業ツリーに保存してある。作業ブランチとベースコミット、参照すべき実測ファイル、再開時の手順は日付別の記録にある。 [11月26日のHANDOFF](HANDOFF_20261126.md)
+
 ### 2026年11月24日
 
+- `experiments/gnn_application_checks` で、ボイジャー・NYC Taxiに過去時点の有向辺、Irisに特徴量5近傍、Pedal Meに配布の地域近接重みを使った。辺なしとの比較、未来入力の変更に対する先行予測の一致、保存結果の再計算・再現を確認した。出力は `runs/gnn-crosscheck-20261124/evaluation`。共有化した学習コードでCoraの元の予測を再現し、関連35テストが通過した。 [条件と結果](../experiments/gnn_application_checks/README.md)
+- 開発ブランチ `codex/gnn-node-classification` で、既知グラフ用の2層GCNとロジスティック回帰の比較を追加した。Coraのseed 42・43・44で保留macro F1はGCNが0.7527・0.8068・0.7771。seed 42の引用エッジを外すと0.5102だった。分割と予測の再現、勾配、保留ラベルの分離、保存結果を照合した。 [実行手順と検証結果](GRAPH_CLASSIFICATION.md)
 - ボイジャー合成軌道と公開時系列の比較を、投稿用の技術下書きにまとめた。タクシーの保留区間は、同じ時刻の絶対誤差でDIYの直近値がH2Oより小さい時点が2,056/6,288だった。ChatGPTで記事化するときの日本語の骨子、英語版の構成、出典と実測表を残した。 [投稿用の技術下書き](development-notes/time-series-crosscheck-draft.md)
 - AirPassengers・NYC Taxiの既存分割を保ち、AutoGluon TabularとH2O AutoMLを実行した。保留RMSEは航空でAutoGluon 27.49千人、DIYの季節候補27.89千人、H2O 42.34千人。タクシーではAutoGluon 1,115.22人、H2O 1,171.83人、DIYの直近値1,708.36人。ラグ、時刻、指標を照合し、保存済み予測からの集計とフィルタ関連32テストを確認した。出力は `runs/seasonal-forecast-crosscheck-20261124`。 [比較条件と結果](../experiments/seasonal_forecast_crosscheck/README.md)
 - `scripts/check_kalman_selection.py` で、Rの `AirPassengers` とNABの `nyc_taxi.csv` を既存の `kalman-track` で評価した。両方で直近観測を選び、保留区間のRMSEは航空で65.69から48.04千人、タクシーで1,962.19から1,708.36人になった。航空の追加比較で選ばれた前年同月×成長倍率のRMSEは27.89千人。両レポート、集計の再現、フィルタ関連32テストを確認した。結果は `runs/seasonal-selection-20261124/evaluation`。 [比較表と再現手順](UNCERTAINTY_DESIGN.md#公開時系列でカルマンを選ばない条件を確かめる)
@@ -59,7 +84,7 @@ Full Paperの処理フロー図、BP画面の結果グラフ、詳細グラフ�
 - `bootstrap_particle_filter` と `particle-benchmark` を追加した。seed 42のGordonは、128粒子でRMSE 5.306・被覆率90.2%・処理0.26秒、512粒子で4.833・93.6%・0.34秒。第1系列の21ステップ目に正負の山を確認した。seed 2026でも512粒子で再計算した。出力先は `runs/particle-theory-20261124-n128`、`runs/particle-theory-20261124-n512`、`runs/particle-theory-seed2026-n512`。 [比較結果と粒子の記録](UNCERTAINTY_DESIGN.md#粒子フィルタの理論比較とuci再現)
 - UCI Bike Sharingの既存ZIPを使い、先頭60日で設定を決め、後続90日で1日先の観測値を評価した。線形カルマンと256粒子のRMSEは705.6台と703.0台、被覆率は76.7%と73.3%。実行結果は `runs/particle-bike-uci-20261124/result.json`。 [UCIの再実行手順](UNCERTAINTY_DESIGN.md#粒子フィルタの理論比較とuci再現)
 - 全278テストが通過した。線形ガウスモデルでの理論値、二乗観測での正負の重み、欠測、先行予測の独立性、保存済み結果の再現を確認した。UCIのJSONは同じ設定で再実行し、ファイル内容が一致した。
-- 利用者の指定で、GNNはロードマップのTo Doに記録した。CoraでのGCNとロジスティック回帰の比較、既知グラフと新規ノードの分割設計が再開点。 [GNNのTo Do](ROADMAP.md#グラフニューラルネットワークto-do)
+- 利用者の指定で、GNNはロードマップのTo Doに記録した。CoraでのGCNとロジスティック回帰の比較、既知グラフと新規ノードの分割設計が再開点。 [GNNのロードマップ](ROADMAP.md#グラフニューラルネットワーク)
 - `unscented_kalman_filter` と `ukf-benchmark` を追加した。seed 42と2026で真値、観測、EKFの出力が前回と一致した。GordonのUKFはRMSEが8.021と7.512、95%被覆率が97.6%と98.9%で、平均区間幅は約51。フィルタ処理は今回の計測でEKFの約1.8〜2.1倍。出力は `runs/ukf-theory-20261124-seed42` と `runs/ukf-theory-20261124-seed2026` にある。 [実測条件と結果](UNCERTAINTY_DESIGN.md#アンセンテッドカルマンフィルタの理論比較)
 - 全274テストが通過した。UKFは線形モデルとの一致、不等間隔、部分欠測、階数の不足した共分散と二乗観測の理論モーメントを確認した。既存の線形カルマンとEKFの保存結果も検証した。
 - 利用者の指定で実用データとの接続を後に置き、`extended_kalman_filter` と `ekf-benchmark` を追加した。既存の線形カルマンと同じ条件での一致を照合し、2モデル×32系列×50ステップをseed 42と2026で別々に再生成・検証した。観測後の95%区間の被覆率は、単調モデルで93.9%・96.1%、Gordonの二乗観測で50.8%・48.0%。結果は `runs/ekf-theory-20261124` と `runs/ekf-theory-seed2026` にある。 [手順と比較結果](UNCERTAINTY_DESIGN.md#拡張カルマンフィルタの理論ベンチマーク)
