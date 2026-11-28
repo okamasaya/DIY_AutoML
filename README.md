@@ -31,7 +31,7 @@ Pythonパッケージの自作コードと配布用ファイルはMITライセ�
 
 ## セットアップ
 
-配布候補の **0.4.0a8** は、分類・カルマン・粒子フィルタ・GCNを試せるα版です。 [試用手順とノートブック](PyPI/TRIAL.md) · [PyPIの公開作業](PyPI/)
+TestPyPIの **0.4.1a0** は、`import uc_automail as uc_al` でフィルタの整合性を点検できるα版です。配布候補 **0.4.1a1** は、EKFの1ステップ処理と制御入力を追加しています。 [試用手順とノートブック](PyPI/TRIAL.md) · [PyPIの公開作業](PyPI/)
 
 0.4.0a7は、PyTorch追加に向けた共通データ/結果形式とTensorFlow学習処理の分離です。現在の学習バックエンドはTensorFlowのみで、PyTorch/JAXの実装や依存追加はまだありません。Julia/Rust版も将来展望です。[準備した境界と次の条件](docs/DL_BACKENDS.md)を参照してください。
 

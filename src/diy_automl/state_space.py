@@ -51,11 +51,16 @@ def check_covariance(value, dimension, name, *, steps=None, positive=False):
     return np.broadcast_to(value, (steps, dimension, dimension)) if steps is not None else value
 
 
-def gaussian_filter_inputs(observations, initial_mean, initial_covariance, process_covariance, observation_covariance):
-    observations = np.asarray(observations, dtype=float)
-    mean = np.asarray(initial_mean, dtype=float)
+def check_initial_mean(value):
+    mean = np.asarray(value, dtype=float)
     if mean.ndim != 1 or not mean.size or not np.isfinite(mean).all():
         raise ValueError("Initial mean must be a nonempty finite state vector")
+    return mean
+
+
+def gaussian_filter_inputs(observations, initial_mean, initial_covariance, process_covariance, observation_covariance):
+    observations = np.asarray(observations, dtype=float)
+    mean = check_initial_mean(initial_mean)
     if observations.ndim != 2 or not observations.size or np.isinf(observations).any():
         raise ValueError("Observations must be a nonempty (steps, measurements) array of finite values or NaN")
     steps, sensors = observations.shape

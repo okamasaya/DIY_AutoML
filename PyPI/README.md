@@ -1,12 +1,27 @@
 # UC_AutoMaiLをPyPIへ公開する手順
 
-表示名は **UC_AutoMaiL**、PyPIの正規化された配布名とCLIは `uc-automail`、バージョンは `0.4.0a8`。公開元は既存の [okamasaya/DIY_AutoML](https://github.com/okamasaya/DIY_AutoML)。Pythonでは `import diy_automl` を使い、旧記事の `diy-automl` コマンドも利用できる。分類、状態推定、GCNを同じパッケージから使う。Python 3.12以降が対象で、`storage` と `dl` は追加依存として選べる。 [PyPIの名前の正規化](https://packaging.python.org/en/latest/specifications/name-normalization/)
+表示名は **UC_AutoMaiL**、配布名とCLIは `uc-automail`。配布候補 `0.4.1a1` は `import uc_automail as uc_al` からEKFの1ステップ処理、制御入力、拡張した整合性診断を使える。公開元は既存の [okamasaya/DIY_AutoML](https://github.com/okamasaya/DIY_AutoML)。既存の記事やコードは `import diy_automl` と `diy-automl` を引き続き利用できる。Python 3.12以降が対象で、`storage` と `dl` は追加依存として選べる。 [PyPIの名前の正規化](https://packaging.python.org/en/latest/specifications/name-normalization/)
 
-- [初回公開候補のファイル](candidates/0.4.0a8/) · [候補のSHA-256と検証記録](candidates/0.4.0a8/release.json)
+- [配布候補 `0.4.1a1` の配布物とSHA-256](candidates/0.4.1a1/) · [TestPyPIの公開版 `0.4.1a0`](https://test.pypi.org/project/uc-automail/0.4.1a0/) · [0.4.1a0の検証記録](candidates/0.4.1a0/release.json) · [0.4.0a9の検証記録](candidates/0.4.0a9/release.json) · [0.4.0a8の検証記録](candidates/0.4.0a8/release.json)
 - [PyPIに掲載する英語説明](README.pypi.md) · [Windows・Colabでの試用手順](TRIAL.md) · [試用ノート](Alpha_Trial.ipynb)
 - [ビルド設定](../pyproject.toml) · [ソース配布物の収録設定](../MANIFEST.in) · [ライセンス](../LICENSE)
 
-`uc-automail` の公開メタデータは、2026年11月27日に本番PyPIとTestPyPIの両方で404だった。名前が利用できるかは最初の登録時に確定する。 [PyPIの名前選定](https://docs.pypi.org/project-management/choosing-a-name/)
+配布候補 `0.4.1a1` は、両配布物の `twine check --strict`、収録した67モジュールとMITライセンスの照合、回帰テスト312件を通過した。下の2環境でインストールした版を確認し、制御入力を渡したEKFの一括・1ステップ出力、欠測がある場合の診断とNIS・NEES、IrisのSVM評価（保留30件中29件正解）と図4点のExcelを確認した。
+
+| Windowsの新規環境 | 導入と追加確認 |
+| --- | --- |
+| Python 3.12.16 | wheelを導入し、依存をPyPIから取得 |
+| Python 3.13.17 | ソース配布物からビルドし、取得済み依存で `storage` とParquet・DuckDB出力も確認 |
+
+試用ノートはWindowsのローカルJupyterで全5コードセルを実行し、生成されたZIPの31ファイルを照合した。Colab上の試用は次の確認項目。作業端末の検証ログは `PyPI/runs/verify-0.4.1a1/` にあり、配布物のSHA-256と検証結果はリリース記録に残した。 [0.4.1a1のリリース記録](candidates/0.4.1a1/release.json)
+
+配布物に対応するソースはGitの `3820ecf` にある。ソース配布物の72入力をGitの内容と照合し、Python 3.12.16と3.13.17に導入した候補で欠測・遅着の実験を実行した。 [対応するソース](https://github.com/okamasaya/DIY_AutoML/commit/3820ecf81b5d7d669bc6aa91da83d8021780c8c6) · [カルマン系の検証](../experiments/kalman_sensitivity/README.md#欠測と時刻の遅れを同じ系列で比べる)
+
+公開済みの `0.4.1a0` を試す場合は、wheelをTestPyPIから取得し、依存ライブラリはPyPIからインストールする。 [TestPyPIから試す](TRIAL.md#testpypiから試す) · [配布候補をWindowsで試す](TRIAL.md#windowsで試す)
+
+`0.4.1a0` の両配布物をTestPyPIから再取得し、公開候補とSHA-256が一致した。回帰テスト310件と、Python 3.12・3.13での修正版wheelの整合性診断を確認した。 [整合性診断の使い方](../docs/UNCERTAINTY_DESIGN.md#ekfukfの整合性を確認する)
+
+TestPyPIに公開した `0.4.0a9` のwheelとソース配布物を再取得し、`PyPI/candidates/0.4.0a9/` の候補とSHA-256が一致することを確認した。取得したwheelをWindowsのPython 3.13環境に入れ、`import uc_automail`、`import diy_automl`、`python -m uc_automail --version` を確認した。初回配布版 `0.4.0a8` もTestPyPIから再取得して検証済み。 [初回のTestPyPI公開版](https://test.pypi.org/project/uc-automail/0.4.0a8/)
 
 パッケージの自作コードと配布用ファイルにはMITライセンスを適用する。`pyproject.toml` の `license` と `license-files` でSPDX識別子と本文の同梱を指定する。サンプルデータの出典と条件はデータごとに記録している。 [ライセンスの本文と適用範囲](../LICENSE) · [サンプルデータの利用条件](../data/reference/README.md) · [パッケージのライセンスメタデータ](https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#license-and-license-files)
 
@@ -16,7 +31,7 @@
 
 ```powershell
 $name = 'uc-automail'
-$version = '0.4.0a8'
+$version = '0.4.1a1'
 $dist = "PyPI/dist/$version-$(Get-Date -Format 'yyyyMMdd-HHmmss-fff')"
 python -m build --outdir $dist
 if ($LASTEXITCODE -ne 0) { throw 'Build failed' }
@@ -31,14 +46,16 @@ Get-FileHash -Algorithm SHA256 -LiteralPath $wheel,$sdist
 
 ### 検証済みの配布候補から再開する
 
-初回公開候補 `uc-automail==0.4.0a8` は、Gitの `4ff386a` からビルドした。検証時のソースと試用ノートは `7692334` で確認できる。配布物はこのとき検証したファイルで、整理後の公開手順からも同じファイルを使える。SHA-256とコミットは `release.json` に記録している。 [配布候補と検証記録](candidates/0.4.0a8/)
+`0.4.1a1` は、下の手順で `PyPI/candidates/0.4.1a1/` のSHA-256を照合する。以前の配布物の照合には、`$releaseRoot` にそのバージョンのフォルダーを指定する。
 
-両配布物は `twine check --strict` を通過し、配布した64個のPythonモジュールをGitのソースと照合した。開発環境の全304テストが通過した。WindowsのPython 3.12.16にwheel、3.13.17にソース配布物を新規導入し、どちらもIrisで保留30件中29件正解、25件のCVログ、図4点のExcelを確認した。修正後の試用ノートはローカルJupyterで全5セルが通り、出力ZIPの31ファイルを照合した。TestPyPI・本番PyPIへの登録と、Colabホストでの試用は今後行う。
+初回配布版 `uc-automail==0.4.0a8` は、Gitの `4ff386a` からビルドした。検証時のソースと試用ノートは `7692334` で確認できる。配布物のSHA-256とコミットは `release.json` に記録している。 [初回配布物と検証記録](candidates/0.4.0a8/)
 
-検証済みの候補で再開する場合は、リポジトリのルートで次を実行する。詳細ログの保管先は、元の開発フォルダーの `runs/pypi-uc-automail-0.4.0a8-ready/`。
+初回配布物は `twine check --strict` を通過し、配布した64個のPythonモジュールをGitのソースと照合した。開発環境の全304テストが通過した。WindowsのPython 3.12.16にwheel、3.13.17にソース配布物を新規導入し、どちらもIrisで保留30件中29件正解、25件のCVログ、図4点のExcelを確認した。試用ノートはローカルJupyterで全5セルが通り、出力ZIPの31ファイルを照合した。
+
+リポジトリのルートで次を実行する。初回配布物の詳細ログは元の開発フォルダーの `runs/pypi-uc-automail-0.4.0a8-ready/` にある。
 
 ```powershell
-$releaseRoot = 'PyPI/candidates/0.4.0a8'
+$releaseRoot = 'PyPI/candidates/0.4.1a1'
 $release = Get-Content -Raw -LiteralPath "$releaseRoot/release.json" | ConvertFrom-Json
 $name = $release.name
 $version = $release.version
@@ -48,7 +65,6 @@ foreach ($file in $release.files) {
     $actual = Get-FileHash -Algorithm SHA256 -LiteralPath (Join-Path $releaseRoot $file.filename) -ErrorAction Stop
     if ($actual.Hash -ne $file.sha256) { throw "SHA-256 mismatch for $($file.filename)" }
 }
-$release.commit
 ```
 
 ### 公開候補の確認記録
@@ -118,13 +134,21 @@ $testPython = "$trial/.venv/Scripts/python.exe"
 if ($LASTEXITCODE -ne 0) { throw 'Install failed' }
 & $testPython -m pip check
 if ($LASTEXITCODE -ne 0) { throw 'Dependency check failed' }
-& $testPython -I PyPI/scripts/smoke_pypi_install.py --version $version --csv data/reference/iris.csv --output "$trial/iris"
-if ($LASTEXITCODE -ne 0) { throw 'Iris smoke test failed' }
+& $testPython -I PyPI/scripts/smoke_pypi_install.py --version $version --csv data/reference/iris.csv --output "$trial/iris" --kalman
+if ($LASTEXITCODE -ne 0) { throw 'Package smoke test failed' }
 ```
 
-確認用スクリプトは、インストール先の対象バージョンで、点検、5モデル比較、進捗ログ、詳細図付きExcel、JSONでの列抽出、木の深さ・CPU並列度を指定した評価を行い、保存結果を検証する。`storage` を導入した環境では `--storage` でParquet・DuckDB出力の確認を追加できる。ColabではTestPyPIから取得した同じwheelを試用ノートブックで選べる。 [Colabでの試用](TRIAL.md#colabやローカルjupyterで試す)
+`--kalman` は、`0.4.1a1` の公開APIを使って1ステップEKFと一括処理を照合し、欠測を含む診断を確認するオプション。確認用スクリプトは、点検、5モデル比較、進捗ログ、詳細図付きExcel、JSONでの列抽出、木の深さ・CPU並列度を指定した評価も行い、保存結果を検証する。`storage` を導入した環境では `--storage` でParquet・DuckDB出力の確認を追加できる。Colabでは同じバージョンのwheelを試用ノートブックで選べる。 [Colabでの試用](TRIAL.md#colabやローカルjupyterで試す)
 
 取得検証器は、2026年11月27日にTestPyPIと本番PyPIの `sampleproject` で実際に両配布物を取得して確認した。DIY AutoMLのローカル候補を使った模擬応答では、両方が一致する場合と、ソース配布物の欠落、登録ハッシュの不一致、取得したファイルの不一致を確認した。照合を通過したファイルだけ指定の取得先に残る。 [取得検証器](scripts/verify_pypi_downloads.py)
+
+### Windowsの制限付き実行で確認した症状
+
+- **Jupyterの起動待ち**。制限付き実行では、`127.0.0.1` のTCP通信が `WinError 10013` で拒否された。Jupyterはカーネル起動前にPythonのイベントループを初期化するため、そこで止まっていた。同じPCの通常のWindows権限では、最小ノートと試用ノート全5セルを実行できた。
+- **ソース配布物のビルド時にpipが `WinError 5` を返す**。既定のwheelキャッシュ内への一時ファイル作成に失敗した。`pip --isolated` では `PIP_NO_CACHE_DIR` と `PIP_CACHE_DIR` の環境変数が無視される。コマンドに `--no-cache-dir` を渡す場合と、`--cache-dir` で作業フォルダー内を指定する場合の両方で、同じソース配布物からwheelを作れた。 [pipのオプション](https://pip.pypa.io/en/stable/cli/pip/#general-options)
+- **joblibのCPU検出警告**。開発環境の1.5.3は `Get-CimInstance` でCPU情報の照会を拒否され、代替の `wmic` も見つからず、論理16コアに切り替えた。通常のWindows権限では1.5.3も物理10コアを取得できた。配布候補の新規導入で解決された1.6.0はWindows APIを使い、制限付き実行でも警告なしで物理10コアを取得できた。 [WMICの非推奨化](https://learn.microsoft.com/en-us/windows/whats-new/deprecated-features)
+
+比較に使ったログは作業端末の `PyPI/runs/verify-0.4.1a1/diagnosis/` に保存した。
 
 ## 本番PyPIに公開する
 
@@ -135,4 +159,4 @@ python -m twine upload --repository-url https://upload.pypi.org/legacy/ --userna
 if ($LASTEXITCODE -ne 0) { throw 'PyPI upload failed' }
 ```
 
-公開後は同じ検証器を `--index pypi` と新しい取得先で実行し、両配布物を照合する。その後、別の新規環境で `python -m pip install "$name==$version"` を実行し、同じIrisの確認を行う。GitHubのソースと公開版が対応するコミットをリリース記録に残す。
+公開後は同じ検証器を `--index pypi` と新しい取得先で実行し、両配布物を照合する。その後、別の新規環境で `python -m pip install "$name==$version"` を実行し、同じIrisとEKFの確認を行う。GitHubのソースと公開版が対応するコミットをリリース記録に残す。

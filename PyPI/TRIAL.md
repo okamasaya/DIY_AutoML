@@ -1,19 +1,33 @@
-# UC_AutoMaiL 0.4.0a8 試用手順
+# UC_AutoMaiL α版の試用手順
 
 PyPI公開に先立ち、現在の機能を同じパッケージから試す版です。分類、時系列の状態推定、グラフ分類をCPUで実行できます。ストレージとニューラルネットワークは既存の `storage`、`dl` 追加依存で導入します。
 
+## TestPyPIから試す
+
+公開済みの `0.4.1a0` を試す手順です。Python 3.12以降の仮想環境を有効にし、空の作業フォルダーで実行します。UC_AutoMaiLのwheelはTestPyPIから取得し、インストール時の依存はPyPIから解決します。 [TestPyPIでの依存パッケージの扱い](https://packaging.python.org/en/latest/guides/using-testpypi/#using-testpypi-with-pip)
+
+```sh
+python -m pip --isolated download --index-url https://test.pypi.org/simple/ --no-deps --only-binary=:all: uc-automail==0.4.1a0
+python -m pip --isolated install --index-url https://pypi.org/simple/ ./uc_automail-0.4.1a0-py3-none-any.whl
+python -m pip check
+python -c "import uc_automail as uc_al; print(uc_al.__version__)"
+```
+
+最後に `0.4.1a0` が表示されます。 [TestPyPIの公開版](https://test.pypi.org/project/uc-automail/0.4.1a0/)
+
 ## Windowsで試す
 
-リポジトリのルートから、Python 3.12以降を使ってPowerShellで実行します。`$wheel` はGitに保存した検証済みの配布候補です。
+リポジトリのルートから、Python 3.12以降を使ってPowerShellで実行します。配布候補の `0.4.1a1` には、EKFの1ステップ処理と制御入力、整合性診断の参考帯と検定状態が含まれます。 [収録した新APIの使用例](README.pypi.md#try-the-alpha)
 
 ```powershell
-$wheel = 'PyPI/candidates/0.4.0a8/uc_automail-0.4.0a8-py3-none-any.whl'
+$wheel = 'PyPI/candidates/0.4.1a1/uc_automail-0.4.1a1-py3-none-any.whl'
 $trial = "PyPI/runs/alpha-local-$(Get-Date -Format 'yyyyMMdd-HHmmss-fff')"
 python -m venv "$trial/.venv"
 $python = "$trial/.venv/Scripts/python.exe"
 $cli = "$trial/.venv/Scripts/uc-automail.exe"
 & $python -m pip install $wheel
 & $python -m pip check
+& $python -I -c 'import uc_automail as uc_al; print(uc_al.__version__)'
 & $cli --version
 & $cli audit-data --csv data/reference/iris.csv --target target --output "$trial/iris-audit"
 & $cli select --csv data/reference/iris.csv --target target --progress both --output "$trial/iris-selection"
@@ -26,7 +40,7 @@ Windowsの画面も試す場合は、Tcl/Tkが有効なPythonで `& $cli bp-prev
 
 ## ColabやローカルJupyterで試す
 
-Colabでは、試用ノートブックをCPUランタイムで開き、最初のセルで配布候補のwheelを選びます。ローカルJupyterでは、リポジトリのルートまたは `PyPI/` から実行すると、保存済みのwheelが自動で選ばれます。 [試用ノートブック](Alpha_Trial.ipynb) · [配布候補](candidates/0.4.0a8/) · [Colabのノートブック読み込み手順](https://research.google.com/colaboratory/faq.html?hl=en)
+Colabでは、試用ノートブックをCPUランタイムで開き、最初のセルで配布候補の `0.4.1a1` のwheelを選びます。ローカルJupyterでは、リポジトリのルートまたは `PyPI/` から実行すると、保存済みのwheelが自動で選ばれます。 [試用ノートブック](Alpha_Trial.ipynb) · [配布候補の準備](README.md) · [Colabのノートブック読み込み手順](https://research.google.com/colaboratory/faq.html?hl=en)
 
 ノートブックは試用専用の仮想環境を作ります。Irisの分類、選定の進捗ログ、詳細図付きExcelと、1系列のカルマンを確認できます。必要に応じてEKF・UKF・粒子フィルタの比較とGCNのセルを実行できます。最後のセルで入力とExcel、NPZ、manifest、ログをZIPにまとめます。
 

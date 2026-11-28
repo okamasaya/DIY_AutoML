@@ -153,6 +153,14 @@ WindowsのPython 3.13.17で、乱数seed 42の標準正規乱数を累積した5
 - 過程共分散 `Q` と観測共分散 `R` は固定行列または時刻ごとの行列。欠測は観測成分の `NaN` で表す。一部が欠測なら利用できる成分だけで更新し、全成分の欠測時は予測を引き継ぐ。
 - 返り値は状態の事前予測、観測値の事前予測、観測後の状態推定と、各々の共分散。時刻やノイズ条件を既知として与える。線形の状態遷移と観測を与えると既存の線形カルマンと一致することを、不等間隔と欠測を含む例で検証した。
 
+EKFとUKFの `filtered_covariance` は、遷移・観測モデルと指定した `Q`・`R` を前提とした、観測更新後の状態共分散の近似。モデルに含めていないセンサーのずれや力学の差は、真値・参照値に対する誤差と区間被覆、モデルを変えたときの感度で確かめる。 [フィジカルAIでの試用と開発課題](MODEL_VALIDATION_TODO.md#フィジカルaiでの試用から見つかった課題)
+
+一括APIで既知の入力や刻み幅を参照する場合は、コールバックで `controls[step - 1]` や `time_steps[step - 1]` を参照できる。開発版の一括EKFは `controls=` でも指定できる。`controls` は観測行ごとのスカラーなら `(時刻数,)`、ベクトルなら `(時刻数, 制御次元)` の配列。各行の値を遷移とそのヤコビアンに `(state, step, control)` で渡す。観測とそのヤコビアンは `(state, step)` を受け取る。
+
+開発版の `uc_al.ExtendedKalmanFilter` は固定の `Q`・`R` を初期化時に点検し、`step(observation, control=u)` ごとに状態と時刻を進める。観測は `(観測次元,)` の配列で、制御入力は有限のスカラーまたは1次元ベクトル。失敗した呼び出しの観測は入力を修正して再実行できる。戻り値のキーは一括APIと共通で、各配列の先頭の時刻軸が省かれる。 [一致性・遅延の検証と再実行手順](../experiments/kalman_sensitivity/README.md)
+
+定周期で使う場合は、観測の時刻を照合し、値が届いていない成分に `NaN` を渡して予定どおりに進める。20 ms周期の合成系列で、遅着観測を到着時の値として使うと、遅延区間の位置RMSEが小さくなった。同じ条件で、位置の95%推定楕円の被覆率は92.1%から13.3%に下がった。 [欠測と遅着の比較](../experiments/kalman_sensitivity/README.md#欠測と時刻の遅れを同じ系列で比べる)
+
 理論ベンチマークでは、真値とノイズの条件を明示できる2つの合成モデルを使う。`monotone` は滑らかな非線形遷移と、単調増加の観測 `h(x) = x + 0.1x³` を持つ。`gordon` はGordon・Salmond・Smithの第4.1節の1次元モデルで、観測 `h(x) = x²/20` は正負の状態に同じ値を返す。各モデルの過程・観測分散は固定し、真値は採点に使う。 [Gordonらの原論文](https://people.bordeaux.inria.fr/pierre.delmoral/gordon-salmond-smith-1993.pdf)
 
 ```powershell
@@ -192,6 +200,31 @@ $python = '.\.venv\Scripts\python.exe'
 | Gordonの二乗観測・2026 | 17.047 → 7.512 | 48.0% → 98.9% | 6.87 → 50.48 |
 
 Gordonの例ではUKFで点推定の誤差が下がり、95%区間が大きく広がった。被覆率と区間幅を併せて読み、正負に分かれ得る状態を一つの平均と共分散で表した場合の限界を確認する。`Timing` に記録した今回の計測では、各実行のUKFのフィルタ処理はEKFの約1.8〜2.1倍だった。シミュレーション・採点・ファイル保存の時間は計測から除いた。
+
+### EKF・UKFの整合性を確認する
+
+`0.4.1a0` は、EKF・UKFを実行した後に次のAPIを使える。`result` はフィルタの戻り値、`observations` はフィルタに渡した観測配列、`truth` は観測更新後の推定と時刻をそろえた真値配列。
+
+```python
+import uc_automail as uc_al
+
+diagnostics = uc_al.filter_diagnostics(result, observations, max_lag=5)
+print(diagnostics["mean_nis_per_dimension"])
+print(diagnostics["autocorrelation"], diagnostics["ljung_box_pvalue"])
+
+consistency = uc_al.evaluate_filter_consistency(truth, result)
+print(consistency["pull_mean"], consistency["pull_rms"], consistency["nees"])
+```
+
+NISは各時刻の観測残差を利用できる観測成分の共分散で標準化して二乗和を取る。`nis_reference_interval` は観測成分数を自由度にした各時刻のχ²参照範囲。`mean_nis_per_dimension` はNISの合計を有効な観測成分数の合計で割った値。自己相関はチャネルごとの標準化残差を使い、欠測の位置とラグごとの有効ペア数を残す。Ljung–Boxの近似p値は等間隔の系列を前提とし、全時刻に有効値があり変動するチャネルで得られる。 [NISによる整合性の原論文](https://doi.org/10.1002/acs.2571) · [Ljung–Boxの原論文](https://doi.org/10.1093/biomet/65.2.297)
+
+真値による評価は、推定誤差、各状態のpullと平均・標本標準偏差・RMS、時刻ごとのNEESとχ²参照範囲を返す。既知の真値成分の共分散部分行列が特異な行はNEESを `NaN` とし、`nees_dimensions` を0にする。これらの数値と、フィルタが前提とした観測・状態モデルをあわせて読む。
+
+開発版では `ljung_box_status` でチャネルごとの検定状態を確認できる。通常は `ok`、計算できない場合は `missing_observations`、`constant_series`、`no_lags`、`nonfinite_variation` のいずれかを返す。欠測があっても自己相関と `autocorrelation_pairs` は元のラグで確認できる。
+
+`autocorrelation_reference_limit` は、欠測がなく変動する系列に対する白色雑音近似のラグ別参考帯の半幅。95%を指定した場合は約 `1.96 / √N` で、`autocorrelation_lags_outside_reference` から帯を超えたラグを確認できる。参考帯が得られないチャネルでは半幅が `NaN` になる。p値、実際の自己相関の大きさ、予測や推定に及ぼす影響を一緒に読む。 [自己相関の参考帯と仮定](https://www.statsmodels.org/stable/generated/statsmodels.tsa.stattools.acf.html)
+
+感度実験では、同じ真値と乱数を使って `Q`・`R` の想定やセンサーの偏りを一つずつ変えた。位置観測のバイアスがある条件では、平均NISがほぼ同じまま位置の95%区間の被覆率が下がった。 [フィルタの感度実験](../experiments/kalman_sensitivity/README.md)
 
 ### 粒子フィルタの理論比較とUCI再現
 

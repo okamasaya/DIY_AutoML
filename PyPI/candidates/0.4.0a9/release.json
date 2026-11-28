@@ -1,0 +1,58 @@
+{
+  "display_name": "UC_AutoMaiL",
+  "name": "uc-automail",
+  "version": "0.4.0a9",
+  "repository": "https://github.com/okamasaya/DIY_AutoML",
+  "license": "MIT",
+  "import_name": "uc_automail",
+  "compatible_import_name": "diy_automl",
+  "source_base": "893b36b9c985fc71d8af7b77a3f753f9957a396b",
+  "files": [
+    {
+      "kind": "bdist_wheel",
+      "filename": "uc_automail-0.4.0a9-py3-none-any.whl",
+      "sha256": "6b0f619a1221644fed6fa614adebec329f4822f30f207475af591d183f45aba6",
+      "size_bytes": 166431
+    },
+    {
+      "kind": "sdist",
+      "filename": "uc_automail-0.4.0a9.tar.gz",
+      "sha256": "c5867c67d2ee9a3b25d733f661a874b74d88f269185e12c7a5e549a6a7841e92",
+      "size_bytes": 144313
+    }
+  ],
+  "verification": {
+    "twine_check_strict": "passed",
+    "python_modules_verified": 66,
+    "pytest": {
+      "passed": 305
+    },
+    "windows_upgrade": {
+      "python": "3.13.17",
+      "from": "0.4.0a8",
+      "to": "0.4.0a9",
+      "verified_imports": [
+        "uc_automail",
+        "diy_automl"
+      ],
+      "cli_entry_points": 4,
+      "audit_data_csv": "passed"
+    },
+    "local_notebook": {
+      "python": "3.13.17",
+      "fresh_install": "passed",
+      "code_cells": 5,
+      "archived_output_files": 31
+    },
+    "testpypi": {
+      "project_url": "https://test.pypi.org/project/UC-AutoMaiL/0.4.0a9/",
+      "downloads_verified": 2,
+      "sha256": "matched",
+      "imports_verified": [
+        "uc_automail",
+        "diy_automl"
+      ],
+      "cli_version": "UC_AutoMaiL 0.4.0a9"
+    }
+  }
+}

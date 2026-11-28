@@ -45,12 +45,49 @@ def check_extraction_and_training(cli, csv, output, features, storage):
     print(f"Validated the JSON recipe and tree-depth/CPU options{' and storage outputs' if storage else ''}")
 
 
+def check_kalman(installed, version):
+    import uc_automail as uc_al
+
+    public_file = Path(uc_al.__file__).resolve()
+    if public_file != installed.locate_file("uc_automail/__init__.py").resolve() or uc_al.__version__ != version:
+        raise RuntimeError(f"Expected {version} from the installed public API, got {uc_al.__version__} at {public_file}")
+    if uc_al.ExtendedKalmanFilter is not diy_automl.ExtendedKalmanFilter:
+        raise RuntimeError("The public and compatibility imports expose different EKF classes")
+
+    identity = np.eye(2)
+    truth = np.arange(1, 7)[:, None] * np.array([1.0, 0.5])
+    observations = truth + np.array([[0.1, -0.1], [-0.1, 0.1], [np.nan, 0.0], [0.1, -0.1], [0.0, 0.1], [-0.1, 0]])
+    controls = np.broadcast_to([1.0, 0.5], observations.shape)
+    settings = dict(
+        initial_mean=[0, 0], initial_covariance=identity,
+        transition=lambda x, k, u: x + u, transition_jacobian=lambda x, k, u: identity,
+        measurement=lambda x, k: x, measurement_jacobian=lambda x, k: identity,
+        process_covariance=0.01 * identity, observation_covariance=0.1 * identity,
+    )
+    batch = uc_al.extended_kalman_filter(observations, controls=controls, **settings)
+    tracker = uc_al.ExtendedKalmanFilter(**settings)
+    series = [tracker.step(row, control=u) for row, u in zip(observations, controls, strict=True)]
+    for name, expected in batch.items():
+        np.testing.assert_allclose(np.stack([step[name] for step in series]), expected, atol=1e-13, rtol=1e-13)
+
+    diagnostics = uc_al.filter_diagnostics(batch, observations, max_lag=2)
+    consistency = uc_al.evaluate_filter_consistency(truth, batch)
+    if diagnostics["ljung_box_status"] != ("missing_observations", "ok"):
+        raise RuntimeError("Ljung–Box status did not distinguish incomplete and complete channels")
+    np.testing.assert_array_equal(diagnostics["autocorrelation_pairs"][0], [3, 5])
+    np.testing.assert_allclose(diagnostics["autocorrelation_reference_limit"], [np.nan, 1.95996398454 / np.sqrt(6)])
+    if not np.isfinite(diagnostics["nis"]).all() or not np.isfinite(consistency["nees"]).all():
+        raise RuntimeError("The installed diagnostic did not produce finite NIS and NEES")
+    print("Validated the public import, controlled EKF steps, missing-data diagnostics, NIS and NEES")
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--version", required=True, help="Expected installed version")
     parser.add_argument("--csv", type=Path, required=True, help="Path to the repository's Iris CSV")
     parser.add_argument("--output", type=Path, required=True, help="New directory for the audit and evaluation")
     parser.add_argument("--storage", action="store_true", help="Check Parquet and DuckDB with the storage extra installed")
+    parser.add_argument("--kalman", action="store_true", help="Check the streaming EKF and expanded diagnostics")
     args = parser.parse_args()
 
     installed = distribution("uc-automail")
@@ -59,11 +96,13 @@ def main():
         raise RuntimeError(f"Expected an installed distribution, got {package_file}")
     if installed.version != args.version or diy_automl.__version__ != args.version:
         raise RuntimeError(f"Expected {args.version}, got metadata {installed.version} and code {diy_automl.__version__}")
+    if args.kalman:
+        check_kalman(installed, args.version)
 
     csv = args.csv.resolve(strict=True)
     output = args.output.resolve()
     output.mkdir(parents=True)
-    cli = [sys.executable, "-I", "-X", "utf8", "-m", "diy_automl"]
+    cli = [sys.executable, "-I", "-X", "utf8", "-m", "uc_automail" if args.kalman else "diy_automl"]
     subprocess.run([*cli, "--version"], cwd=output, check=True)
 
     for command, name, schema, options in (

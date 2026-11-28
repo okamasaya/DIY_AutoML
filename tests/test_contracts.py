@@ -14,6 +14,21 @@ from diy_automl.clustering_repeat_workflow import repeat_clustering_csv
 
 CSV=Path(__file__).parents[1]/'data/reference/iris.csv'
 
+
+def test_public_distribution_import():
+    import diy_automl
+    import uc_automail
+    from uc_automail import kalman_track_csv, select_csv
+
+    assert uc_automail.__version__ == diy_automl.__version__
+    assert uc_automail.__all__ == diy_automl.__all__
+    assert all(callable(getattr(uc_automail, name)) for name in uc_automail.__all__)
+    assert uc_automail.data is diy_automl.data
+    assert select_csv is diy_automl.select_csv
+    assert kalman_track_csv is diy_automl.kalman_track_csv
+    assert "kalman_track_csv" in dir(uc_automail)
+
+
 def test_input():
     d=load_csv(CSV,'target')
     assert d.X.shape==(150,4)

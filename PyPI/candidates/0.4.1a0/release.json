@@ -1,0 +1,52 @@
+{
+  "display_name": "UC_AutoMaiL",
+  "name": "uc-automail",
+  "version": "0.4.1a0",
+  "license": "MIT",
+  "repository": "https://github.com/okamasaya/DIY_AutoML",
+  "import_name": "uc_automail",
+  "compatible_import_name": "diy_automl",
+  "source_base": "893b36b9c985fc71d8af7b77a3f753f9957a396b",
+  "files": [
+    {
+      "kind": "bdist_wheel",
+      "filename": "uc_automail-0.4.1a0-py3-none-any.whl",
+      "sha256": "5f728d05f7b4e968205aee4eb964f0098ded1e5babb09df175e3581b52c68df7",
+      "size_bytes": 169387
+    },
+    {
+      "kind": "sdist",
+      "filename": "uc_automail-0.4.1a0.tar.gz",
+      "sha256": "ca0348d2cde883fbd30b01716dc8c4ee9c4ba4131731e5f34691b0ae03621996",
+      "size_bytes": 147271
+    }
+  ],
+  "verification": {
+    "twine_check_strict": "passed",
+    "python_modules_verified": 67,
+    "pytest": {
+      "passed": 310
+    },
+    "diagnostic_install": {
+      "python": [
+        "3.12.16",
+        "3.13.17"
+      ],
+      "constant_innovations": "passed",
+      "ekf_ukf_and_nees": "passed"
+    },
+    "testpypi": {
+      "project_url": "https://test.pypi.org/project/uc-automail/0.4.1a0/",
+      "downloads_verified": 2,
+      "sha256": "matched",
+      "installation": "passed",
+      "python": "3.13.17",
+      "pypi_dependencies": 20,
+      "imports_verified": [
+        "uc_automail",
+        "diy_automl"
+      ],
+      "constant_innovations": "passed"
+    }
+  }
+}
