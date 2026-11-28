@@ -1,0 +1,56 @@
+{
+  "testpypi_0_4_1a0": {
+    "platform": "Windows",
+    "python_version": "3.13.17",
+    "numpy_version": "2.5.5",
+    "package_version": "0.4.1a0",
+    "blas_threads": 1,
+    "warmup_calls": 200,
+    "timed_calls_per_method": 6000,
+    "states": 4,
+    "observation_channels": 2,
+    "timings": {
+      "one_row_batch": {
+        "median_us": 159.6,
+        "p95_us": 189.705,
+        "p99_us": 279.30100000000004,
+        "max_us": 1052.8,
+        "calls_at_or_above_1ms": 1
+      }
+    }
+  },
+  "development_source": {
+    "platform": "Windows",
+    "python_version": "3.13.17",
+    "numpy_version": "2.5.5",
+    "package_version": "0.4.1a0",
+    "blas_threads": 1,
+    "warmup_calls": 200,
+    "timed_calls_per_method": 6000,
+    "states": 4,
+    "observation_channels": 2,
+    "timings": {
+      "one_row_batch": {
+        "median_us": 157.3,
+        "p95_us": 173.7,
+        "p99_us": 266.701,
+        "max_us": 690.8,
+        "calls_at_or_above_1ms": 0
+      },
+      "stateful_step": {
+        "median_us": 36.2,
+        "p95_us": 40.7,
+        "p99_us": 47.40100000000002,
+        "max_us": 322.3,
+        "calls_at_or_above_1ms": 0
+      },
+      "stateful_step_with_control": {
+        "median_us": 40.0,
+        "p95_us": 44.9,
+        "p99_us": 53.60200000000005,
+        "max_us": 360.0,
+        "calls_at_or_above_1ms": 0
+      }
+    }
+  }
+}

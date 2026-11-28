@@ -1,0 +1,92 @@
+{
+  "display_name": "UC_AutoMaiL",
+  "name": "uc-automail",
+  "version": "0.4.1a1",
+  "license": "MIT",
+  "repository": "https://github.com/okamasaya/DIY_AutoML",
+  "import_name": "uc_automail",
+  "compatible_import_name": "diy_automl",
+  "stage": "release_candidate",
+  "recorded_utc": "2026-11-27T22:40:58+00:00",
+  "source_base": "4ea5e255939e6818186cc13b84ec49ec76e07146",
+  "source_commit": "3820ecf81b5d7d669bc6aa91da83d8021780c8c6",
+  "source_kind": "working_tree_snapshot",
+  "source_input_sha256": "77415e22d095924e3446f35f41422739ddfb407a39ccc7f629bc9a821c69f4f4",
+  "files": [
+    {
+      "kind": "bdist_wheel",
+      "filename": "uc_automail-0.4.1a1-py3-none-any.whl",
+      "sha256": "b38d110c5e7a3ca45a9fe40d47bb6048772d00debc4801011ef20cd27cb6fb37",
+      "size_bytes": 171308
+    },
+    {
+      "kind": "sdist",
+      "filename": "uc_automail-0.4.1a1.tar.gz",
+      "sha256": "10899f8115ea8644e45b2112d63688dac4d4b284c812c5623a59bdc3ea62d3ac",
+      "size_bytes": 149614
+    }
+  ],
+  "verification": {
+    "twine_check_strict": "passed",
+    "python_modules_verified": 67,
+    "wheel_record_files_verified": 72,
+    "source_commit_inputs_verified": 72,
+    "pytest": {
+      "passed": 312
+    },
+    "installations": [
+      {
+        "python": "3.12.16",
+        "distribution": "bdist_wheel",
+        "dependency_source": "pypi",
+        "dependency_count": 20,
+        "archive_sha256": "matched",
+        "pip_check": "passed",
+        "installed_smoke": "passed",
+        "verified_features": [
+          "streaming_ekf",
+          "batch_controls",
+          "missing_data_diagnostics",
+          "nis_nees",
+          "iris",
+          "excel"
+        ]
+      },
+      {
+        "python": "3.13.17",
+        "distribution": "sdist",
+        "dependency_source": "cached_pypi_wheels",
+        "dependency_count": 22,
+        "archive_sha256": "matched",
+        "pip_check": "passed",
+        "installed_smoke": "passed",
+        "verified_features": [
+          "streaming_ekf",
+          "batch_controls",
+          "missing_data_diagnostics",
+          "nis_nees",
+          "iris",
+          "excel",
+          "parquet",
+          "duckdb"
+        ]
+      }
+    ],
+    "documented_python_examples": "passed",
+    "timestamp_replay": {
+      "python": ["3.12.16", "3.13.17"],
+      "identical_results": true,
+      "report": "experiments/kalman_sensitivity/replay-timestamps-results.json"
+    },
+    "notebook": {
+      "mode": "local_jupyter_kernel",
+      "code_cells_passed": 5,
+      "archive_files_verified": 31,
+      "direct_python_execution_also_passed": true
+    },
+    "registry_version_lookup_http_status": {
+      "testpypi": 404,
+      "pypi": 404
+    }
+  }
+}

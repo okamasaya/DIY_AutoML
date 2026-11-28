@@ -1,0 +1,83 @@
+{
+  "version": "0.4.1a1",
+  "seed": 20261128,
+  "trajectories": 12,
+  "steps": 640,
+  "burn_in_steps": 80,
+  "step_seconds": 0.02,
+  "delay_steps": 8,
+  "conditions": {
+    "complete": {
+      "partial_observations": 0,
+      "prediction_only_steps": 0,
+      "stale_packets_used": 0,
+      "ljung_box_statuses": [
+        "ok"
+      ],
+      "scored_period": {
+        "position_rmse_m": 0.04092359206871456,
+        "axis_rmse_m": [
+          0.02510171882462665,
+          0.032320954501003515
+        ],
+        "position_ellipse_coverage": 0.9470238095238095
+      },
+      "delayed_period": {
+        "position_rmse_m": 0.03923405861203491,
+        "axis_rmse_m": [
+          0.025772763552370823,
+          0.029581683759484986
+        ],
+        "position_ellipse_coverage": 0.940625
+      }
+    },
+    "keep_timestamps": {
+      "partial_observations": 480,
+      "prediction_only_steps": 1320,
+      "stale_packets_used": 0,
+      "ljung_box_statuses": [
+        "missing_observations"
+      ],
+      "scored_period": {
+        "position_rmse_m": 0.16571793724084452,
+        "axis_rmse_m": [
+          0.11788162373637652,
+          0.11647470759197386
+        ],
+        "position_ellipse_coverage": 0.9418154761904762
+      },
+      "delayed_period": {
+        "position_rmse_m": 0.40242534909016714,
+        "axis_rmse_m": [
+          0.2988100506125169,
+          0.2695528060386089
+        ],
+        "position_ellipse_coverage": 0.9208333333333333
+      }
+    },
+    "use_stale": {
+      "partial_observations": 480,
+      "prediction_only_steps": 456,
+      "stale_packets_used": 864,
+      "ljung_box_statuses": [
+        "missing_observations"
+      ],
+      "scored_period": {
+        "position_rmse_m": 0.10051729602652816,
+        "axis_rmse_m": [
+          0.05403718411167765,
+          0.08475676689070531
+        ],
+        "position_ellipse_coverage": 0.815327380952381
+      },
+      "delayed_period": {
+        "position_rmse_m": 0.19762052138514213,
+        "axis_rmse_m": [
+          0.1109927459371079,
+          0.16350682194292693
+        ],
+        "position_ellipse_coverage": 0.13333333333333333
+      }
+    }
+  }
+}

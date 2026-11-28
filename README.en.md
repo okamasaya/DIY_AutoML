@@ -9,7 +9,7 @@ UC_AutoMaiL, originally called DIY AutoML, helps you compare machine learning mo
 
 The five development notes cover the workflow, library cross-checks, storage benchmarks, feature selection, and the Windows preview. [English development notes](docs/development-notes/README.md)
 
-The distribution trial for version `0.4.0a8` includes a wheel and a CPU notebook for trying classification, state estimation, and graph classification. [Trial instructions (Japanese)](PyPI/TRIAL.md) · [Colab and Jupyter notebook](PyPI/Alpha_Trial.ipynb) · [PyPI release files](PyPI/)
+The `0.4.1a0` alpha on TestPyPI includes consistency diagnostics for state estimation. The `0.4.1a1` release candidate adds a stateful EKF step and control inputs. Use `import uc_automail as uc_al` to access the Python API. [Trial instructions (Japanese)](PyPI/TRIAL.md) · [Colab and Jupyter notebook](PyPI/Alpha_Trial.ipynb) · [PyPI release files](PyPI/)
 
 ## What you can do
 
