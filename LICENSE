@@ -1,5 +1,6 @@
 This license applies to the project-authored Python code under src/diy_automl/
-and the project-authored packaging files distributed with UC_AutoMaiL.
+and src/uc_automail/, and the project-authored packaging files distributed
+with UC_AutoMaiL.
 
 MIT License
 

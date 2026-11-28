@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "UC_AutoMaiL"
-version = "0.4.0a8"
+version = "0.4.1a1"
 description = "Compare machine learning models and report uncertainty in their evaluation"
 readme = "PyPI/README.pypi.md"
 requires-python = ">=3.12"
