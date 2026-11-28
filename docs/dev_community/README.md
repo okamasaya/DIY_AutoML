@@ -20,14 +20,22 @@ Zenn向けの評価記事3本と開発メモ01〜06を、DEV Communityの読者�
 
 | 順番 | 投稿原稿 | 内容 |
 | --- | --- | --- |
-| 01 | [Audit an Iris CSV before ranking five classifiers](01-workflow.md) | Irisのデータ点検からモデル選定、保留評価、区間推定まで |
+| 01 | [Audit an Iris CSV before ranking five classifiers](01-workflow.md) | TestPyPIからの導入、`uc_al` でIrisを点検・分類、図付きExcelで保留評価を読む |
 | 02 | [Same F1, different mistakes](02-cross-checks.md) | 同じF1でも異なる誤分類、予測確率の差、共通保留データでの比較 |
 | 03 | [Keep the CSV and reuse a working copy](03-parquet-duckdb.md) | Parquet・DuckDBによるデータ抽出と100万行の点検・変換の計測 |
 | 04 | [Does simulated annealing help pick a smaller feature set?](04-annealing.md) | 同じ候補数でのランダム探索との比較 |
 | 05 | [Read a model's mistakes in Excel and a Windows preview](05-business-preview.md) | Excelで見逃しと誤検知を読み、自転車貸出の結果を比較 |
-| 06 | [When should you keep a Kalman filter?](06-time-series.md) | 公開時系列での比較と、ボイジャー合成軌道での予測誤差・被覆率・入力品質の点検 |
+| 06 | [When should you keep a Kalman filter?](06-time-series.md) | 公開時系列と合成軌道での比較、試験配布版で動くEKFと欠測診断、Voyager 1の公開軌道を使った再現コードへの案内 |
+
+更新する記事は、[DEVのIris記事](https://dev.to/masaya_oka/audit-an-iris-csv-before-ranking-five-classifiers-457) と [DEVの時系列記事](https://dev.to/masaya_oka/when-should-you-keep-a-kalman-filter-three-forecasting-checks-a64) です。導入手順が先に読めるよう、01を更新してから06を更新します。両原稿のコード例はTestPyPIから取得できる `0.4.1a0` を対象にしています。
+
+Windowsの新規Python 3.13.17環境で、TestPyPIからwheelを再取得し、依存をPyPIから導入しました。Irisの分類は保留30件中29件正解で、図4点付きのExcelと進捗ログが出力されました。EKFは欠測行の予測値を引き継ぎ、診断は観測ペア数を返しました。両方のコード例はPython 3.12.16でも確認済みです。
 
 ## 手動で投稿する
+
+公開済み記事の更新は既存記事の編集画面を開き、原稿の本文（先頭のFront Matterの直後から末尾まで）と、必要に応じて説明文を差し替えます。公開設定を確認して更新します。
+
+新規記事の場合は次の手順です。
 
 1. DEVの [設定](https://dev.to/settings/customization) で **Basic Markdown** を選び、[新規投稿](https://dev.to/new) を開きます。
 2. 投稿する.mdを開き、冒頭の `---` から末尾まで貼り付け、下書きとして保存します。タイトル・説明・タグ・連載名をファイルに記載しています。

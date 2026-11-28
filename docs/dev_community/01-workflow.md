@@ -1,7 +1,7 @@
 ---
 title: "Audit an Iris CSV before ranking five classifiers"
 published: false
-description: "An Iris walkthrough that saves the data audit, model ranking, holdout predictions, and an uncertainty interval."
+description: "Install UC_AutoMaiL from TestPyPI, run an Iris classification workflow in Python, and inspect the results in Excel."
 tags: python, machinelearning, datascience, scikitlearn
 series: "DIY AutoML Development Notes"
 ai_disclosure_level: some_ai
@@ -9,7 +9,7 @@ ai_disclosure_level: some_ai
 
 I ran five classifiers on Iris and selected an SVM. The held-out macro F1 was 0.967, with a conditional 95% interval of 0.898 to 1.000. To decide what that result is worth, I want to know which data went in, how the candidates were compared, and which rows produced the final score. DIY AutoML saves those details from the initial audit through the evaluation.
 
-I tried the workflow on a Windows PC with 16 GB of RAM using a Python 3.13.17 virtual environment. The core uses pandas to read tables, scikit-learn to train and compare the classifiers, and openpyxl to write the Excel reports. The bundled Iris CSV has four numerical measurements and a species label per row, so the example runs on a CPU. [Setup](https://github.com/okamasaya/DIY_AutoML/blob/64b17f120dad1ead6256d963b779c13630457898/README.en.md#try-it-on-iris)
+The Python package from this project is available as **UC_AutoMaiL**. This walkthrough uses the `0.4.1a0` alpha and was checked on Windows with Python 3.12.16 and 3.13.17. It generates Iris from scikit-learn, compares five classifiers on a CPU, and saves an Excel workbook with the holdout results. [TestPyPI release](https://test.pypi.org/project/uc-automail/0.4.1a0/)
 
 ## Trace the result back to the input
 
@@ -17,18 +17,60 @@ I tried the workflow on a Windows PC with 16 GB of RAM using a Python 3.13.17 vi
 
 The audit records issues such as missing values and duplicate rows. If a dataset will be read and filtered several times, a Parquet or DuckDB working copy can make that preparation easier to repeat. After extracting the training data, check the row count, missing values, and label counts again. For the 150-row Iris example, the original CSV is small enough to use directly. [Workflow in Figure 1 of the full paper (Japanese)](https://github.com/okamasaya/DIY_AutoML/blob/64b17f120dad1ead6256d963b779c13630457898/docs/papers/DIY_AutoML_Full_Paper_20261119/DIY_AutoML_Full_Paper_20261119.pdf)
 
-## Inspect Iris and compare five classifiers
+## Install UC_AutoMaiL from TestPyPI
 
-Run these PowerShell commands from the repository root with Python 3.13 installed. The recorded species is in `target`. Use a fresh output directory when repeating the commands.
+Use Python 3.12 or newer. In a new working directory, create and activate a virtual environment. On Windows PowerShell, run:
 
 ```powershell
-$python = ".\.venv\Scripts\python.exe"
-$work = "runs/dev-note-01-iris"
-py -3.13 -m venv .venv
-& $python -m pip install -e .
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
 
-& $python -X utf8 -m diy_automl audit-data --csv data/reference/iris.csv --target target --row-unit "One iris plant" --output "$work/audit"
-& $python -X utf8 -m diy_automl select --csv data/reference/iris.csv --target target --output "$work/selection"
+On macOS or Linux with bash or zsh, run:
+
+```sh
+python3 -m venv .venv
+source .venv/bin/activate
+```
+
+The first command downloads the pinned wheel from TestPyPI. The second installs that local file and resolves its dependencies from the regular PyPI index. [Python Packaging User Guide](https://packaging.python.org/en/latest/guides/using-testpypi/#using-testpypi-with-pip)
+
+```sh
+python -m pip --isolated download --index-url https://test.pypi.org/simple/ --no-deps --only-binary=:all: uc-automail==0.4.1a0
+python -m pip --isolated install --index-url https://pypi.org/simple/ ./uc_automail-0.4.1a0-py3-none-any.whl
+python -m pip check
+python -m uc_automail --version
+python -c "import uc_automail as uc_al; print(uc_al.__version__)"
+```
+
+Expect `UC_AutoMaiL 0.4.1a0` from the CLI and `0.4.1a0` from the Python import. If PowerShell blocks the activation script, use `.\.venv\Scripts\python.exe` in place of `python` for the remaining commands.
+
+## Inspect Iris and compare five classifiers
+
+Save this as `iris_demo.py`. It writes Iris to CSV, audits the input, compares the candidates, and renders the selected model's evaluation as a workbook. Each run gets its own timestamped directory. [Iris dataset in scikit-learn](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_iris.html)
+
+```python
+from datetime import datetime
+from pathlib import Path
+
+import uc_automail as uc_al
+from sklearn.datasets import load_iris
+
+work = Path("runs") / datetime.now().strftime("iris-%Y%m%d-%H%M%S-%f")
+work.mkdir(parents=True)
+csv_path = work / "iris.csv"
+load_iris(as_frame=True).frame.to_csv(csv_path, index=False)
+
+uc_al.audit_data_csv(csv_path, output=work / "audit", target="target", row_unit="One iris plant")
+selection = uc_al.select_csv(
+    csv_path, target="target", output=work / "selection", seed=42, progress="both"
+)
+report = uc_al.render_excel_report(selection, output=work / "report", charts="detail")
+print(report / "report_with_figures.xlsx")
+```
+
+```sh
+python iris_demo.py
 ```
 
 The audit found 50 rows for each of the three classes and one exact duplicate across all columns. An identical row prompts a check of the original records to see whether two rows describe the same observation. I kept all 150 rows for this walkthrough.
@@ -45,14 +87,16 @@ The two F1 values round to the same number and come from different rows. The cro
 
 ## Hand off the same result in two ways
 
-For data scientists, `report.xlsx` holds the scores, `arrays.npz` holds the splits and predictions, and `manifest.json` records the settings and input hash. The Windows preview shows the number evaluated, the correct and incorrect counts, and charts from the same evaluation. It also opens a workbook with summary sheets and class-level errors. [Data science guide](https://github.com/okamasaya/DIY_AutoML/blob/64b17f120dad1ead6256d963b779c13630457898/docs/DATA_SCIENCE_GUIDE.en.md) · [Business user guide](https://github.com/okamasaya/DIY_AutoML/blob/64b17f120dad1ead6256d963b779c13630457898/docs/BUSINESS_USER_GUIDE.en.md)
+Open `audit/report.xlsx` to check the input. Open `report/report_with_figures.xlsx` to see the evaluation and its four figures. Start with `SL_CV_Mean` for candidate selection, `SL_Test` for the holdout scores and confusion matrix, and `SL_Test_Intervals` for the score intervals. `progress="both"` puts fold-by-fold updates in the terminal, `selection/progress.jsonl`, and the workbook's `Progress` sheet.
 
-A team may choose a model lower in the ranking for operational reasons. The scores from the same cross-validation folds give the team a way to quantify what it is trading off.
+`selection/arrays.npz` holds the splits and predictions, and `selection/manifest.json` records the settings and input hash. A team can use the scores from the same folds to quantify the trade-off when it chooses a model lower in the ranking for operational reasons. [Data science guide](https://github.com/okamasaya/DIY_AutoML/blob/64b17f120dad1ead6256d963b779c13630457898/docs/DATA_SCIENCE_GUIDE.en.md) · [Business user guide](https://github.com/okamasaya/DIY_AutoML/blob/64b17f120dad1ead6256d963b779c13630457898/docs/BUSINESS_USER_GUIDE.en.md)
+
+To try your own CSV, point `csv_path` at a file with numeric feature columns and set `target` to its label column in both calls. Choose a holdout that reflects the records you expect the model to handle. [DIY AutoML source and issues](https://github.com/okamasaya/DIY_AutoML)
 
 ## What I want to measure next
 
 The next experiments cover library cross-checks, reusable data preparation, feature selection, reading errors in Excel, and time-series forecasting.
 
-For date-ordered classification, I want to estimate how uncertain the gap between a model and a simple rule is when nearby days are dependent. Then I want to see how results change with the amount of training data and when the entire selection process is repeated. The longer-term goal is to make the same evaluation reproducible from a Python package and readable in a Windows interface for people who work in Excel. [Project roadmap (Japanese)](https://github.com/okamasaya/DIY_AutoML/blob/64b17f120dad1ead6256d963b779c13630457898/docs/ROADMAP.md)
+For date-ordered classification, I want to estimate how uncertain the gap between a model and a simple rule is when nearby days are dependent. Then I want to see how results change with the amount of training data and when the entire selection process is repeated. [Project roadmap (Japanese)](https://github.com/okamasaya/DIY_AutoML/blob/64b17f120dad1ead6256d963b779c13630457898/docs/ROADMAP.md)
 
 *AI assistance was used to adapt the project's development notes and experiment records into this English article.*
