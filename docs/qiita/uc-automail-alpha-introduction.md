@@ -2,7 +2,7 @@
 
 複数のモデルを試した後、どのデータで候補を選び、どのデータで最終評価したかを後から確かめたいことがあります。スコアが少し違うときには、評価に使った件数や、スコアのばらつきも見ておきたいところです。
 
-このために **DIY_AutoML** として開発してきたツールを、Pythonパッケージ **UC_AutoMaiL** として試験配布しています。分類モデルの比較から始めて、入力の点検、評価の区間、実行時の条件を一緒に保存できるようにしました。名前の `UC` は、開発の出発点になった Uncertainty（不確かさ）に由来します。 [DIY_AutoMLを始めた経緯](https://zenn.dev/okamasaya/articles/diy-automl-evaluation-framework)
+このために **DIY_AutoML** として開発してきたツールを、Pythonパッケージ **UC_AutoMaiL** として試験配布しています。分類モデルの比較から始めて、入力の点検、評価の区間、実行時の条件を一緒に保存できるようにしました。名前の `UC` は、開発の出発点になった Uncertainty（不確かさ）と、`AutoMaiL`はAuto Machine intelligence Learningの言葉遊びして繫げたことより由来します。 [DIY_AutoMLを始めた経緯](https://zenn.dev/okamasaya/articles/diy-automl-evaluation-framework)
 
 ## α版でできること
 
