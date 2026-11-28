@@ -40,4 +40,6 @@ NASA/JPLのHorizons APIから、1980年12月1日から1982年11月29日（TDB）
 
 EKFについては、7日先の位置の予測共分散から、二変量正規近似で各時点の公称95%予測楕円も計算しました。通常の模擬観測で公開軌道の参照位置が楕円に入ったのは **0/44時点** です。楕円の平均短半径は約2.3万km、平均長半径は約19.6万kmでした。この保留区間では、点予測の誤差が5方式で最小のケースでも、EKF自身が推定した不確かさは位置のずれを捉えきれていませんでした。
 
+公開軌道を取得するクエリ、分割、各方式のバージョン、RMSEと楕円の被覆率を保存しています。 [再実行手順](https://github.com/okamasaya/DIY_AutoML/blob/main/experiments/voyager_crosscheck/README.md#jpl-horizonsの公開軌道を参照した比較) · [集計結果のJSON](https://github.com/okamasaya/DIY_AutoML/blob/main/experiments/voyager_crosscheck/horizons-results.json)
+
 Irisでは比較の根拠を30件の予測と差の区間までたどれます。Voyager 1では、力学と観測を使った点予測の改善に加えて、観測が崩れた場合の誤差や、予測楕円がどの程度当たったかまで確認できました。モデルの選定と評価を記録しておくと、採用する手法と、次に見直すべき仮定を具体的に議論できます。 [UC_AutoMaiLの試験配布版](https://test.pypi.org/project/uc-automail/0.4.1a0/)
