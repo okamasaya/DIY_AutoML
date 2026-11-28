@@ -2,6 +2,12 @@
 
 Zenn向けの評価記事3本と開発メモ01〜06を、DEV Communityの読者向けに英語化した原稿です。評価記事でプロジェクトの目的、計算方法、業務例を説明し、開発メモで個別の実装と検証を紹介します。実験の出典は [GitHubのスナップショット 64b17f1](https://github.com/okamasaya/DIY_AutoML/tree/64b17f120dad1ead6256d963b779c13630457898) です。
 
+## UC_AutoMaiLの新規記事
+
+[Try UC_AutoMaiL from TestPyPI with Iris and Excel](uc-automail-testpypi-quickstart.md) は、Qiitaの紹介編と使い方編をもとにした独立の英語原稿です。TestPyPIから `0.4.1a0` を取得し、`import uc_automail as uc_al` でCSVの点検、分類、図付きExcelの確認まで進めます。下の新規投稿手順で原稿全体を貼り付けられます。 [Qiitaの原稿一覧](../qiita/README.md)
+
+公開wheelと混同行列の画像URLを確認し、記事のPythonコードはWindowsのPython 3.12.16と3.13.17で実行しました。両環境で保留30件中29件正解、25件の交差検証ログ、図4点付きのExcelを確認しました。
+
 ## DIY AutoML Evaluation
 
 親記事から入り、関心に応じてDS向けの再現手順とBP向けの業務例に進めます。3本はDEVで同じ連載名を使います。
@@ -38,7 +44,7 @@ Windowsの新規Python 3.13.17環境で、TestPyPIからwheelを再取得し、�
 新規記事の場合は次の手順です。
 
 1. DEVの [設定](https://dev.to/settings/customization) で **Basic Markdown** を選び、[新規投稿](https://dev.to/new) を開きます。
-2. 投稿する.mdを開き、冒頭の `---` から末尾まで貼り付け、下書きとして保存します。タイトル・説明・タグ・連載名をファイルに記載しています。
+2. 投稿する.mdを開き、冒頭の `---` から末尾まで貼り付け、下書きとして保存します。ファイルにはタイトル、説明、タグ、連載記事の場合は連載名が記載されています。
 3. プレビューで表と図を確認し、公開する段階で **Publish** を選びます。全原稿は `published: false` です。
 
 [DEV Editor Guide](https://dev.to/p/editor_guide)
