@@ -58,4 +58,33 @@ Under nominal observations, the EKF improved on the physics-only forecast. With 
 
 This is what I want error evaluation in DIY AutoML to help with. If forecasts start missing their prediction regions, I can look at the point errors, how often the regions contain the realized values, and whether the inputs agree with each other. Those checks point to different follow-up questions, including whether to inspect timestamps, review sensor measurements, or revisit the model assumptions. The next evaluation task is to estimate uncertainty in performance differences while accounting for dependence between nearby timestamps. [Uncertainty design notes](https://github.com/okamasaya/DIY_AutoML/blob/64b17f120dad1ead6256d963b779c13630457898/docs/UNCERTAINTY_DESIGN.md)
 
+## Try the filter with the TestPyPI package
+
+Install UC_AutoMaiL `0.4.1a0` using the installation steps in the Iris walkthrough. This example starts with a one-dimensional position that advances one metre per step. The third observation is missing. [Iris walkthrough and installation](https://dev.to/masaya_oka/audit-an-iris-csv-before-ranking-five-classifiers-457) · [TestPyPI release](https://test.pypi.org/project/uc-automail/0.4.1a0/)
+
+```python
+import uc_automail as uc_al
+
+observations = [[1.1], [2.0], [float("nan")], [3.9]]
+result = uc_al.extended_kalman_filter(
+    observations,
+    initial_mean=[0.0],
+    initial_covariance=[[1.0]],
+    transition=lambda state, step: state + 1.0,
+    transition_jacobian=lambda state, step: [[1.0]],
+    measurement=lambda state, step: state,
+    measurement_jacobian=lambda state, step: [[1.0]],
+    process_covariance=[[0.01]],
+    observation_covariance=[[0.10**2]],
+)
+diagnostics = uc_al.filter_diagnostics(result, observations, max_lag=2)
+print(result["filtered"][:, 0].round(3))
+print(diagnostics["autocorrelation_pairs"][:, 0])
+print(diagnostics["ljung_box_pvalue"])
+```
+
+The filtered positions are about `[1.099, 2.033, 3.033, 3.936]` metres. At the missing observation, the filter carries forward that step's forecast. The diagnostic still reports the number of usable pairs at each lag. In this release, Ljung–Box needs a complete, varying series for each observation channel, so its p-value is `NaN` here.
+
+A follow-up experiment uses the public JPL Horizons ephemeris as the reference and feeds the filter simulated range and range-rate measurements. The public-trajectory experiment has its own inputs and results. [Voyager 1 reproduction code and results](https://github.com/okamasaya/DIY_AutoML/tree/4ea5e255939e6818186cc13b84ec49ec76e07146/experiments/voyager_crosscheck)
+
 *AI assistance was used to adapt the project's development notes and experiment records into this English article.*
